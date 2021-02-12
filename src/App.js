@@ -1,6 +1,6 @@
-import React from 'react';
-import Client from './components/ClientTable';
-import Dashboard from './components/DashboardTable';
+import React from "react";
+import Client from './components/Client';
+import Dashboard from './components/Dashboard';
 import {
   BrowserRouter as Router,
   Switch,
@@ -8,8 +8,7 @@ import {
   Link
 } from "react-router-dom";
 
-
-function App() {
+export default function App() {
   return (
     <Router>
       <div>
@@ -36,17 +35,14 @@ function App() {
         </div>
       </nav>
       <Switch>
-        <Route patch="/client" exact>
-            <Client />    
+        <Route path="/client">
+          <Client />
         </Route>
-        <Route patch="/" exact>
-            <Dashboard />    
+        <Route path="/">
+          <Dashboard />
         </Route>
-      </Switch>  
+      </Switch>
       </div>
     </Router>
-    
   );
 }
-
-export default App;
