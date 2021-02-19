@@ -1,8 +1,9 @@
-import React, {Fragment} from 'react'
-import { useForm } from 'react-hook-form'
+import React, {Fragment} from 'react';
+import { useForm } from 'react-hook-form';
 
 const ClientEditForm = (props) => {
-    
+    console.log('ClientEdit:')
+    console.log(props)
     
 
     console.log('currentCliente.name:')
@@ -19,8 +20,8 @@ const ClientEditForm = (props) => {
     //Detecta los cambios del input
     setValue('name', props.currentCliente.name);
     setValue('last_name', props.currentCliente.last_name);
-
-
+    setValue('dni', props.currentCliente.dni);
+    setValue('email', props.currentCliente.email);
 
 
     const onSubmit = (data, e) => {
@@ -28,11 +29,19 @@ const ClientEditForm = (props) => {
         // console.log(data)
         // console.log('props')
         // console.log(props)
-        props.addClient(props.currentCliente.id, data)
+        // props.addClient(props.currentCliente.id, data)
         //props.addClient(props.cliente.id, data)
         // data.id = props.currentClient.id
         // props.updateClient(props.currentClient.id, data)
-        
+            console.log('submit Client')
+            console.log(data)
+    
+            data.id = props.currentCliente.id
+            props.updateClient(props.currentCliente.id, data)
+            
+            // limpiar campos
+            e.target.reset();
+        //}
         // limpiar campos
         e.target.reset();
     }
@@ -43,7 +52,7 @@ const ClientEditForm = (props) => {
                 <div className="input-group">
                     <span className="input-group-text">First and last name</span>
                     <input type="text"  name="name"
-                    className="form-control" placeholder="Add name client" 
+                    className="form-control" placeholder="Edit name client" 
                     ref={register({
                         required: {
                             value: true, 
@@ -52,7 +61,7 @@ const ClientEditForm = (props) => {
                     })}
                     />
                     <input type="text"  name="last_name"
-                    className="form-control" placeholder="Add last name client"
+                    className="form-control" placeholder="Edit last name client"
                     ref={register({
                         required: {
                             value: true, 
@@ -69,6 +78,25 @@ const ClientEditForm = (props) => {
                 <div>
                     <span className="text-danger text-small d-block mb-2">
                         {errors?.last_name?.message}
+                    </span>
+                </div>
+                <div>
+                <input 
+                    placeholder="Ingrese DNI"
+                    type="text" 
+                    name="dni"
+                    ref={register({
+                        required: "Required",
+                        pattern: {
+                          value: /^[0-9]+$/, 
+                            message: 'DNI es requerido, debe ser numerico'
+                            }
+                    })}
+                    />
+                </div>
+                <div>
+                    <span className="text-danger text-small d-block mb-2">
+                        {errors.dni && errors.dni.message}
                     </span>
                 </div>
                 <div className="mb-3">
@@ -89,7 +117,7 @@ const ClientEditForm = (props) => {
                     
                     <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
                 </div>
-                <button type="submit">Edit client</button>
+                <button type="submit"onClick={props.updateClient.id} >Edit client</button>
             </form>
         </Fragment>
     );

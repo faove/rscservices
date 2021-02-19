@@ -1,4 +1,5 @@
-import React,{useState, Fragment} from 'react'
+import React,{useState, Fragment} from 'react';
+import axios from 'axios';
 import ClientEditForm from './ClientEditForm'; 
 import ClientAddForm from './ClientAddForm'; 
 import ClientTable from './ClientTable'; 
@@ -7,13 +8,22 @@ import {useParams} from 'react-router-dom';
 
 const Client = () => {
 
-    const {id} = useParams()
+    //const {id} = useParams()
     // console.log('valor de id:')
     // console.log(id)
+
+    // {
+    //   id: null,
+    //   name: '', 
+    //   last_name: '', 
+    //   email: ''
+    //   }
+
     //Edit client
     const [editing, setEditing] = useState(false); 
-  // React.useEffect.getClient()
+    // React.useEffect.getClient()
     const [cliente, setCliente] = useState([]);
+    
     const [idclient, setId] = useState([]);
 
     const [currentCliente, setCurrentCliente] = useState([]); 
@@ -27,75 +37,125 @@ const Client = () => {
     // ); 
 
     React.useEffect( () => {
-        // console.log('object')
-        // console.log(cliente)
         getClient();
         //addClient();
-    },[id])
+    }, [setCliente]);
   // },[id])
 
     // Obtener Datos de los Clientes
     const getClient = async () => {
-      const data = await fetch(`http://localhost:8000/api/clients`)
-      // const data = await fetch(`http://localhost:8000/api/gets/${id}`)
-      const clients = await data.json()
-      // console.log('fecth')
-      // console.log(clients)
-      setCliente(clients)
-      setCurrentCliente(clients)
+      try {
+        const response = await axios({
+          method: "get",
+          url: "http://localhost:8000/api/clients"
+        });
+        const data = await response;
+        
+        setCliente(data.data)
+        // setCliente({
+        //   id: data.data.id,
+        //   name: data.name, 
+        //   last_name: data.last_name, 
+        //   email: data.email
+        //   });
+          // console.log('dentro de getClient')
+          // console.log(data.data)
+
+      }catch (error){
+        console.log(error)
+      }
     }
 
-    //Agregar Client
-    const addClient = async (dataClient) => {
-      //const data = await
-       fetch(`http://localhost:8000/api/clients`, {
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'cors', // no-cors, *cors, same-origin
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, *same-origin, omit
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            redirect: 'follow', // manual, *follow, error
-            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            // body: JSON.stringify(cliente) // body data type must match "Content-Type" header
-            body: JSON.stringify(dataClient) // body data type must match "Content-Type" header
-          })
-          .then(response => response.json())
-          .then(data => 
-            {
-              setCliente(data)
-              setId(data.id)
-            })
+
+    //Eliminar client
+    const deleteClient = async (id) => {
+      try {
+        const response = await axios.delete(
+          `http://localhost:8000/api/clients/${id}`          
+        );
+        const data = await response;
+
+        console.log('delete Client')
+        console.log(data)
+        
+        const arrayFilter = cliente.filter(client => client.id !== id);
+        setCliente(arrayFilter);
+
+      }catch (error){
+        console.log(error)
+      
       }
-    //   const agreclient = await data.json()
-      
-      
-    //   setCliente([
-    //     ...cliente,
-    //     agreclient
-    //   ])
+    }
+
+
+
+    //addClient 
+    const addClient = async (name,last_name,dni,email) => {
+      try {
+        // console.log('params addClient')
+        // console.log(name,last_name,dni,email)
+        const response = await axios.post(
+          "http://localhost:8000/api/clients",
+          {
+              name,last_name,dni,email
+          }
+        );
+        const data = await response;
+        
+        setCliente([
+          ...cliente, 
+          data.data
+        ])
+        // console.log('dentro de addClient')
+        // console.log(data.data)
+        // setCliente({
+        //   name: response.name, 
+        //   last_name: response.last_name, 
+        //   email: response.email
+        //   })
+
+
+      }catch (error){
+        console.log(error)
+      }
+
+
+    }
+    
+
+
+    // const getClient = async () => {
+    //   const data = await fetch(`http://localhost:8000/api/clients`)
+    //   // const data = await fetch(`http://localhost:8000/api/gets/${id}`)
+    //   const clients = await data.json()
+    //   // console.log('fecth')
+    //   // console.log(clients)
+    //   //setCliente(clients)
+    //   //setCurrentCliente(clients)
     // }
+
+    
 
     const editRow = (client) => {
 
       setEditing(true);
   
-      setCliente(
+      setCurrentCliente(
         { 
-          name: client.name, last_name: client.name, email: client.email
+          id: client.id, name: client.name, last_name: client.last_name,dni: client.dni,email: client.email
         }
       )
     }
+
+    
 
     const updateClient = (id, updatedClient) => {
       setEditing(false);
       // console.log('update cliente')
       // console.log(cliente)
-      setCurrentCliente(
-        
+      setCliente(
         cliente.map(
-        client => (client.id === idclient ? updatedClient : client)
+        client => (client.id === id ? updatedClient : client)
           ))
     
     } 
@@ -125,7 +185,6 @@ const Client = () => {
                       <ClientEditForm 
                       currentCliente={currentCliente} 
                       updateClient={updateClient}
-                      getClient={getClient}
                       />
                     </div>
                   ):(
@@ -133,7 +192,6 @@ const Client = () => {
                       <h2>Add Client</h2>
                       <ClientAddForm 
                       addClient={addClient} 
-                      getClient={getClient}
                       />
                     </div>
                   )
@@ -142,7 +200,7 @@ const Client = () => {
                   <h2>View Client</h2>
                   <ClientTable 
                   cliente={cliente} 
-                  //deleteClient={deleteClient} 
+                  deleteClient={deleteClient} 
                   editRow={editRow}
                   />
                 </div>

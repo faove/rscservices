@@ -3,17 +3,20 @@ import React, {Fragment}  from 'react';
 import { useForm } from 'react-hook-form';
 
 const ClientAddForm = (props) => {
-
+    // console.log('ADdClients')
     // console.log(props)
     const {register, errors, handleSubmit} = useForm();
     
     const onSubmit = (data, e) => {
-        console.log('Add submit data')
-        console.log(data)
-        props.addClient(data)
+        // console.log('Add submit data')
+        // console.log(data.name,data.last_name,data.dni,data.email)
+        props.addClient(data.name,data.last_name,data.dni,data.email)
         // limpiar campos
         e.target.reset();
     }
+
+
+    
 
     return (
         <Fragment>
@@ -21,7 +24,7 @@ const ClientAddForm = (props) => {
                 <div className="input-group">
                     <span className="input-group-text">First and last name</span>
                     <input type="text" aria-label="First name" 
-                    name="username" id="username" htmlFor="username"
+                    name="name" id="name" htmlFor="name"
                     className="form-control" placeholder="Add name client" 
                     ref={register({
                         required: {
@@ -52,16 +55,22 @@ const ClientAddForm = (props) => {
                 </div>
                 <div>
                 <input 
-                    placeholder="Ingrese nombre de usuario"
+                    placeholder="Ingrese DNI"
                     type="text" 
-                    name="lastname"
+                    name="dni"
                     ref={register({
-                        required: {
-                            value: true, 
-                            message: 'Nombre es requerido'
+                        required: "Required",
+                        pattern: {
+                          value: /^[0-9]+$/, 
+                            message: 'DNI es requerido, debe ser numerico'
                             }
                     })}
                     />
+                </div>
+                <div>
+                    <span className="text-danger text-small d-block mb-2">
+                        {errors.dni && errors.dni.message}
+                    </span>
                 </div>
                 <div className="mb-3">
                     <label htmlFor="InputEmail" className="form-label">Email address</label>
