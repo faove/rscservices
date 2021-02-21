@@ -1,20 +1,21 @@
-import React, {useState} from 'react';
+import React from 'react';
 
 const ClientTable = (props) => {
 
     //const [listClient, setListClient] = useState([]);
 
-    console.log('props de ClientTable:')
-    console.log(props)
+    // console.log('props de ClientTable:')
+    // console.log(props)
 
     return (
         <table>
             <thead>
             <tr>
-                <th>#</th>
+                <th># DNI</th>
                 <th>Client name</th>
                 <th>Lastname</th>
                 <th>Email</th>
+                <th>Address</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -23,10 +24,11 @@ const ClientTable = (props) => {
                 props.cliente.length > 0 ?
                 props.cliente.map(cliente  => (
                         <tr key={cliente.id}>
-                        <td>{cliente.id}</td>
+                        <td>{cliente.dni}</td>
                         <td>{cliente.name}</td>
                         <td>{cliente.last_name}</td>
                         <td>{cliente.email}</td>
+                        <td>{cliente.address}</td>
                         <td>
                         <button 
                         className="button muted-button"
@@ -50,7 +52,6 @@ const ClientTable = (props) => {
                         <td colSpan={3}>No cliente</td>
                         </tr>
                     )
-     
     
             }
             

@@ -3,38 +3,20 @@ import axios from 'axios';
 import ClientEditForm from './ClientEditForm'; 
 import ClientAddForm from './ClientAddForm'; 
 import ClientTable from './ClientTable'; 
-import {useParams} from 'react-router-dom';
+// import {useParams} from 'react-router-dom';
 //import { useForm } from "react-hook-form";
 
 const Client = () => {
 
     //const {id} = useParams()
-    // console.log('valor de id:')
-    // console.log(id)
-
-    // {
-    //   id: null,
-    //   name: '', 
-    //   last_name: '', 
-    //   email: ''
-    //   }
 
     //Edit client
     const [editing, setEditing] = useState(false); 
     // React.useEffect.getClient()
     const [cliente, setCliente] = useState([]);
     
-    const [idclient, setId] = useState([]);
-
     const [currentCliente, setCurrentCliente] = useState([]); 
-    // const [currentCliente, setCurrentCliente] = useState(
-    //   {
-    //   id: null,
-    //   name: '', 
-    //   last_name: '', 
-    //   email: ''
-    //   }
-    // ); 
+    
 
     React.useEffect( () => {
         getClient();
@@ -42,7 +24,9 @@ const Client = () => {
     }, [setCliente]);
   // },[id])
 
+    //------------------------------
     // Obtener Datos de los Clientes
+    //------------------------------
     const getClient = async () => {
       try {
         const response = await axios({
@@ -52,15 +36,7 @@ const Client = () => {
         const data = await response;
         
         setCliente(data.data)
-        // setCliente({
-        //   id: data.data.id,
-        //   name: data.name, 
-        //   last_name: data.last_name, 
-        //   email: data.email
-        //   });
-          // console.log('dentro de getClient')
-          // console.log(data.data)
-
+  
       }catch (error){
         console.log(error)
       }
@@ -90,14 +66,13 @@ const Client = () => {
 
 
     //addClient 
-    const addClient = async (name,last_name,dni,email) => {
+    const addClient = async (name,last_name,dni,address,email) => {
       try {
-        // console.log('params addClient')
-        // console.log(name,last_name,dni,email)
+        
         const response = await axios.post(
           "http://localhost:8000/api/clients",
           {
-              name,last_name,dni,email
+              name,last_name,dni,address,email
           }
         );
         const data = await response;
@@ -106,14 +81,6 @@ const Client = () => {
           ...cliente, 
           data.data
         ])
-        // console.log('dentro de addClient')
-        // console.log(data.data)
-        // setCliente({
-        //   name: response.name, 
-        //   last_name: response.last_name, 
-        //   email: response.email
-        //   })
-
 
       }catch (error){
         console.log(error)
@@ -121,20 +88,6 @@ const Client = () => {
 
 
     }
-    
-
-
-    // const getClient = async () => {
-    //   const data = await fetch(`http://localhost:8000/api/clients`)
-    //   // const data = await fetch(`http://localhost:8000/api/gets/${id}`)
-    //   const clients = await data.json()
-    //   // console.log('fecth')
-    //   // console.log(clients)
-    //   //setCliente(clients)
-    //   //setCurrentCliente(clients)
-    // }
-
-    
 
     const editRow = (client) => {
 
@@ -142,36 +95,37 @@ const Client = () => {
   
       setCurrentCliente(
         { 
-          id: client.id, name: client.name, last_name: client.last_name,dni: client.dni,email: client.email
+          id: client.id, name: client.name, last_name: client.last_name,dni: client.dni,address: client.address, email: client.email
         }
       )
     }
 
     
 
-    const updateClient = (id, updatedClient) => {
-      setEditing(false);
-      // console.log('update cliente')
-      // console.log(cliente)
-      setCliente(
-        cliente.map(
-        client => (client.id === id ? updatedClient : client)
-          ))
+    const updateClient = async (id, updatedClient) => {
+      try {
+        
+
+        setEditing(false);
+        const response = await axios.put(
+          `http://localhost:8000/api/clients/${id}`, updatedClient        
+        );
+        const data = await response;
+
+        setCliente(
+          cliente.map(
+          client => (client.id === id ? updatedClient : client)
+            ))
+
+        console.log('update Client')
+        console.log(id)
+        console.log(updatedClient)
+
+      }catch (error){
+        console.log(error)
+      }
     
     } 
-
-    //Hook debe estar en ClientAddForm
-    // const addClient = (id, addClient) => {
-    //     setEditing(false);
-    //     console.log('----------------------')
-    //     console.log(cliente)
-    //     setCliente(
-    //         cliente.map(
-    //       client => (client.id === id ? addClient : client)
-    //         ))
-    
-    //   }
-
 
     return (
         <Fragment>

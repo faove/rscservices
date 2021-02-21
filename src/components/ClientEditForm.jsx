@@ -21,6 +21,7 @@ const ClientEditForm = (props) => {
     setValue('name', props.currentCliente.name);
     setValue('last_name', props.currentCliente.last_name);
     setValue('dni', props.currentCliente.dni);
+    setValue('address', props.currentCliente.address);
     setValue('email', props.currentCliente.email);
 
 
@@ -33,10 +34,13 @@ const ClientEditForm = (props) => {
         //props.addClient(props.cliente.id, data)
         // data.id = props.currentClient.id
         // props.updateClient(props.currentClient.id, data)
-            console.log('submit Client')
-            console.log(data)
+            
     
             data.id = props.currentCliente.id
+
+            console.log('submit Client')
+            console.log(data.id)
+            console.log(data)
             props.updateClient(props.currentCliente.id, data)
             
             // limpiar campos
@@ -99,9 +103,15 @@ const ClientEditForm = (props) => {
                         {errors.dni && errors.dni.message}
                     </span>
                 </div>
+                <div>
+                <input 
+                    placeholder="Provider Address"
+                    type="text" 
+                    name="address"
+                    />
+                </div>
                 <div className="mb-3">
-                    <label htmlFor="InputEmail" className="form-label">Email address</label>
-                    <input type="email" className="form-control" 
+                    <input placeholder="Email address" type="email" className="form-control" 
                     id="InputEmail"  name="email"
                     ref={register({
                         required: "Required",

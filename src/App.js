@@ -1,5 +1,6 @@
 import React from "react";
 import Client from './components/Client';
+import Services from './components/Services';
 import Dashboard from './components/Dashboard';
 import {
   BrowserRouter as Router,
@@ -26,6 +27,11 @@ export default function App() {
                 </Link> 
               </li>
               <li className="nav-item">
+                <Link to="/services" className="nav-link active">
+                  Services
+                </Link> 
+              </li>
+              <li className="nav-item">
                 <Link to="/client" className="nav-link">
                   Client
                 </Link> 
@@ -37,6 +43,9 @@ export default function App() {
       <Switch>
         <Route path="/client">
           <Client />
+        </Route>
+        <Route path="/services">
+          <Services />
         </Route>
         <Route path="/">
           <Dashboard />

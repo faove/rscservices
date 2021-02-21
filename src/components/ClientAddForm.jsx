@@ -72,9 +72,15 @@ const ClientAddForm = (props) => {
                         {errors.dni && errors.dni.message}
                     </span>
                 </div>
+                <div>
+                <input 
+                    placeholder="Provider Address"
+                    type="text" 
+                    name="address"
+                    />
+                </div>
                 <div className="mb-3">
-                    <label htmlFor="InputEmail" className="form-label">Email address</label>
-                    <input type="email" className="form-control" 
+                    <input placeholder="Email address" type="email" className="form-control" 
                     id="InputEmail" aria-describedby="emailHelp" name="email"
                     ref={register({
                         required: "Required",
@@ -87,7 +93,6 @@ const ClientAddForm = (props) => {
                     <span className="text-danger text-small d-block mb-2">
                         {errors.email && errors.email.message}
                     </span>
-                    
                     <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
                 </div>
                 <button type="submit">Add Client</button>
