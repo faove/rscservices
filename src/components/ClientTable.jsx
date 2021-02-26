@@ -1,6 +1,8 @@
 import React from 'react';
 import { useDispatch, useSelector} from 'react-redux';
 import { deleteClient,getClient } from '../redux/clientDuck';
+import Button from '@material-ui/core/Button'
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const ClientTable = (props) => {
 
@@ -34,22 +36,22 @@ const ClientTable = (props) => {
                         <td>{cliente.address}</td>
                         <td>{cliente.email}</td>
                         <td>
-                        <button 
-                        className="button muted-button"
-                        onClick={
-                            () => {props.editRow(cliente)}
-                        }
-                        >
-                            Edit
-                        </button>
-                        <button 
-                        className="button muted-button"
-                        onClick={() => 
-                            dispatch(deleteClient(cliente.id))
-                        }
-                        >
+                            <Button variant="outlined" color="primary"
+                                onClick={
+                                    () => {props.editRow(cliente)}
+                                }
+                            >
+                              Edit
+                            </Button>
+                            <Button variant="contained" color="secondary"
+                                onClick={() => 
+                                    dispatch(deleteClient(cliente.id))
+                                }
+                                startIcon={<DeleteIcon/>}
+                            >
                             Delete
-                        </button>
+                            </Button>
+                            
                         </td>
                     </tr>
                     )) : (

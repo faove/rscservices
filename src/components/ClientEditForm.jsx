@@ -3,6 +3,8 @@ import { useForm, Controller } from 'react-hook-form';
 import { useDispatch, useSelector} from 'react-redux';
 import { updateClient } from '../redux/clientDuck';
 import TextField from "@material-ui/core/TextField";
+import Button from '@material-ui/core/Button'
+
 
 const ClientEditForm = (props) => {
 
@@ -17,7 +19,9 @@ const ClientEditForm = (props) => {
     const dispatch = useDispatch()
     // const clientcurrent = useSelector(store => store.client.array)
 
-    const {control, register, errors, handleSubmit, setValue} = useForm({
+    
+
+    const {values,setValue, control, register, errors, handleSubmit, handleInputChange} = useForm({
         defaultValues: props.currentCliente
         // defaultValues: useMemo(() => {
         //     return props.currentCliente;
@@ -27,6 +31,11 @@ const ClientEditForm = (props) => {
     // console.log(clientcurrent)
     const [actualclient, setActualClient] = useState([]);
 
+    console.log('actualclient')
+    console.log(actualclient)
+    console.log('props')
+    console.log(props)
+    
     // const handleChange = e => {
     //     const {name, value} = e.target;
     //     setUser({...user, [name]: value});
@@ -53,15 +62,45 @@ const ClientEditForm = (props) => {
     // const handleChangeClick = e => {
         // console.log('data')
         // console.log(data)
-        //Detecta los cambios del input
-        // setValue('name', props.currentCliente.name);
-        // setValue('last_name', props.currentCliente.last_name);
-        // setValue('dni', props.currentCliente.dni);
-        // setValue('address', props.currentCliente.address);
-        // setValue('email', props.currentCliente.email);
+        // Detecta los cambios del input
+    //     console.log('name' in actualclient)
+    // if (typeof props.current !== 'undefined' && props.current !== null){
+    // if (props.current === true){
+    //     console.log('estoy setactualcliente es cero')
+    //     setActualClient([])
+    // }
+    if ('name' in actualclient){
+        console.log('dentro del if')
+        console.log(props.currentCliente)
+        
+        setValue('name', actualclient.name);
+        setValue('last_name', actualclient.last_name);
+        setValue('dni', actualclient.dni);
+        setValue('address', actualclient.address);
+        setValue('email', actualclient.email);
+        //console.log(setValue())
+        // setActualClient([])
+        
+    }else{
+        setValue('name', props.currentCliente.name);
+        setValue('last_name', props.currentCliente.last_name);
+        setValue('dni', props.currentCliente.dni);
+        setValue('address', props.currentCliente.address);
+        setValue('email', props.currentCliente.email);
+    }
     // }
 
+    // const handleInputChange = (e) => {
+    //     const target = e.target;
+    //     console.log('handleChange')
+    //     console.log(target)
+    //     // const value = target.type === 'checkbox' ? target.checked : target.value;
+    //     // const name = target.name;
     
+    //     // this.setState({
+    //     //   [name]: value
+    //     // });
+    //   }
 
     
 
@@ -80,14 +119,22 @@ const ClientEditForm = (props) => {
             // console.log(props.currentCliente.id)
             // console.log(this.state)
 
-            console.log(props.currentCliente.id)
+            console.log(props)
             console.log(data.name)
             setActualClient(data)
-            console.log(actualclient)
+            props.setCurrentCliente(data)
+            // console.log(actualclient)
             // props.updateClient(props.currentCliente.id, data)
 
-            dispatch(updateClient(props.currentCliente.id,data))
+            // e.preventDefault()
 
+            // if (validate()){
+                // employeeService.insertEmployee(values)
+                dispatch(updateClient(props.currentCliente.id,data))
+                // resetForm()
+            // }
+            // dispatch(updateClient(props.currentCliente.id,data))
+            setActualClient([])
             // setValue('name',data.name)
             // props.setCurrentCliente(data)
             //setValue('name', data.name);
@@ -99,22 +146,43 @@ const ClientEditForm = (props) => {
         e.target.reset();
     }
     React.useEffect(() => {
+    console.log('llama a useEffect')
+        // setTimeout(() => 
+    //         // setValue('name', actualclient.name),
+    //         // setValue('name', actualclient.name),
+    //         // setValue('last_name', actualclient.last_name),
+    //         // setValue('dni', actualclient.dni),
+    //         // setValue('address', actualclient.address),
+    //         // setValue('email', actualclient.email)
+            // setValue('name', props.currentCliente.name),
+            // setValue('last_name', props.currentCliente.last_name),
+            // setValue('dni', props.currentCliente.dni),
+            // setValue('address', props.currentCliente.address),
+            // setValue('email', props.currentCliente.email)
+    //         //  setValue('name',123),
+    //         // setValue('last_name'),
+    //         // setValue('dni'),
+    //         // setValue('address'),
+    //         // setValue('email')
+        // );
+        if ('name' in actualclient) {
+            setValue('name', actualclient.name);
+            setValue('name', actualclient.name);
+            setValue('last_name', actualclient.last_name);
+            setValue('dni', actualclient.dni);
+            setValue('address', actualclient.address);
+            setValue('email', actualclient.email);
+            // setValue([
+            //     { name: actualclient.name }, 
+            //     { last_name: actualclient.last_name },
+            //     { dni: actualclient.dni }, 
+            //     { address: actualclient.address },
+            //     { email: actualclient.email },
+            // ]);
+          }
+        //setActualClient([])
 
-        setTimeout(() => 
-            // setValue('name', actualclient.name),
-            setValue('name', props.currentCliente.name),
-            setValue('last_name', props.currentCliente.last_name),
-            setValue('dni', props.currentCliente.dni),
-            setValue('address', props.currentCliente.address),
-            setValue('email', props.currentCliente.email)
-            //  setValue('name',123),
-            // setValue('last_name'),
-            // setValue('dni'),
-            // setValue('address'),
-            // setValue('email')
-        );
-
-      }, [setValue]);
+      }, [actualclient]);
     
 
     //   React.useEffect(() => {
@@ -140,32 +208,32 @@ const ClientEditForm = (props) => {
     return (
         <Fragment>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div>
-                    <Controller
-                        as={
-                            <TextField
-                            label="Name"
-                            variant='outlined'
-                            error={!!errors.name}
-                            helperText={errors.name && errors.name.message}
-                            />
-                        }
+                <div className="input-group">
+                    <span className="input-group-text">First and last name</span>
+                    {/* <Controller
+                        as={<input type='text' />}
                         control={control}
-                        name="name"
-                        rule={{ required: "Name is required" }}
+                        defaultValue={actualclient ? actualclient.name : ''}
+                        name='name'
+                    /> */}
+                    <input type="text" aria-label="First name" 
+                    name="name" id="name" htmlFor="name"
+                    className="form-control" placeholder="Add name client" 
+                    ref={register({
+                        required: {
+                            value: true, 
+                            message: 'Name es requerido'
+                            }
+                    })}
                     />
-                    <Controller
-                        as={
-                            <TextField
-                            label="Last Name"
-                            variant='outlined'
-                            error={!!errors.last_name}
-                            helperText={errors.last_name && errors.last_name.message}
-                            />
-                        }
-                        control={control}
-                        name="last_name"
-                        rule={{ required: "Last name is required" }}
+                    <input type="text" aria-label="Last name" name="last_name" id="last_name"
+                    className="form-control" placeholder="Add last name client"
+                    ref={register({
+                        required: {
+                            value: true, 
+                            message: 'Last name es requerido'
+                            }
+                    })}
                     />
                 </div>
                 <div>
@@ -179,20 +247,8 @@ const ClientEditForm = (props) => {
                     </span>
                 </div>
                 <div>
-                    <Controller
-                        as={
-                            <TextField
-                            label="Ingrese DNI"
-                            variant='outlined'
-                            error={!!errors.dni}
-                            helperText={errors.dni && errors.dni.message}
-                            />
-                        }
-                        control={control}
-                        name="dni"
-                        rule={{ required: "DNI es requerido, debe ser numerico" }}
-                    />
-                {/* <input 
+                    
+                <input 
                     placeholder="Ingrese DNI"
                     type="text" 
                     name="dni"
@@ -203,29 +259,16 @@ const ClientEditForm = (props) => {
                             message: 'DNI es requerido, debe ser numerico'
                             }
                     })}
-                    /> */}
-                
-                    <Controller
-                        as={
-                            <TextField
-                            label="Provider Address"
-                            variant='outlined'
-                            error={!!errors.address}
-                            helperText={errors.address && errors.address.message}
-                            />
-                        }
-                        control={control}
-                        name="address"
-                        rule={{ required: "Es requerido" }}
                     />
-                {/* <input 
+                
+                <input 
                     placeholder="Provider Address"
                     type="text" 
                     name="address"
                     ref={register({
                         required: "Required"
                     })}
-                    />*/}
+                    />
                 </div> 
                 <div>
                     <span className="text-danger text-small d-block mb-2">
@@ -233,20 +276,7 @@ const ClientEditForm = (props) => {
                     </span>
                 </div>
                 <div className="mb-3">
-                    <Controller
-                        as={
-                            <TextField
-                            label="Email address"
-                            variant='outlined'
-                            error={!!errors.email}
-                            helperText={errors.email && errors.email.message}
-                            />
-                        }
-                        control={control}
-                        name="email"
-                        rule={{ required: "Es requerido" }}
-                    />
-                    {/* <input placeholder="Email address" type="email" className="form-control" 
+                    <input placeholder="Email address" type="email" className="form-control" 
                     id="InputEmail"  name="email" 
                     ref={register({
                         required: "Required",
@@ -255,13 +285,14 @@ const ClientEditForm = (props) => {
                           message: "invalid email address"
                         }
                       })}
-                    /> */}
+                    />
                     <span className="text-danger text-small d-block mb-2">
                         {errors.email && errors.email.message}
                     </span>
                 </div>
-                <button type="submit">Edit client</button>
-                {/* onClick={props.currentCliente.id} */}
+                <Button type="submit" variant="outlined" color="primary">
+                Edit client
+                </Button>
             </form>
         </Fragment>
     );

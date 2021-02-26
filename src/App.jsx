@@ -46,13 +46,13 @@ export default function App() {
       </nav>
       <Switch>
       <Provider store={store}>
-        <Route path="/client">
+        <Route path="/client" exact>
             <Client />
         </Route>
-        <Route path="/services">
+        <Route path="/services" exact>
           <Services />
         </Route>
-        <Route path="/">
+        <Route path="/" exact>
           <Dashboard />
         </Route>
         </Provider>

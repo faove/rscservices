@@ -6,6 +6,7 @@ import ClientTable from './ClientTable';
 // import { useForm } from "react-hook-form";
 import { useDispatch, useSelector} from 'react-redux';
 import { getClient, getNextClient} from '../redux/clientDuck';
+import Button from '@material-ui/core/Button'
 
 const Client = (props) => {
 
@@ -29,23 +30,7 @@ const Client = (props) => {
     // const clientData = useSelector(store => store.client.add)
     // const clientDel = useSelector(store => store.client.del)
     const client = useSelector(store => store.client.array)
-    //setCliente(client)
     
-
-    // console.log('Cliente estoy getState-----------------------------')
-
-    // console.log(props.store.getState().client)
-    // console.log(client)
-    
-
-
-  
-    // const getCliente = () => {
-    //   console.log('getClient')
-    //   console.log(props)
-    //   // props.ServiceHttpClient.getClient().then(x => setCliente(x));
-    //   // this.props.getClienteValue(e);
-    // }
     React.useEffect( () => {
       dispatch(getClient());
       // setCurrentCliente(client)
@@ -62,74 +47,14 @@ const Client = (props) => {
 
 
 
-  // }
-    //------------------------------
-    // Obtener Datos de los Clientes
-    //------------------------------
-    // const getClient = async () => {
-    //   try {
-    //     const response = await axios({
-    //       method: "get",
-    //       url: "http://localhost:8000/api/clients"
-    //     });
-    //     const data = await response;
-        
-    //     setCliente(data.data)
-  
-    //   }catch (error){
-    //     console.log(error)
-    //   }
-    // }
-
-
-    //Eliminar client
-    // const deleteClient = async (id) => {
-    //   try {
-    //     const response = await axios.delete(
-    //       `http://localhost:8000/api/clients/${id}`          
-    //     );
-    //     const data = await response;
-
-    //     console.log('delete Client')
-    //     console.log(data)
-        
-    //     const arrayFilter = cliente.filter(client => client.id !== id);
-    //     setCliente(arrayFilter);
-
-    //   }catch (error){
-    //     console.log(error)
-      
-    //   }
-    // }
 
 
 
-    //addClient 
-    // const addClient = async (name,last_name,dni,email,address) => {
-    //   try {
-        
-    //     const response = await axios.post(
-    //       "http://localhost:8000/api/clients",
-    //       {
-    //           name,last_name,dni,email,address
-    //       }
-    //     );
-    //     const data = await response;
-        
-    //     setCliente([
-    //       ...cliente, 
-    //       data.data
-    //     ])
 
-    //   }catch (error){
-    //     console.log(error)
-    //   }
-
-
-    // }
 
     const editRow = (client) => {
-
+      console.log('editRow')
+      console.log(client)
       setEditing(true);
   
       setCurrentCliente(
@@ -138,6 +63,8 @@ const Client = (props) => {
           dni: client.dni, email: client.email,address: client.address
         }
       )
+      // console.log(currentCliente)
+
     }
 
     
@@ -172,11 +99,10 @@ const Client = (props) => {
                   
                   <div className="flex-large">
                   <h2>View Client</h2>
-                  <button onClick={() => dispatch(getClient())}>Obtener</button>
-                  <button onClick={() => dispatch(getNextClient(20))}>Siguiente</button>
+                  
                     <ClientTable 
                     cliente={client} 
-                    // setCliente={setCliente}
+                    currentCliente={currentCliente}
                     // deleteClient={deleteClient} 
                     editRow={editRow}
                     />
@@ -184,6 +110,14 @@ const Client = (props) => {
                   {/* <Client 
                     getClient={getClient}
                     cliente={cliente} /> */}
+                </div>
+                <div>
+                  <Button variant="text" color="default" size="small" onClick={() => dispatch(getNextClient(20))}>
+                    After
+                  </Button>
+                  <Button variant="text" color="default" size="small" onClick={() => dispatch(getNextClient(20))}>
+                    Next
+                  </Button>
                 </div>
               </div>
             </div>
