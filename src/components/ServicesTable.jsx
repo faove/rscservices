@@ -1,10 +1,10 @@
-import React, {Fragment} from 'react';
+import React, {useState,Fragment} from 'react';
+
 
 const ServicesTable = (props) => {
-
-    const baseURL = process.env.APP_LOCALHOST_URL
-    console.log(props)
-    console.log(baseURL)
+    
+    // console.log('baseURL')
+    // console.log(baseURL)
     return (
         <div>
             hola

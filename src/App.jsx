@@ -2,6 +2,9 @@ import React from "react";
 import Client from './components/Client';
 import Services from './components/Services';
 import Dashboard from './components/Dashboard';
+import { Provider } from 'react-redux';
+import generateStore from './redux/store';
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -10,6 +13,7 @@ import {
 } from "react-router-dom";
 
 export default function App() {
+  const store = generateStore()
   return (
     <Router>
       <div>
@@ -41,8 +45,9 @@ export default function App() {
         </div>
       </nav>
       <Switch>
+      <Provider store={store}>
         <Route path="/client">
-          <Client />
+            <Client />
         </Route>
         <Route path="/services">
           <Services />
@@ -50,6 +55,7 @@ export default function App() {
         <Route path="/">
           <Dashboard />
         </Route>
+        </Provider>
       </Switch>
       </div>
     </Router>

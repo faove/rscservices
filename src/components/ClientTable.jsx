@@ -1,4 +1,6 @@
 import React from 'react';
+import { useDispatch, useSelector} from 'react-redux';
+import { deleteClient,getClient } from '../redux/clientDuck';
 
 const ClientTable = (props) => {
 
@@ -6,6 +8,8 @@ const ClientTable = (props) => {
 
     // console.log('props de ClientTable:')
     // console.log(props)
+    const dispatch = useDispatch()
+    
 
     return (
         <table>
@@ -14,8 +18,8 @@ const ClientTable = (props) => {
                 <th># DNI</th>
                 <th>Client name</th>
                 <th>Lastname</th>
-                <th>Email</th>
                 <th>Address</th>
+                <th>Email</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -27,8 +31,8 @@ const ClientTable = (props) => {
                         <td>{cliente.dni}</td>
                         <td>{cliente.name}</td>
                         <td>{cliente.last_name}</td>
-                        <td>{cliente.email}</td>
                         <td>{cliente.address}</td>
+                        <td>{cliente.email}</td>
                         <td>
                         <button 
                         className="button muted-button"
@@ -40,7 +44,9 @@ const ClientTable = (props) => {
                         </button>
                         <button 
                         className="button muted-button"
-                        onClick={() => {props.deleteClient(cliente.id)}}
+                        onClick={() => 
+                            dispatch(deleteClient(cliente.id))
+                        }
                         >
                             Delete
                         </button>

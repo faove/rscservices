@@ -1,22 +1,44 @@
 //rafc
 import React, {Fragment}  from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector} from 'react-redux';
+// import { getClient, getNextClient} from '../redux/clientDuck';
+import { addClient } from '../redux/clientDuck';
 
 const ClientAddForm = (props) => {
     // console.log('ADdClients')
     // console.log(props)
     const {register, errors, handleSubmit} = useForm();
+    const dispatch = useDispatch()
+
+    // React.useEffect(() => {
+    //     const obtenerInfo = () => {
+    //         dispatch(getClient())
+    //     }
+    //     obtenerInfo()
+    // }, [dispatch])
+
+    
+
+    // props.setCliente(...props.cliente,
+    //     clientData)
+    // console.log('clientData')
+    // console.log(clientData)
+
     
     const onSubmit = (data, e) => {
         // console.log('Add submit data')
+        // console.log(data)
         // console.log(data.name,data.last_name,data.dni,data.email)
-        props.addClient(data.name,data.last_name,data.dni,data.email)
+        // props.addClient(data.name,data.last_name,data.dni,data.address,data.email)
+        dispatch(addClient(data.name,data.last_name,data.dni,data.address,data.email))
+        // props.setCliente([
+        //       ...props.cliente, 
+        //       data.data
+        //     ])
         // limpiar campos
         e.target.reset();
     }
-
-
-    
 
     return (
         <Fragment>
@@ -58,6 +80,8 @@ const ClientAddForm = (props) => {
                     placeholder="Ingrese DNI"
                     type="text" 
                     name="dni"
+                    id="dni"
+                    className="form-control"
                     ref={register({
                         required: "Required",
                         pattern: {
@@ -75,12 +99,16 @@ const ClientAddForm = (props) => {
                 <div>
                 <input 
                     placeholder="Provider Address"
-                    type="text" 
-                    name="address"
-                    />
+                    type="text" id="address"
+                    name="address" className="form-control"
+                    ref={register({
+                        required: "Required"
+                    })}
+                />
                 </div>
                 <div className="mb-3">
-                    <input placeholder="Email address" type="email" className="form-control" 
+                    <input placeholder="Email address" 
+                    type="email" className="form-control" 
                     id="InputEmail" aria-describedby="emailHelp" name="email"
                     ref={register({
                         required: "Required",
@@ -95,7 +123,7 @@ const ClientAddForm = (props) => {
                     </span>
                     <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
                 </div>
-                <button type="submit">Add Client</button>
+                <button type="submit" >Add Client</button>
             </form>
         </Fragment>
     );
