@@ -21,7 +21,7 @@ const ClientEditForm = (props) => {
 
     
 
-    const {values,setValue, control, register, errors, handleSubmit, handleInputChange} = useForm({
+    const {values, setValue, control, register, errors, handleSubmit} = useForm({
         defaultValues: props.currentCliente
         // defaultValues: useMemo(() => {
         //     return props.currentCliente;
@@ -216,7 +216,7 @@ const ClientEditForm = (props) => {
                         defaultValue={actualclient ? actualclient.name : ''}
                         name='name'
                     /> */}
-                    <input type="text" aria-label="First name" 
+                     <input type="text" aria-label="First name" 
                     name="name" id="name" htmlFor="name"
                     className="form-control" placeholder="Add name client" 
                     ref={register({
