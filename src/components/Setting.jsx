@@ -1,34 +1,45 @@
 import React,{useState, Fragment} from 'react'
-import shortid from 'shortid';
+import { useDispatch, useSelector} from 'react-redux';
+import { addAssociate } from '../redux/associateDuck';
+import { useForm } from 'react-hook-form';
+
 
 const Setting = () => {
 
 
     const [asociado, setAsociado] = useState('')
     const [asociados, setAsociados] = useState([])
-    //EditarAsociado
     const [modoEdicion, setModoEdicion] = useState(false)
     const [id, setId] = useState('')
-
     const [error, setError] = useState(null)
+    const {register, errors, handleSubmit} = useForm();
+    const associatestore = useSelector(store => store.associate.array)
+    const dispatch = useDispatch()
 
-    const agregarAsociado = e => {
-
-        e.preventDefault()
-        if(!asociado.trim()){
-            console.log('Campo vacio')
-            setError('El campo no puede estar Vacío')
-            return
-        }
-        setAsociados([
-            ...asociados,
-            {asociado,id: shortid.generate()}
-        ])
+    //Function add associates
+    // const agregarAsociado = e => {
+    //     console.log('agregarAsociado')
+    //     console.log(asociado)
+        
+    //     e.preventDefault()
+    //     if(!asociado.trim()){
+    //         console.log('Campo vacio')
+    //         setError('El campo no puede estar Vacío')
+    //         return
+    //     }
+    //     setAsociados([
+    //         ...asociados,
+    //         {asociado}
+    //     ])
+    //     // console.log(asociados)
 
         
-        setAsociado('')
-        setError(null)
-    }
+    //     dispatch(addAssociate(asociado.name,asociado.last_name,asociado.dni,asociado.address,asociado.email))
+    //     console.log(associatestore)
+        
+    //     setAsociado('')
+    //     setError(null)
+    // }
 
     const eliminarAsociado = (id) => {
         const arrayFiltrado =  asociados.filter(items => items.id !== id)
@@ -44,9 +55,7 @@ const Setting = () => {
     }
 
     const  editarAsociado = e => {
-        console.log('editarAsociado')
-        console.log(asociados)
-        console.log(e)
+        
         e.preventDefault()
 
         if (!asociado.trim()){
@@ -56,7 +65,8 @@ const Setting = () => {
         }
 
         const arrayEdit = asociados.map(items => items.id === id ? {id,asociado} : items)
-
+        console.log('arrayEdit')
+        console.log(arrayEdit)
         setAsociados(arrayEdit)
         setModoEdicion(false)
         setAsociado('')
@@ -64,10 +74,37 @@ const Setting = () => {
         setError(null)
     }
 
+    const onSubmit = (data, e) => {
+        console.log('agregarAsociado')
+        console.log(e)
+        console.log(data)
+        
+        e.preventDefault()
+        if(!data.name.trim()){
+            console.log('Campo vacio')
+            setError('El campo no puede estar Vacío')
+            return
+        }
+        setAsociados([
+            ...asociados,
+            {data}
+        ])
+        // console.log(asociados)
+
+        
+        dispatch(addAssociate(data.name,data.last_name,data.dni,data.address,data.email))
+        console.log(associatestore)
+        
+        setAsociado('')
+        setError(null)
+        // limpiar campos
+        e.target.reset();
+    }
+
     return (
         <Fragment>
             <div className="container mt-5">
-            <h1 className="text-center">Setting</h1>
+            <h1 className="text-center">Settings</h1>
             <hr/>
             <div className="row">
                 <div className="col-8">
@@ -86,7 +123,7 @@ const Setting = () => {
                                 >Eliminar</button>
                                 <button 
                                     className="btn btn-sm btn-warning float-right"
-                                    onClick={() => editarAsociado(items)}
+                                    onClick={() => editar(items)}
                                 >Editar</button>
                                 </li>
                             ))
@@ -100,7 +137,7 @@ const Setting = () => {
                         modoEdicion ? 'Editar Asociado' : 'Agregar Asociado'
                         }
                     </h4>
-                    <form onSubmit={modoEdicion ? editarAsociado : agregarAsociado}>
+                    <form onSubmit={modoEdicion ? editarAsociado : handleSubmit(onSubmit)}>
                         {
                         error ? <span className="text-danger">{error}</span> : null
                         }
@@ -108,8 +145,15 @@ const Setting = () => {
                             type="text" 
                             className="form-control mb-2"
                             placeholder="Ingrese Asociado"
-                            onChange={e => setAsociado(e.target.value)}
-                            value={asociado}
+                            name="name"
+                            ref={register({
+                                required: {
+                                    value: true, 
+                                    message: 'Name es requerido'
+                                    }
+                            })}
+                            // onChange={e => setAsociado(e.target.value)}
+                            // value={asociado}
                         />
                         {
                         modoEdicion ? (
