@@ -1,4 +1,5 @@
 import React from "react";
+import Setting from './components/Setting';
 import Client from './components/Client';
 import Services from './components/Services';
 import Dashboard from './components/Dashboard';
@@ -13,7 +14,9 @@ import {
 } from "react-router-dom";
 
 export default function App() {
+
   const store = generateStore()
+
   return (
     <Router>
       <div>
@@ -36,8 +39,13 @@ export default function App() {
                 </Link> 
               </li>
               <li className="nav-item">
-                <Link to="/client" className="nav-link">
-                  Client
+                <Link to="/client" className="nav-link active">
+                Client
+                </Link> 
+              </li>
+              <li className="nav-item">
+                <Link to="/setting" className="nav-link">
+                  Setting
                 </Link> 
               </li>
             </ul>
@@ -46,6 +54,9 @@ export default function App() {
       </nav>
       <Switch>
       <Provider store={store}>
+        <Route path="/setting" exact>
+            <Setting />
+        </Route>
         <Route path="/client" exact>
             <Client />
         </Route>

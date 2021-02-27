@@ -145,8 +145,7 @@ const ClientEditForm = (props) => {
         // limpiar campos
         e.target.reset();
     }
-    React.useEffect(() => {
-    console.log('llama a useEffect')
+    
         // setTimeout(() => 
     //         // setValue('name', actualclient.name),
     //         // setValue('name', actualclient.name),
@@ -165,24 +164,26 @@ const ClientEditForm = (props) => {
     //         // setValue('address'),
     //         // setValue('email')
         // );
-        if ('name' in actualclient) {
-            setValue('name', actualclient.name);
-            setValue('name', actualclient.name);
-            setValue('last_name', actualclient.last_name);
-            setValue('dni', actualclient.dni);
-            setValue('address', actualclient.address);
-            setValue('email', actualclient.email);
-            // setValue([
-            //     { name: actualclient.name }, 
-            //     { last_name: actualclient.last_name },
-            //     { dni: actualclient.dni }, 
-            //     { address: actualclient.address },
-            //     { email: actualclient.email },
-            // ]);
-          }
-        //setActualClient([])
+    // React.useEffect(() => {
+    //     console.log('llama a useEffect')
+    //     if ('name' in actualclient) {
+    //         setValue('name', actualclient.name);
+    //         setValue('name', actualclient.name);
+    //         setValue('last_name', actualclient.last_name);
+    //         setValue('dni', actualclient.dni);
+    //         setValue('address', actualclient.address);
+    //         setValue('email', actualclient.email);
+    //         // setValue([
+    //         //     { name: actualclient.name }, 
+    //         //     { last_name: actualclient.last_name },
+    //         //     { dni: actualclient.dni }, 
+    //         //     { address: actualclient.address },
+    //         //     { email: actualclient.email },
+    //         // ]);
+    //       }
+    //     //setActualClient([])
 
-      }, [actualclient]);
+    //   }, [actualclient]);
     
 
     //   React.useEffect(() => {
