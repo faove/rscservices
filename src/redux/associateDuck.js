@@ -16,8 +16,8 @@ const UPDATE_ASSOCIATE = 'UPDATE_ASSOCIATE'
 export default function associateReducer(state = dataInicial, action){
     switch(action.type){
         case GET_ASSOCIATE:  
-        console.log('state')
-        console.log(state)
+        // console.log('state')
+        // console.log(state)
             return {
                 ...state, 
                 array: action.payload.array
@@ -152,11 +152,11 @@ export const  deleteAssociate = (id) => async (dispatch, getState) => {
 }
 
 // updateAssociate
-export const updateAssociate = (id,updatedAssociate) => async (dispatch, getState) => {
+export const updateAssociate = (id,name,last_name,dni,address,email) => async (dispatch, getState) => {
 
     try {
         const response = await axios.put(
-        `http://localhost:8000/api/associates/${id}`, updatedAssociate)
+        `http://localhost:8000/api/associates/${id}`, {name,last_name,dni,address,email})
             dispatch({
             type: UPDATE_ASSOCIATE,
             payload: {

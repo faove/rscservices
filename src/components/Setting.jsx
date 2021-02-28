@@ -2,7 +2,9 @@ import React,{useState, Fragment, useEffect} from 'react'
 import { useDispatch, useSelector} from 'react-redux';
 import { getAssociate, addAssociate, deleteAssociate, updateAssociate } from '../redux/associateDuck';
 import { useForm } from 'react-hook-form';
-
+import Button from '@material-ui/core/Button';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Swal from 'sweetalert2';
 
 const Setting = () => {
 
@@ -14,70 +16,82 @@ const Setting = () => {
     const [refreshKey, setRefreshKey] = useState(0);
     const [error, setError] = useState(null)
     const asociado = useSelector(store => store.associate.array)
-    const {setValue, register, errors, handleSubmit} = useForm({defaultValues: asociado});
-    
+    const {setValue, register, reset, errors, handleSubmit} = useForm({defaultValues: asociado});
     const dispatch = useDispatch()
 
-    
-    const obtenerAsociados = () => {
-        dispatch(getAssociate());
-    }
 
-    const eliminarAsociado = (id) => {
+
+
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+      })
+
+    const HandleButtonDelete = (id,name,lastname) =>{
+        Swal.fire('Any fool can use a computer')
+        // dispatch(deleteClient(cliente.id))
+
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+          }).then((result) => {
+            if (result.isConfirmed) {
+                dispatch(deleteAssociate(id,name,lastname));
+              swalWithBootstrapButtons.fire(
+                'Deleted!',
+                `Your Associate ${name} ${lastname} has been deleted.`,
+                'success'
+              )
+            } else if (
+              /* Read more about handling dismissals below */
+              result.dismiss === Swal.DismissReason.cancel
+            ) {
+              swalWithBootstrapButtons.fire(
+                'Cancelled'
+              )
+            }
+          })
+
+    }
+    
+
+    const eliminarAsociado = (id,name,last_name) => {
         // const arrayFiltrado =  asociados.filter(items => items.id !== id)
         // setAsociados(arrayFiltrado)
         // console.log('delete')
         // console.log(id)
-        dispatch(deleteAssociate(id));
+        
+        HandleButtonDelete(id,name,last_name)
 
     }
     
 
     const editar = items => {
+
+        reset(items)
         setModoEdicion(true)
-        setAsociado(items.asociado)
-        setId(items.id)
     }
 
-    const  editarAsociado = e => {
-
-
-        dispatch(updateAssociate(asociado));
-        // e.preventDefault()
-
-        // if (!asociado.trim()){
-        //     console.log('Campo vacio')
-        //     // setError('El campo no puede estar vacío')
-        //     return
-        // }
-
-        // dispatch(updateAssociate(asociado));
-
-        // const arrayEdit = asociados.map(items => items.id === id ? {id,asociado} : items)
-        // console.log('arrayEdit')
-        // console.log(arrayEdit)
-        // setAsociados(arrayEdit)
-        setModoEdicion(false)
-        // setAsociado('')
-        // setId('')
-        // setError(null)
-    }
+    
 
     useEffect(() => {
-        console.log('useEffect')
-        console.log(asociado)
-        dispatch(getAssociate());
-        // setTimeout(() =>
-        //     dispatch(getAssociate())
         
-        // );
-        // setAsociados(...asociados,asociado)
+        dispatch(getAssociate());
+        
     },[refreshKey])
 
     const onSubmit = (data, e) => {
-        // console.log('agregarAsociado')
-        // // console.log(e)
-        // console.log(data)
+        console.log('agregarAsociado')
+        // console.log(e)
+        console.log(data)
         
         //e.preventDefault()
         if(!data.name.trim()){
@@ -98,19 +112,25 @@ const Setting = () => {
         setValue('dni', data.dni);
         setValue('address', data.address);
         setValue('email', data.email);
-        setRefreshKey(oldKey => oldKey +1)
+        // setRefreshKey(oldKey => oldKey +1)
         // console.log('values')
         // console.log(asociado)
 
         
         // dispatch(addAssociate(data.name,data.last_name));
-        dispatch(addAssociate(data.name,data.last_name,data.dni,data.address,data.email));
-        // console.log(associatestore)
+        if (modoEdicion){
+            dispatch(updateAssociate(data.id,data.name,data.last_name,data.dni,data.address,data.email));
+            setModoEdicion(false)
+
+            //setAsociado('')
+        }else{
+            dispatch(addAssociate(data.name,data.last_name,data.dni,data.address,data.email));
+        }
         
-        // setAsociado('')
-        // setError(null)
+        
+        setAsociado('')
         // limpiar campos
-        // e.target.reset();
+        e.target.reset();
     }
 
     
@@ -120,7 +140,7 @@ const Setting = () => {
             <h1 className="text-center">Settings</h1>
             <hr/>
             <div className="row">
-                <div className="col-8">
+                <div className="col-7">
                 <h4 className="text-center">Lista de Asociados</h4>
                 <ul className="list-group">
                     {
@@ -130,35 +150,52 @@ const Setting = () => {
                             asociado.map(items => (
                                 <li className="list-group-item" key={items.id}>
                                 <span className="lead">{items.id} - {items.name} {items.last_name}</span>
-                                <button 
-                                    className="btn btn-sm btn-danger float-right mx-2"
-                                    onClick={() => eliminarAsociado(items.id)}
-                                >Eliminar</button>
-                                <button 
-                                    className="btn btn-sm btn-warning float-right"
-                                    onClick={() => editar(items)}
-                                >Editar</button>
+                                <Button variant="contained" color="secondary"
+                                className="btn btn-sm btn-danger float-right mx-2"
+                                onClick={() => eliminarAsociado(items.id,items.name,items.last_name)
+                                }
+                                startIcon={<DeleteIcon/>}
+                                >
+                                Delete
+                                </Button>
+                                <Button variant="outlined" color="primary"
+                                className="btn btn-sm btn-danger float-right mx-2"
+                                onClick={
+                                    () => editar(items) 
+                                }
+                                >Edit
+                                </Button>
                                 </li>
                             ))
                         )
                     }
                 </ul>
             </div>
-            <div className="col-4">
+            <div className="col-5">
                     <h4 className="text-center">
                         {
                         modoEdicion ? 'Editar Asociado' : 'Agregar Asociado'
                         }
                     </h4>
-                    <form onSubmit={modoEdicion ? editarAsociado : handleSubmit(onSubmit)}>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <div>
                         <span className="text-danger text-small d-block mb-2">
                             {errors?.name?.message}
                         </span>
+                        <span className="text-danger text-small d-block mb-2">
+                            {errors?.last_name?.message}
+                        </span>
+                        <input 
+                            type="hidden" 
+                            className="form-control mb-2"
+                            name="id" id="id"
+                            ref={register()}
+                        />
                         <input 
                             type="text" 
                             className="form-control mb-2"
                             placeholder="Name Associate"
-                            name="name"
+                            name="name" id="name"
                             ref={register({
                                 required: {
                                     value: true, 
@@ -166,22 +203,23 @@ const Setting = () => {
                                     }
                             })}
                             // onChange={e => setAsociado(e.target.value)}
-                            value={asociado.name}
+                            // value={asociado.name}
                         />
                         <input 
                             type="text" 
                             className="form-control mb-2"
                             placeholder="Last Name Associate"
-                            name="last_name"
+                            name="last_name" id="last_name"
                             ref={register({
                                 required: {
                                     value: true, 
-                                    message: 'Name es requerido'
+                                    message: 'Last name es requerido'
                                     }
                             })}
                             // onChange={e => setAsociado(e.target.value)}
-                            value={asociado.last_name}
+                            // value={asociado.last_name}
                         />
+                        </div>  
                         {
                         modoEdicion ? (
                             <button className="btn btn-warning btn-block" type="submit">Editar</button>
