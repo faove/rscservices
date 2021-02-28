@@ -15,7 +15,9 @@ const UPDATE_ASSOCIATE = 'UPDATE_ASSOCIATE'
 //reducer
 export default function associateReducer(state = dataInicial, action){
     switch(action.type){
-        case GET_ASSOCIATE:    
+        case GET_ASSOCIATE:  
+        console.log('state')
+        console.log(state)
             return {
                 ...state, 
                 array: action.payload.array
@@ -25,7 +27,7 @@ export default function associateReducer(state = dataInicial, action){
                 ...state, 
                 array: action.payload.array, offset: action.payload.offset
             }
-        case POST_ASSOCIATE_ADD:    
+        case POST_ASSOCIATE_ADD: 
             return {
                 ...state, 
                 array: [...state.array, action.payload.array]
@@ -51,7 +53,7 @@ export default function associateReducer(state = dataInicial, action){
 //actions
 export const getAssociate = () => async (dispatch, getState)  => {
     try{
-        const {offset} = getState().Associate
+        const {offset} = getState().associate
         const response = await axios.get(`http://localhost:8000/api/associates?offset=${offset}&limit=20`)
         dispatch({
             type: GET_ASSOCIATE,
@@ -110,7 +112,7 @@ export const getAssociateId = (id) => async (dispatch)  => {
 export const addAssociate = (name,last_name,dni,address,email) => async (dispatch, getState)  => {
   try {
     // console.log('AssociateDuck addAssociate')
-    // console.log(email)
+    // console.log(name)
     const response = await axios.post(
       "http://localhost:8000/api/associates",
       {
@@ -135,7 +137,6 @@ export const addAssociate = (name,last_name,dni,address,email) => async (dispatc
 //deleteAssociate
 export const  deleteAssociate = (id) => async (dispatch, getState) => {
     try {
-
         const response = await axios.delete(
             `http://localhost:8000/api/associates/${id}`          
         )
