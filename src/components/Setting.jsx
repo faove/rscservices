@@ -1,6 +1,6 @@
 import React,{useState, Fragment, useEffect} from 'react'
 import { useDispatch, useSelector} from 'react-redux';
-import { getAssociate, addAssociate, deleteAssociate } from '../redux/associateDuck';
+import { getAssociate, addAssociate, deleteAssociate, updateAssociate } from '../redux/associateDuck';
 import { useForm } from 'react-hook-form';
 
 
@@ -23,9 +23,6 @@ const Setting = () => {
         dispatch(getAssociate());
     }
 
-    
-
-
     const eliminarAsociado = (id) => {
         // const arrayFiltrado =  asociados.filter(items => items.id !== id)
         // setAsociados(arrayFiltrado)
@@ -43,23 +40,27 @@ const Setting = () => {
     }
 
     const  editarAsociado = e => {
-        
-        e.preventDefault()
 
-        if (!asociado.trim()){
-            console.log('Campo vacio')
-            setError('El campo no puede estar vacío')
-            return
-        }
 
-        const arrayEdit = asociados.map(items => items.id === id ? {id,asociado} : items)
-        console.log('arrayEdit')
-        console.log(arrayEdit)
-        setAsociados(arrayEdit)
+        dispatch(updateAssociate(asociado));
+        // e.preventDefault()
+
+        // if (!asociado.trim()){
+        //     console.log('Campo vacio')
+        //     // setError('El campo no puede estar vacío')
+        //     return
+        // }
+
+        // dispatch(updateAssociate(asociado));
+
+        // const arrayEdit = asociados.map(items => items.id === id ? {id,asociado} : items)
+        // console.log('arrayEdit')
+        // console.log(arrayEdit)
+        // setAsociados(arrayEdit)
         setModoEdicion(false)
-        setAsociado('')
-        setId('')
-        setError(null)
+        // setAsociado('')
+        // setId('')
+        // setError(null)
     }
 
     useEffect(() => {
@@ -165,7 +166,7 @@ const Setting = () => {
                                     }
                             })}
                             // onChange={e => setAsociado(e.target.value)}
-                            // value={asociado}
+                            value={asociado.name}
                         />
                         <input 
                             type="text" 
@@ -179,7 +180,7 @@ const Setting = () => {
                                     }
                             })}
                             // onChange={e => setAsociado(e.target.value)}
-                            // value={asociado}
+                            value={asociado.last_name}
                         />
                         {
                         modoEdicion ? (
