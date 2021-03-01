@@ -2,11 +2,13 @@ import {createStore, combineReducers, compose, applyMiddleware} from 'redux'
 import thunk from 'redux-thunk'
 import clientReducer from './clientDuck'
 import associateReducer from './associateDuck'
+import serviceReducer from './serviceDuck'
 
 const rootReducer = combineReducers({
 
     client : clientReducer,
-    associate : associateReducer
+    associate : associateReducer,
+    service : serviceReducer
     //user : userRedux
 })
 

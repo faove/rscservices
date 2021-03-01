@@ -2,66 +2,75 @@ import React,{useState,Fragment,useEffect} from 'react';
 import DatePicker from "react-datepicker";
 import { useDispatch, useSelector} from 'react-redux';
 import { getClient,getNextClient } from '../redux/clientDuck';
-// import moment from 'moment';
-
 import 'react-datepicker/dist/react-datepicker.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { TextField } from "@material-ui/core";
 import { useForm, Controller } from 'react-hook-form';
 
 
-
 const ServicesAddForm = (props) => {
 
     // ClientRef = React.createRef();
-
+    const dispatch = useDispatch()
+    // const [refreshKey,setRefreshKey] = useState(0);
     const [cliente, setCliente] = useState([]);
-
+    const client = useSelector(store => store.client.array)
+    const [searchTerm, setSearchTerm] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
     const [startDate, setStartDate] = useState(new Date());
 
     const { register, setValue, handleSubmit, errors, control } = useForm();
     // const baseURL = process.env.APP_LOCALHOST_URL
-    console.log('getClientData:')
-    console.log(props)
+    // console.log('getClientData:')
+    // console.log(props)
     // console.log(this.props.getClientData)
 
+
+    const handleChange = event => {
+        console.log('handleChange:')
+        console.log(event.target.value)
+        setSearchTerm(event.target.value);
+        // setRefreshKey(oldKey => oldKey + 1)
+    };
+
     useEffect(() => {
-        
-        // if (!isAddMode) {
-            // get user and set form fields
-            console.log(' efect en addService')
-
-            //console.log(Client.getClient.setCliente)   
-            // Client.getClient.then(client => {
-                // const fields = ['id','name', 'last_name', 'dni', 'address', 'email'];
-                // fields.forEach(field => setValue(field, client[field]));
-                // setCliente(client);
-            // })
-        // }
-    });
-
     
+        console.log(' useeEffect')
+        dispatch(getClient());
+        console.log(client)
+        const results = client.filter(searchclient =>
+            // person.toLowerCase().includes(searchTerm)
+            // searchclient.name.match(searchTerm)
+            searchclient.name.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+          console.log(results)
+        
+
+        setSearchResults(results);
+
+    },[searchTerm]);
 
     const onSubmit = (data, e) => {
-        // console.log('Add submit data')
-        // console.log(data.name,data.last_name,data.dni,data.email)
-        //props.addClient(data.name,data.last_name,data.dni,data.email)
         // limpiar campos
         e.target.reset();
     }
 
-
-
     return (
         <Fragment>
-            {/* <Client cacheOptions defaultOptions loadOptions={this.loadRepuestos} /> */}
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div>
-                
-                <select  name="cliente">
-                    <option value="0">0 - 1</option>
-                    <option value="1">1 - 100</option>
-                </select>
+                <input type="text" 
+                name="search" id="search" htmlFor="search"
+                className="form-control" placeholder="Search Client" 
+                value={searchTerm} onChange={handleChange}
+                />
+                </div>
+                <div>
+                    <ul>
+                        {searchResults.map(item => (
+                        <li key={item.id}>{item.name}</li>
+                        ))}
+                    </ul>
                 </div>
                 <div>
                     <input type="text" aria-label="Client" 

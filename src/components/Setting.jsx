@@ -8,19 +8,12 @@ import Swal from 'sweetalert2';
 
 const Setting = () => {
 
-
-    const [associado, setAsociado] = useState('')
     const [asociados, setAsociados] = useState([])
     const [modoEdicion, setModoEdicion] = useState(false)
-    const [id, setId] = useState('')
     const [refreshKey, setRefreshKey] = useState(0);
-    const [error, setError] = useState(null)
     const asociado = useSelector(store => store.associate.array)
     const {setValue, register, reset, errors, handleSubmit} = useForm({defaultValues: asociado});
     const dispatch = useDispatch()
-
-
-
 
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
@@ -31,8 +24,6 @@ const Setting = () => {
       })
 
     const HandleButtonDelete = (id,name,lastname) =>{
-        Swal.fire('Any fool can use a computer')
-        // dispatch(deleteClient(cliente.id))
 
         swalWithBootstrapButtons.fire({
             title: 'Are you sure?',
@@ -64,39 +55,22 @@ const Setting = () => {
     
 
     const eliminarAsociado = (id,name,last_name) => {
-        // const arrayFiltrado =  asociados.filter(items => items.id !== id)
-        // setAsociados(arrayFiltrado)
-        // console.log('delete')
-        // console.log(id)
-        
         HandleButtonDelete(id,name,last_name)
-
     }
-    
 
     const editar = items => {
-
         reset(items)
         setModoEdicion(true)
     }
 
-    
-
     useEffect(() => {
-        
         dispatch(getAssociate());
-        
     },[refreshKey])
 
     const onSubmit = (data, e) => {
-        console.log('agregarAsociado')
-        // console.log(e)
-        console.log(data)
-        
-        //e.preventDefault()
+
         if(!data.name.trim()){
             console.log('Campo vacio')
-            // setError('El campo no puede estar Vacío')
             return
         }
         setAsociados([
@@ -107,28 +81,22 @@ const Setting = () => {
             address: data.address,
             email: data.email}
         ])
+
         setValue('name', data.name);
         setValue('last_name', data.last_name);
         setValue('dni', data.dni);
         setValue('address', data.address);
         setValue('email', data.email);
-        // setRefreshKey(oldKey => oldKey +1)
-        // console.log('values')
-        // console.log(asociado)
-
+        setRefreshKey(oldKey => oldKey +1)
         
-        // dispatch(addAssociate(data.name,data.last_name));
         if (modoEdicion){
             dispatch(updateAssociate(data.id,data.name,data.last_name,data.dni,data.address,data.email));
             setModoEdicion(false)
 
-            //setAsociado('')
         }else{
             dispatch(addAssociate(data.name,data.last_name,data.dni,data.address,data.email));
         }
         
-        
-        setAsociado('')
         // limpiar campos
         e.target.reset();
     }
@@ -149,7 +117,7 @@ const Setting = () => {
                         ) : (
                             asociado.map(items => (
                                 <li className="list-group-item" key={items.id}>
-                                <span className="lead">{items.id} - {items.name} {items.last_name}</span>
+                                <span className="lead">{items.name} {items.last_name} {items.email}</span>
                                 <Button variant="contained" color="secondary"
                                 className="btn btn-sm btn-danger float-right mx-2"
                                 onClick={() => eliminarAsociado(items.id,items.name,items.last_name)
@@ -179,46 +147,114 @@ const Setting = () => {
                     </h4>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div>
-                        <span className="text-danger text-small d-block mb-2">
-                            {errors?.name?.message}
-                        </span>
-                        <span className="text-danger text-small d-block mb-2">
-                            {errors?.last_name?.message}
-                        </span>
                         <input 
                             type="hidden" 
                             className="form-control mb-2"
                             name="id" id="id"
                             ref={register()}
                         />
-                        <input 
-                            type="text" 
-                            className="form-control mb-2"
-                            placeholder="Name Associate"
-                            name="name" id="name"
-                            ref={register({
-                                required: {
-                                    value: true, 
-                                    message: 'Name es requerido'
-                                    }
-                            })}
-                            // onChange={e => setAsociado(e.target.value)}
-                            // value={asociado.name}
-                        />
-                        <input 
-                            type="text" 
-                            className="form-control mb-2"
-                            placeholder="Last Name Associate"
-                            name="last_name" id="last_name"
-                            ref={register({
-                                required: {
-                                    value: true, 
-                                    message: 'Last name es requerido'
-                                    }
-                            })}
-                            // onChange={e => setAsociado(e.target.value)}
-                            // value={asociado.last_name}
-                        />
+                        <div className="row">
+                            <div className="col-6">
+                                <input 
+                                    type="text" 
+                                    className="form-control mb-2"
+                                    placeholder="Name Associate"
+                                    name="name" id="name"
+                                    ref={register({
+                                        required: {
+                                            value: true, 
+                                            message: 'Name es requerido'
+                                            }
+                                    })}
+                                    // onChange={e => setAsociado(e.target.value)}
+                                    // value={asociado.name}
+                                />
+                                <div>
+                                <span className="text-danger text-small d-block mb-2">
+                                    {errors?.name?.message}
+                                </span>
+                                </div>
+                            </div>
+                            <div className="col-6">
+                                <input 
+                                    type="text" 
+                                    className="form-control mb-2"
+                                    placeholder="Last Name Associate"
+                                    name="last_name" id="last_name"
+                                    ref={register({
+                                        required: {
+                                            value: true, 
+                                            message: 'Last name es requerido'
+                                            }
+                                    })}
+                                    // onChange={e => setAsociado(e.target.value)}
+                                    // value={asociado.last_name}
+                                />
+                                <span className="text-danger text-small d-block mb-2">
+                                    {errors?.last_name?.message}
+                                </span>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-12">
+                                <input 
+                                    type="text" 
+                                    className="form-control mb-2"
+                                    placeholder="Address"
+                                    name="address" id="address"
+                                    ref={register({
+                                        required: {
+                                            value: true, 
+                                            message: 'Address es requerido'
+                                            }
+                                    })}
+                                />
+                                <div>
+                                    <span className="text-danger text-small d-block mb-2">
+                                        {errors?.name?.message}
+                                    </span>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-6">
+                                <select className="form-select form-select-sm" 
+                                aria-label=".form-select-sm example"
+                                ref={register}
+                                name="gender" id="gender"
+                                >
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                                <option value="O">Other</option>
+                                </select>
+                                <span className="text-danger text-small d-block mb-2">
+                                    {errors?.gender?.message}
+                                </span>
+                            </div>
+                            <div className="col-6">
+                                <input 
+                                    type="text" 
+                                    className="form-control mb-2"
+                                    placeholder="Email"
+                                    name="email" id="email"
+                                    ref={register({
+                                        required: "Required",
+                                        pattern: {
+                                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                          message: "Invalid email address"
+                                        }
+                                    })}
+                                />
+                                <div>
+                                    <span className="text-danger text-small d-block mb-2">
+                                        {errors?.email?.message}
+                                    </span>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
                         </div>  
                         {
                         modoEdicion ? (
