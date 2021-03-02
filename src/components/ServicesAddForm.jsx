@@ -27,50 +27,76 @@ const ServicesAddForm = (props) => {
     // console.log(this.props.getClientData)
     // setValue('name', searchResults.name);
     // setValue('last_name', searchResults.last_name);
+    // const state = {
+    //   isLoading: true,
+    //   client: [],
+    //   value: "",
+    //   team: [],
+    //   isFull: false,
+    //   selectClient: () => {}
+    // };
+
+    // const selectClient = value => {
+    //   const myTeam = state.team;
+    //   if (myTeam.length >= 6) {
+    //     this.setState({ isFull: true });
+    //     return;
+    //   } else myTeam.push(value);
+    //   console.log("Selected: ", value);
+    //   console.log(myTeam);
+    //   this.setState({ team: myTeam });
+    // };
 
     const handleChange = event => {
         console.log('handleChange:')
-        console.log(event.target.value)
+        console.log(event)
         
         setSearchTerm(event.target.value);
-        console.log(searchTerm)
-        console.log(searchResults)
+        // console.log(searchTerm)
+        // console.log(searchResults)
         
         // setRefreshKey(oldKey => oldKey + 1)
     };
 
-    const inputComponent = ({ inputRef, ...props }) => (
-        <div ref={inputRef} {...props} />
-      );
+    // const inputComponent = ({ inputRef, ...props }) => (
+    //     <div ref={inputRef} {...props} />
+    //   );
 
-    const handleBlur = (index, fieldType) => e => {
-    //   console.log(e.target.value)
-      console.log('handleBlur')
-      
+    const handleClient = (index) => e => {
+      console.log(searchTerm)
+      console.log('handleClient',searchResults)
+      console.log('index')
+        console.log(index)
       console.log("value", e.target.value);
-      console.log("name", e.target.name);
+      console.log("name", e.target);
     //   console.log("index", index[0]);
-      console.log("fieldType", fieldType);
+      // console.log("fieldType", fieldType);
 
-    //   console.log(searchResults)
-      console.log(searchResults[0].name)
-      console.log(searchResults[0].last_name)
-      setValue('name', searchResults[0].name);
-      setValue('last_name', searchResults[0].last_name);
+      const results = searchResults.filter((clientname) => 
+        clientname.name === e.target.value
+      );
+      console.log(searchResults)
+      // setSearchTerm(e.target.value);
+      // setValue('id', searchResults[0].id);
+      // setValue('name', searchResults[0].name);
+      // setValue('last_name', searchResults[0].last_name);
       reset(searchResults)
+      console.log('results:::::::::::::::::',results)
+      // console.log(searchResults[0].name)
+      // console.log(searchResults[0].last_name)
     }
 
     useEffect(() => {
     
-        console.log(' useeEffect')
+        // console.log(' useeEffect')
         dispatch(getClient());
-        console.log(client)
+        // console.log(client)
         const results = client.filter(searchclient =>
             // person.toLowerCase().includes(searchTerm)
             // searchclient.name.match(searchTerm)
             searchclient.name.toLowerCase().includes(searchTerm.toLowerCase())
           );
-          console.log(results)
+          // console.log(results)
           
           
         setSearchResults(results);
@@ -97,6 +123,7 @@ const ServicesAddForm = (props) => {
                   id="search"
                   disableClearable
                   options={searchResults.map((option) => option.name + ' ' + option.last_name)}
+                  // value={searchResults}
                   filterSelectedOptions
                 //   options={searchResults.map((option) => option.id + ' ' + option.name + ' ' + option.last_name)}
                   renderInput={(params) => (
@@ -106,17 +133,74 @@ const ServicesAddForm = (props) => {
                       margin="normal"
                       variant="outlined"
                       onChange={handleChange} 
-                      onBlur={handleBlur(searchResults.id,"name")}
+                      // onChange={e => selectClient({ value: e.target.value })}
+                      // onSelect={handleClient(searchResults.name,"name")}
+                      onSelect={handleChange}
+                      // onSelect={handleClient(searchResults)}
+                      // onBlur={handleBlur(searchResults.id,"name")}
                       // onClick={handleClick}
-                      inputComponent
+                      // inputComponent
                       InputProps={{ ...params.InputProps, 
                         inputRef: params.innerRef,
                         children: props.children,
                         type: 'search' }}
-                    />
+                    /> 
                   )}
                   
                 />
+
+                {/* <Autocomplete
+                items={searchResults.map(item => ({
+                  id: item.id,
+                  label: item.name
+                }))}
+                shouldItemRender={(item, value) =>
+                  item.label.toLowerCase().indexOf(value.toLowerCase()) > -1
+                }
+                getItemValue={item => item.label}
+                initialValue=""
+                value={searchResults}
+                // onChange={e => this.setState({ value: e.target.value })}
+                // onSelect={this.selectPokemon}
+                renderItem={(item, highlighted) => (
+                  <div
+                    key={item.id}
+                    style={{
+                      backgroundColor: highlighted ? "#3e9fe6" : "#fff",
+                      color: highlighted ? "#fff" : "#3e9fe6"
+                    }}
+                  >
+                    <li>{item.label}</li>
+                  </div>
+                )}
+              /> */}
+                </div>
+                <div>
+                {/* <Autocomplete
+                  items={searchResults.map(item => ({
+                    id: item,
+                    label: item
+                  }))}
+                  // shouldItemRender={(item, value) =>
+                  //   item.label.toLowerCase().indexOf(value.toLowerCase()) > -1
+                  // }
+                  // getItemValue={item => item.label}
+                  initialValue=""
+                  // value={state.value}
+                  onChange={e => setCliente({ value: e.target.value })}
+                  onSelect={selectClient}
+                  renderItem={(item, highlighted) => (
+                    <div
+                      key={item.id}
+                      style={{
+                        backgroundColor: highlighted ? "#3e9fe6" : "#fff",
+                        color: highlighted ? "#fff" : "#3e9fe6"
+                      }}
+                    >
+                      <li>{item.label}</li>
+                    </div>
+                  )}
+              /> */}
                 </div>
                 <div>
                 <input 
@@ -161,10 +245,12 @@ const ServicesAddForm = (props) => {
                     render={({ onChange, onBlur, value }) => (
                     <DatePicker
                         onBlur={onBlur}
+                        ref={register}
                         selected={startDate} 
                         onChange={date => setStartDate(date)}
                     />
                     )}
+                    defaultValue={register}
                 />
                 </div>
                 <div>
