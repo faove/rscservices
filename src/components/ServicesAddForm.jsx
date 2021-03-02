@@ -5,6 +5,7 @@ import { getClient,getNextClient } from '../redux/clientDuck';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { TextField } from "@material-ui/core";
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import { useForm, Controller } from 'react-hook-form';
 
 
@@ -19,19 +20,45 @@ const ServicesAddForm = (props) => {
     const [searchResults, setSearchResults] = useState([]);
     const [startDate, setStartDate] = useState(new Date());
 
-    const { register, setValue, handleSubmit, errors, control } = useForm();
+    const { register, setValue, reset, handleSubmit, errors, control } = useForm({defaultValues: searchResults});
     // const baseURL = process.env.APP_LOCALHOST_URL
     // console.log('getClientData:')
     // console.log(props)
     // console.log(this.props.getClientData)
-
+    // setValue('name', searchResults.name);
+    // setValue('last_name', searchResults.last_name);
 
     const handleChange = event => {
         console.log('handleChange:')
         console.log(event.target.value)
+        
         setSearchTerm(event.target.value);
+        console.log(searchTerm)
+        console.log(searchResults)
+        
         // setRefreshKey(oldKey => oldKey + 1)
     };
+
+    const inputComponent = ({ inputRef, ...props }) => (
+        <div ref={inputRef} {...props} />
+      );
+
+    const handleBlur = (index, fieldType) => e => {
+    //   console.log(e.target.value)
+      console.log('handleBlur')
+      
+      console.log("value", e.target.value);
+      console.log("name", e.target.name);
+    //   console.log("index", index[0]);
+      console.log("fieldType", fieldType);
+
+    //   console.log(searchResults)
+      console.log(searchResults[0].name)
+      console.log(searchResults[0].last_name)
+      setValue('name', searchResults[0].name);
+      setValue('last_name', searchResults[0].last_name);
+      reset(searchResults)
+    }
 
     useEffect(() => {
     
@@ -44,13 +71,20 @@ const ServicesAddForm = (props) => {
             searchclient.name.toLowerCase().includes(searchTerm.toLowerCase())
           );
           console.log(results)
-        
-
+          
+          
         setSearchResults(results);
 
     },[searchTerm]);
 
     const onSubmit = (data, e) => {
+      console.log('data')
+      console.log(data)
+      setValue('name', data.name);
+      setValue('last_name', data.last_name);
+      // setValue('dni', data.dni);
+      // setValue('address', data.address);
+      // setValue('email', data.email);
         // limpiar campos
         e.target.reset();
     }
@@ -58,19 +92,50 @@ const ServicesAddForm = (props) => {
     return (
         <Fragment>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div>
-                <input type="text" 
-                name="search" id="search" htmlFor="search"
-                className="form-control" placeholder="Search Client" 
-                value={searchTerm} onChange={handleChange}
+                <div style={{ width: 500 }}>
+                <Autocomplete
+                  id="search"
+                  disableClearable
+                  options={searchResults.map((option) => option.name + ' ' + option.last_name)}
+                  filterSelectedOptions
+                //   options={searchResults.map((option) => option.id + ' ' + option.name + ' ' + option.last_name)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Search client"
+                      margin="normal"
+                      variant="outlined"
+                      onChange={handleChange} 
+                      onBlur={handleBlur(searchResults.id,"name")}
+                      // onClick={handleClick}
+                      inputComponent
+                      InputProps={{ ...params.InputProps, 
+                        inputRef: params.innerRef,
+                        children: props.children,
+                        type: 'search' }}
+                    />
+                  )}
+                  
                 />
                 </div>
                 <div>
-                    <ul>
-                        {searchResults.map(item => (
-                        <li key={item.id}>{item.name}</li>
-                        ))}
-                    </ul>
+                <input 
+                  type="text" 
+                  className="form-control mb-2"
+                  placeholder="Name Associate"
+                  name="last_name" id="last_name"
+                  ref={register({
+                      required: {
+                          value: true, 
+                          message: 'Name es requerido'
+                          }
+                  })}
+                />
+                <input type="text" 
+                  name="id" id="id" htmlFor="id"
+                  className="form-control"  
+                  ref ={register}
+                />
                 </div>
                 <div>
                     <input type="text" aria-label="Client" 
