@@ -6,10 +6,25 @@ import 'react-datepicker/dist/react-datepicker.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { TextField } from "@material-ui/core";
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { makeStyles } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
+
 import { useForm, Controller } from 'react-hook-form';
 
+const useStyles = makeStyles((theme) => ({
+    root: {
+      width: '100%',
+      maxWidth: 500,
+      backgroundColor: theme.palette.background.paper,
+    },
+  }));
 
 const ServicesAddForm = (props) => {
+    
+    const classes = useStyles();
 
     const dispatch = useDispatch()
     const client = useSelector(store => store.client.array)
@@ -89,19 +104,7 @@ const ServicesAddForm = (props) => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div style={{ width: 500 }}>
 
-                {/* <Autocomplete
-                    options={searchResults}
-                    getOptionLabel={(option) => option.name + ' ' + option.last_name}
-                    id="controlled-demo"
-                    value={svalue}
-                    onChange={(event, newValue) => {
-                    setSValue(newValue);
-                    }}
-                    renderInput={(params) => 
-                        <TextField {...params} label="controlled" margin="normal" 
-                        onChange={handleChange} onSelect={handleClient}
-                    />}
-                /> */}
+
 
                 <Autocomplete
                     id="search"
@@ -137,8 +140,15 @@ const ServicesAddForm = (props) => {
                 />
                 </div>
                 <div>
+                <List component="nav" className={classes.root} aria-label="mailbox folders">
+                    <ListItem button divider>
+                        <ListItemText primary={inputValue} />
+                    </ListItem>
+                </List>
+                </div>
+                <div>
                 <input 
-                  type="text" 
+                  type="hidden" 
                   className="form-control mb-2"
                   placeholder="Name Associate"
                   name="last_name" id="last_name"
@@ -149,14 +159,14 @@ const ServicesAddForm = (props) => {
                           }
                   })}
                 />
-                <input type="text" 
+                <input type="hidden" 
                   name="id" id="id" htmlFor="id"
                   className="form-control"  
                   ref ={register}
                 />
                 </div>
                 <div>
-                    <input type="text" aria-label="Client" 
+                    <input type="hidden" aria-label="Client" 
                     name="name" id="name" htmlFor="name"
                     className="form-control" placeholder="Add name service" 
                     ref={register({
@@ -216,6 +226,8 @@ const ServicesAddForm = (props) => {
                 <button type="submit">Add Service</button>
             </form>
             {/* <Client ref={this.ClientRef}/> */}
+
+            
         </Fragment>
     );
 }
