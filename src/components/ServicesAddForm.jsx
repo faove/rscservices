@@ -11,80 +11,60 @@ import { useForm, Controller } from 'react-hook-form';
 
 const ServicesAddForm = (props) => {
 
-    // ClientRef = React.createRef();
     const dispatch = useDispatch()
-    // const [refreshKey,setRefreshKey] = useState(0);
-    const [cliente, setCliente] = useState([]);
+    
     const client = useSelector(store => store.client.array)
     const [searchTerm, setSearchTerm] = useState("");
+
     const [searchResults, setSearchResults] = useState([]);
     const [startDate, setStartDate] = useState(new Date());
-
     const { register, setValue, reset, handleSubmit, errors, control } = useForm({defaultValues: searchResults});
-    // const baseURL = process.env.APP_LOCALHOST_URL
-    // console.log('getClientData:')
-    // console.log(props)
-    // console.log(this.props.getClientData)
-    // setValue('name', searchResults.name);
-    // setValue('last_name', searchResults.last_name);
-    // const state = {
-    //   isLoading: true,
-    //   client: [],
-    //   value: "",
-    //   team: [],
-    //   isFull: false,
-    //   selectClient: () => {}
-    // };
 
-    // const selectClient = value => {
-    //   const myTeam = state.team;
-    //   if (myTeam.length >= 6) {
-    //     this.setState({ isFull: true });
-    //     return;
-    //   } else myTeam.push(value);
-    //   console.log("Selected: ", value);
-    //   console.log(myTeam);
-    //   this.setState({ team: myTeam });
-    // };
+
+
 
     const handleChange = event => {
         console.log('handleChange:')
-        console.log(event)
+        console.log(event.target.value)
         
         setSearchTerm(event.target.value);
-        // console.log(searchTerm)
+        console.log(searchTerm)
         // console.log(searchResults)
         
         // setRefreshKey(oldKey => oldKey + 1)
     };
 
-    // const inputComponent = ({ inputRef, ...props }) => (
-    //     <div ref={inputRef} {...props} />
-    //   );
 
-    const handleClient = (index) => e => {
-      console.log(searchTerm)
-      console.log('handleClient',searchResults)
-      console.log('index')
-        console.log(index)
-      console.log("value", e.target.value);
-      console.log("name", e.target);
-    //   console.log("index", index[0]);
-      // console.log("fieldType", fieldType);
 
-      const results = searchResults.filter((clientname) => 
-        clientname.name === e.target.value
-      );
-      console.log(searchResults)
-      // setSearchTerm(e.target.value);
-      // setValue('id', searchResults[0].id);
-      // setValue('name', searchResults[0].name);
-      // setValue('last_name', searchResults[0].last_name);
-      reset(searchResults)
-      console.log('results:::::::::::::::::',results)
-      // console.log(searchResults[0].name)
-      // console.log(searchResults[0].last_name)
+    const handleClient =  e => {
+        e.preventDefault();
+        let regex = /\d*/;
+        let str = e.target.value;
+        // let result = regex.test(str);
+        let result = regex.exec(str);
+        str = result[0].trim();
+        console.log(str);
+        
+
+        console.log('handleClient')
+        
+        const array = searchResults.filter(item => item.dni === parseInt(str))
+        // setSearchResults(results)
+        
+        console.log(array.dni)
+        // console.log(array[0].id,array[0].name, array[0].last_name)
+        // setValue('id', array.id);
+        // setValue('name', array.name);
+        // setValue('last_name', array.last_name);
+        reset(array[0])
+        // console.log('results:::::::::::::::::',results)
+        // console.log(searchResults[0].name)
+        // console.log(searchResults[0].last_name)
     }
+
+    // useEffect(() => {
+    //     console.log('array cambiooooooooooooooooooooooo')
+    // },[searchResults])
 
     useEffect(() => {
     
@@ -92,13 +72,8 @@ const ServicesAddForm = (props) => {
         dispatch(getClient());
         // console.log(client)
         const results = client.filter(searchclient =>
-            // person.toLowerCase().includes(searchTerm)
-            // searchclient.name.match(searchTerm)
             searchclient.name.toLowerCase().includes(searchTerm.toLowerCase())
-          );
-          // console.log(results)
-          
-          
+        );
         setSearchResults(results);
 
     },[searchTerm]);
@@ -108,11 +83,8 @@ const ServicesAddForm = (props) => {
       console.log(data)
       setValue('name', data.name);
       setValue('last_name', data.last_name);
-      // setValue('dni', data.dni);
-      // setValue('address', data.address);
-      // setValue('email', data.email);
-        // limpiar campos
-        e.target.reset();
+      // limpiar campos
+      e.target.reset();
     }
 
     return (
@@ -122,7 +94,7 @@ const ServicesAddForm = (props) => {
                 <Autocomplete
                   id="search"
                   disableClearable
-                  options={searchResults.map((option) => option.name + ' ' + option.last_name)}
+                  options={searchResults.map((option) => option.dni + ' ' + option.name + ' ' + option.last_name)}
                   // value={searchResults}
                   filterSelectedOptions
                 //   options={searchResults.map((option) => option.id + ' ' + option.name + ' ' + option.last_name)}
@@ -133,74 +105,22 @@ const ServicesAddForm = (props) => {
                       margin="normal"
                       variant="outlined"
                       onChange={handleChange} 
-                      // onChange={e => selectClient({ value: e.target.value })}
+                      // onChange={e => setSearchResults({ value: e.target.value })}
                       // onSelect={handleClient(searchResults.name,"name")}
-                      onSelect={handleChange}
-                      // onSelect={handleClient(searchResults)}
-                      // onBlur={handleBlur(searchResults.id,"name")}
-                      // onClick={handleClick}
-                      // inputComponent
+                      // onSelect={handleChange}
+                      onSelect={handleClient}
                       InputProps={{ ...params.InputProps, 
                         inputRef: params.innerRef,
-                        children: props.children,
                         type: 'search' }}
                     /> 
                   )}
                   
                 />
 
-                {/* <Autocomplete
-                items={searchResults.map(item => ({
-                  id: item.id,
-                  label: item.name
-                }))}
-                shouldItemRender={(item, value) =>
-                  item.label.toLowerCase().indexOf(value.toLowerCase()) > -1
-                }
-                getItemValue={item => item.label}
-                initialValue=""
-                value={searchResults}
-                // onChange={e => this.setState({ value: e.target.value })}
-                // onSelect={this.selectPokemon}
-                renderItem={(item, highlighted) => (
-                  <div
-                    key={item.id}
-                    style={{
-                      backgroundColor: highlighted ? "#3e9fe6" : "#fff",
-                      color: highlighted ? "#fff" : "#3e9fe6"
-                    }}
-                  >
-                    <li>{item.label}</li>
-                  </div>
-                )}
-              /> */}
+                
                 </div>
                 <div>
-                {/* <Autocomplete
-                  items={searchResults.map(item => ({
-                    id: item,
-                    label: item
-                  }))}
-                  // shouldItemRender={(item, value) =>
-                  //   item.label.toLowerCase().indexOf(value.toLowerCase()) > -1
-                  // }
-                  // getItemValue={item => item.label}
-                  initialValue=""
-                  // value={state.value}
-                  onChange={e => setCliente({ value: e.target.value })}
-                  onSelect={selectClient}
-                  renderItem={(item, highlighted) => (
-                    <div
-                      key={item.id}
-                      style={{
-                        backgroundColor: highlighted ? "#3e9fe6" : "#fff",
-                        color: highlighted ? "#fff" : "#3e9fe6"
-                      }}
-                    >
-                      <li>{item.label}</li>
-                    </div>
-                  )}
-              /> */}
+                
                 </div>
                 <div>
                 <input 
