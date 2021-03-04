@@ -1,11 +1,13 @@
 import React,{useState,Fragment,useEffect} from 'react';
 import ServicesTable from './ServicesTable';
+
 // import ServicesAddForm from './ServicesAddForm';
 import ServicesEditForm from './ServicesEditForm';
 
 import DatePicker from "react-datepicker";
 import { useDispatch, useSelector} from 'react-redux';
-import { getClient,getNextClient } from '../redux/clientDuck';
+import { getClient } from '../redux/clientDuck';
+import { getServiceId } from '../redux/serviceDuck';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { TextField } from "@material-ui/core";
@@ -15,6 +17,9 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
+import PropTypes from 'prop-types';
+import { FixedSizeList } from 'react-window';
+import { DataGrid } from '@material-ui/data-grid';
 
 import { useForm, Controller } from 'react-hook-form';
 
@@ -26,6 +31,39 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
+  const columns = [
+    { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'name_service', headerName: 'name_service ', width: 130 },
+    { field: 'phone_service', headerName: 'phone_service', width: 130 },
+    {
+      field: 'dni',
+      headerName: 'DNI',
+      type: 'number',
+      width: 90,
+    },
+    {
+      field: 'name_service',
+      headerName: 'Full name',
+      description: 'This column has a value getter and is not sortable.',
+      sortable: false,
+      width: 160,
+      valueGetter: (params) =>
+        `${params.getValue('id') || ''} ${params.getValue('name_service') || ''}`,
+    },
+  ];
+
+  const rows = [
+    { id: 1, name_service: 'Snow', phone_service: 'Jon', dni: 35 },
+    { id: 2, name_service: 'Lannister', phone_service: 'Cersei', dni: 42 },
+    { id: 3, name_service: 'Lannsister', phone_service: 'Jaime', dni: 45 },
+    { id: 4, name_service: 'Stark', phone_service: 'Arya', dni: 16 },
+    { id: 5, name_service: 'Targaryen', phone_service: 'Daenerys', dni: null },
+    { id: 6, name_service: 'Melisandre', phone_service: null, dni: 150 },
+    { id: 7, name_service: 'Clifford', phone_service: 'Ferrara', dni: 44 },
+    { id: 8, name_service: 'Frances', phone_service: 'Rossini', dni: 36 },
+    { id: 9, name_service: 'Roxie', phone_service: 'Harvey', dni: 65 },
+  ];
+
 const Services = () => {
     
     const classes = useStyles();
@@ -33,11 +71,12 @@ const Services = () => {
     const dispatch = useDispatch()
 
     const [editing, setEditing] = useState(false);
-    const [service, setService] = useState([]);
+    const [serviceTotal, setServiceTotal] = useState([]);
     const [currentService, setCurrentService] = useState([]);
     // const [cliente, setCliente] = useState([]);
 
     const client = useSelector(store => store.client.array)
+    const services = useSelector(store => store.service.array)
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [startDate, setStartDate] = useState(new Date());
@@ -49,6 +88,7 @@ const Services = () => {
         // console.log('handleChange:')
         // console.log(event.target.value)
         setSearchTerm(event.target.value);
+        setSValue(null)
         // console.log(searchTerm)
         // console.log(searchResults)
         // setRefreshKey(oldKey => oldKey + 1)
@@ -81,11 +121,13 @@ const Services = () => {
         // str = result[0].trim();
         // console.log(str);
         
-        // console.log('handleClient')
-        // console.log(inputValue)
-        // console.log(svalue)
+        console.log('handleClient')
+        
+        
 
         setSValue(svalue)
+
+        console.log(svalue)
         // const array = searchResults.filter(item => item.dni === parseInt(str))
         // setSearchResults(results)
         // console.log(array.dni)
@@ -95,10 +137,31 @@ const Services = () => {
         // setValue('name', svalue.name);
         // setValue('last_name', svalue.last_name);
         reset(svalue)
-        // console.log(value.newValue)
-        // console.log('results:::::::::::::::::',results)
-        // console.log(searchResults[0].name)
-        // console.log(searchResults[0].last_name)
+
+        if (typeof(svalue) !== 'undefined' && svalue != null) {
+          console.log('Not Undefined and Not Null')
+          dispatch(getServiceId(svalue.id))
+          setServiceTotal(svalue)
+        } else {
+          console.log('Undefined or Null')
+          setServiceTotal([])
+        }
+        // console.log(typeof(svalue.dni)=== "string")
+        // console.log(typeof(svalue.id))
+
+        // if (typeof(svalue.id) === "number"){
+
+        //   dispatch(getServiceDNI(svalue.id))
+        //   setServiceTotal(services)
+
+        // }else{
+
+        //   setServiceTotal([])  
+
+        // }
+        
+
+        console.log(services)
     }
 
     // useEffect(() => {
@@ -277,12 +340,16 @@ const Services = () => {
                   }
                   <div className="flex-large">
                   <h2>View Service</h2>
+                    
+            }
                   <ServicesTable 
-                    svalue={svalue}
+                    serviceTotal={serviceTotal}
+                    inputValue={inputValue}
+                    services={services}
                     // searchResults={searchResults}
                     // searchTerm={searchTerm}
                     //deleteService={deleteService} 
-                    // editRow={editRow}
+                     editRow={editRow}
                     />
                 </div>
               </div>

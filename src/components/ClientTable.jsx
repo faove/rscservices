@@ -67,7 +67,7 @@ const ClientTable = (props) => {
             <tbody>
             {
                 props.cliente.length > 0 ?
-                props.cliente.map(cliente  => (
+                  props.cliente.map(cliente  => (
                         <tr key={cliente.id}>
                         <td>{cliente.dni}</td>
                         <td>{cliente.name}</td>

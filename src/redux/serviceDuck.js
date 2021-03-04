@@ -6,6 +6,7 @@ const dataInicial =  {
 }
 
 const GET_SERVICE = 'GET_SERVICE'
+const GET_SERVICE_DNI = 'GET_SERVICE_DNI'
 const GET_SERVICE_ID = 'GET_SERVICE_ID'
 const GET_SERVICE_NEXT = 'GET_SERVICE_NEXT'
 const POST_SERVICE_ADD = 'POST_SERVICE_ADD'
@@ -18,6 +19,13 @@ export default function serviceReducer(state = dataInicial, action){
         case GET_SERVICE:  
         // console.log('state')
         // console.log(state)
+            return {
+                ...state, 
+                array: action.payload.array
+            }
+        case GET_SERVICE_ID:  
+            // console.log('state')
+            // console.log(state)
             return {
                 ...state, 
                 array: action.payload.array
@@ -53,8 +61,9 @@ export default function serviceReducer(state = dataInicial, action){
 //actions
 export const getService = () => async (dispatch, getState)  => {
     try{
-        const {offset} = getState().associate
-        const response = await axios.get(`http://localhost:8000/api/services?offset=${offset}&limit=20`)
+        console.log('getService')
+        const {offset} = getState().service
+        const response = await axios.get(`http://localhost:8000/services?offset=${offset}&limit=20`)
         dispatch({
             type: GET_SERVICE,
             payload: {
@@ -68,7 +77,7 @@ export const getService = () => async (dispatch, getState)  => {
     }
 }
 
-//Next 20 Associate
+//Next 20 service
 export const getNextService = (numero) => async (dispatch, getState)  => {
     try{
         const {offset} = getState().Service
@@ -76,7 +85,7 @@ export const getNextService = (numero) => async (dispatch, getState)  => {
         
         console.log('siguiente: ', siguiente)
 
-        const response = await axios.get(`http://localhost:8000/api/services?offset=${siguiente}&limit=20`)
+        const response = await axios.get(`http://localhost:8000/services?offset=${siguiente}&limit=20`)
         dispatch({
             type: GET_SERVICE_NEXT,
             payload: {
@@ -91,13 +100,30 @@ export const getNextService = (numero) => async (dispatch, getState)  => {
     }
 }
 
-//Get Service Id current
+//Get Service id current
 export const getServiceId = (id) => async (dispatch)  => {
     try{
         // const {offset} = getState().Service
-        const response = await axios.get(`http://localhost:8000/api/services/${id}`)
+        const response = await axios.get(`http://localhost:8000/services/${id}`)
         dispatch({
             type: GET_SERVICE_ID,
+            payload: {
+                array: response.data
+            }
+        })  
+
+    }catch(error){
+        console.log(error)
+    }
+}
+
+//Get Service dni current
+export const getServiceDNI = (dni) => async (dispatch)  => {
+    try{
+        // const {offset} = getState().Service
+        const response = await axios.get(`http://localhost:8000/services/${dni}`)
+        dispatch({
+            type: GET_SERVICE_DNI,
             payload: {
                 array: response.data
             }
@@ -114,7 +140,7 @@ export const addService = (name,last_name,dni,address,email) => async (dispatch,
     // console.log('addServiceDuck addService')
     // console.log(name)
     const response = await axios.post(
-      "http://localhost:8000/api/services",
+      "http://localhost:8000/services",
       {
           name,last_name,dni,address,email
       }
@@ -138,7 +164,7 @@ export const addService = (name,last_name,dni,address,email) => async (dispatch,
 export const  deleteService = (id) => async (dispatch, getState) => {
     try {
         const response = await axios.delete(
-            `http://localhost:8000/api/services/${id}`          
+            `http://localhost:8000/services/${id}`          
         )
         dispatch({
             type: DELETE_SERVICE,
@@ -156,7 +182,7 @@ export const updateService = (id,name,last_name,dni,address,email) => async (dis
 
     try {
         const response = await axios.put(
-        `http://localhost:8000/api/services/${id}`, {name,last_name,dni,address,email})
+        `http://localhost:8000/services/${id}`, {name,last_name,dni,address,email})
             dispatch({
             type: UPDATE_SERVICE,
             payload: {

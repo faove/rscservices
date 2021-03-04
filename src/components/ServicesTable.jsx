@@ -1,10 +1,7 @@
 import React, {useState,Fragment} from 'react';
-import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import { FixedSizeList } from 'react-window';
-import { DataGrid } from '@material-ui/data-grid';
+import Button from '@material-ui/core/Button'
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -15,38 +12,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'name', headerName: 'First name', width: 130 },
-    { field: 'last_name', headerName: 'Last name', width: 130 },
-    {
-      field: 'dni',
-      headerName: 'DNI',
-      type: 'number',
-      width: 90,
-    },
-    {
-      field: 'name',
-      headerName: 'Full name',
-      description: 'This column has a value getter and is not sortable.',
-      sortable: false,
-      width: 160,
-      valueGetter: (params) =>
-        `${params.getValue('name') || ''} ${params.getValue('last_name') || ''}`,
-    },
-  ];
-
-  const rows = [
-    { id: 1, last_name: 'Snow', name: 'Jon', age: 35 },
-    { id: 2, last_name: 'Lannister', name: 'Cersei', age: 42 },
-    { id: 3, last_name: 'Lannister', name: 'Jaime', age: 45 },
-    { id: 4, last_name: 'Stark', name: 'Arya', age: 16 },
-    { id: 5, last_name: 'Targaryen', name: 'Daenerys', age: null },
-    { id: 6, last_name: 'Melisandre', name: null, age: 150 },
-    { id: 7, last_name: 'Clifford', name: 'Ferrara', age: 44 },
-    { id: 8, last_name: 'Frances', name: 'Rossini', age: 36 },
-    { id: 9, last_name: 'Roxie', name: 'Harvey', age: 65 },
-  ];
 
 const ServicesTable = (props) => {
     //const { index, style } = props;
@@ -61,33 +26,43 @@ const ServicesTable = (props) => {
             //         <ListItemText primary={`Item ${index + 1}`} />
             //     </ListItem>
     console.log('props')
-    console.log(props.svalue > 0 ? Array.from(props.svalue.svalue): props);
+    
+    // console.log(props.serviceTotal > 0 ? Array.from(props.serviceTotal.serviceTotal): props);
+    console.log(props.services.length)
+    // const valores = props.serviceTotal.length > 0 ? (props.serviceTotal):(props);
+    const valores = [];
+    
+    console.log(valores.length > 0)
+    console.log(props.inputValue)
+    console.log('props.services')
+    console.log(props.services)
 
-    const valores = props.svalue > 0 ? Array.from(props.svalue.svalue): props;
-
+    for (let i = 0; i < props.services.length; i++) {
+      var name_service = props.services[i].name_service;
+      var id = props.services[i].id;
+      var phone_service = props.services[i].phone_service;
+      console.log(name_service);
+      valores.push({id: id, name_service:name_service, phone_service:phone_service});
+    }
+    console.log(valores)
     // Array.from(props.svalue).forEach(child => {
     //   console.log(child)
     // });
     // console.log(props.svalue)
     // console.log(JSON.parse(props.client))
-    return (
-        <Fragment>
-          <div style={{ height: 400, width: '100%' }}>
-
-                {
-
-                  // props.client.forEach(function(element){
+    // props.client.forEach(function(element){
                   //   console.log(element);
 
                     
                   // })
-                  // <DataGrid  rows={element} columns={columns} pageSize={5} checkboxSelection />
-
-                  valores > 0 ?
-                      <DataGrid  rows={valores} columns={columns} pageSize={5} checkboxSelection />
-                       : (
-                      <div colSpan={3}>No service asociado</div>
-                  )
+                  
+                  // rows > 0 ? (
+                  //     <div style={{ height: 400, width: '100%' }}>
+                  //       <DataGrid  rows={rows} columns={columns} pageSize={5} checkboxSelection />
+                  //     </div>
+                  //     ) : (
+                  //     <div colSpan={3}>No service asociado</div>
+                  //     ) 
 
                   // props.svalue > 0 ?
                   //     props.svalue.map(search  => (
@@ -112,9 +87,56 @@ const ServicesTable = (props) => {
                     // )) : (
                     //     <div colSpan={3}>No service asociado</div>
                     // )
-                } 
-          </div>
-        </Fragment>
-    )
+    return (
+      <table>
+          <thead>
+          <tr>
+              <th># Id</th>
+              <th>Service name</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Email</th>
+              <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          {
+               valores.length > 0 ?
+                valores.map(servi  => (
+                      <tr key={servi.id}>
+                      <td>{servi.id}</td>
+                      <td>{servi.name_service}</td>
+                      <td>{servi.phone_service}</td>
+                      <td></td>
+                      <td></td>
+                      <td>
+                          <Button variant="outlined" color="primary"
+                              onClick={
+                                  () => {props.editRow(servi)}
+                              }
+                          >
+                            Edit
+                          </Button>
+                          <Button variant="contained" color="secondary"
+                              // onClick={() => 
+                              //   // HandleButtonDelete(servi.id,servi.name,servi.last_name)
+                              // }
+                              startIcon={<DeleteIcon/>}
+                          >
+                          Delete
+                          </Button>
+                          
+                      </td>
+                  </tr>
+                  )) : (
+              
+                      <tr>
+                      <td colSpan={3}>No service</td>
+                      </tr>
+                  )
+          }
+          </tbody>
+      </table>
+   );
 }
 export default ServicesTable;
