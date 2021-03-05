@@ -3,12 +3,14 @@ import thunk from 'redux-thunk'
 import clientReducer from './clientDuck'
 import associateReducer from './associateDuck'
 import serviceReducer from './serviceDuck'
+import categoryReducer from './categoryDuck'
 
 const rootReducer = combineReducers({
 
     client : clientReducer,
     associate : associateReducer,
-    service : serviceReducer
+    service : serviceReducer,
+    category: categoryReducer
     //user : userRedux
 })
 
