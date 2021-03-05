@@ -7,7 +7,7 @@ import ServicesEditForm from './ServicesEditForm';
 import DatePicker from "react-datepicker";
 import { useDispatch, useSelector} from 'react-redux';
 import { getClient } from '../redux/clientDuck';
-import { getServiceId } from '../redux/serviceDuck';
+import { getServiceId, addService, updateService } from '../redux/serviceDuck';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { TextField } from "@material-ui/core";
@@ -16,56 +16,19 @@ import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
-import PropTypes from 'prop-types';
-import { FixedSizeList } from 'react-window';
-import { DataGrid } from '@material-ui/data-grid';
 
 import { useForm, Controller } from 'react-hook-form';
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-      width: '100%',
-      maxWidth: 500,
-      backgroundColor: theme.palette.background.paper,
-    },
-  }));
-
-  const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'name_service', headerName: 'name_service ', width: 130 },
-    { field: 'phone_service', headerName: 'phone_service', width: 130 },
-    {
-      field: 'dni',
-      headerName: 'DNI',
-      type: 'number',
-      width: 90,
-    },
-    {
-      field: 'name_service',
-      headerName: 'Full name',
-      description: 'This column has a value getter and is not sortable.',
-      sortable: false,
-      width: 160,
-      valueGetter: (params) =>
-        `${params.getValue('id') || ''} ${params.getValue('name_service') || ''}`,
-    },
-  ];
-
-  const rows = [
-    { id: 1, name_service: 'Snow', phone_service: 'Jon', dni: 35 },
-    { id: 2, name_service: 'Lannister', phone_service: 'Cersei', dni: 42 },
-    { id: 3, name_service: 'Lannsister', phone_service: 'Jaime', dni: 45 },
-    { id: 4, name_service: 'Stark', phone_service: 'Arya', dni: 16 },
-    { id: 5, name_service: 'Targaryen', phone_service: 'Daenerys', dni: null },
-    { id: 6, name_service: 'Melisandre', phone_service: null, dni: 150 },
-    { id: 7, name_service: 'Clifford', phone_service: 'Ferrara', dni: 44 },
-    { id: 8, name_service: 'Frances', phone_service: 'Rossini', dni: 36 },
-    { id: 9, name_service: 'Roxie', phone_service: 'Harvey', dni: 65 },
-  ];
+  root: {
+    width: '100%',
+    maxWidth: 500,
+    backgroundColor: theme.palette.background.paper,
+  },
+}));
 
 const Services = () => {
-    
+
     const classes = useStyles();
 
     const dispatch = useDispatch()
@@ -73,6 +36,8 @@ const Services = () => {
     const [editing, setEditing] = useState(false);
     const [serviceTotal, setServiceTotal] = useState([]);
     const [currentService, setCurrentService] = useState([]);
+    const [modoEdicion, setModoEdicion] = useState(false)
+
     // const [cliente, setCliente] = useState([]);
 
     const client = useSelector(store => store.client.array)
@@ -97,7 +62,7 @@ const Services = () => {
     const editRow = (service) => {
 
       setEditing(true);
-  
+      setModoEdicion(true);
       setCurrentService(
         { 
           id: service.id,	type_services_id: service.type_services_id,
@@ -182,8 +147,45 @@ const Services = () => {
     const onSubmit = (data, e) => {
       console.log('data')
       console.log(data)
-      setValue('name', data.name);
-      setValue('last_name', data.last_name);
+
+      setCurrentService([
+        ...currentService,
+        { type_services_id: 1,
+          mode_services_id: 1,	areas_id: 1,	associate_id: 1,
+          client_id: data.id, name_service: data.name_service, rate_variable: data.rate_variable,
+          rate_fixed: data.rate_fixed,	rate_process: data.rate_process,	phone_service: data.phone_service,
+          chat_service: data.chat_service,	chat_service_name: data.chat_service_name, fee_service: data.fee_service,
+          date_service: data.date_service,	date_aplication: data.date_aplication, date_pay: data.date_pay,
+          date_performance: data.date_performance}
+      ])
+
+      // setValue('type_services_id', data.type_services_id);
+      // setValue('mode_services_id', data.mode_services_id);
+      // setValue('areas_id', data.areas_id);
+      setValue('type_services_id', 1);
+      setValue('mode_services_id', 1);
+      setValue('areas_id', 1);
+      setValue('associate_id', 1);
+      setValue('client_id', data.id);
+      setValue('name_service', data.name_service);
+      setValue('rate_variable', data.rate_variable);
+      setValue('phone_service', data.phone_service);
+      setValue('chat_service', data.chat_service);
+      setValue('chat_service_name', data.chat_service_name);
+      setValue('fee_service', data.fee_service);
+      setValue('date_service', data.date_service);
+      setValue('date_aplication', data.date_aplication);
+      setValue('date_pay', data.date_pay);
+      setValue('date_performance', data.date_performance);
+
+      if (modoEdicion){
+        dispatch(updateService(data.id,data.name,data.last_name,data.dni,data.address,data.email));
+        setModoEdicion(false)
+
+      }else{
+          dispatch(addService(data.name,data.last_name,data.dni,data.address,data.email));
+      }
+
       // limpiar campos
     //   e.target.reset();
     }
@@ -198,18 +200,12 @@ const Services = () => {
                         // getClient={getClient}
                         /> */}
                     </div>
-                  { 
-                  editing ? (
-                    <div>
-                      <h2>Edit Service</h2>
-                      <ServicesEditForm 
-                    //   currentService={currentService} 
-                    //   updateService={updateService}
-                      />
-                    </div>
-                  ):(
-                    <div>
-                      <h2>Add Service</h2>
+                    <h4 className="text-center">
+                        {
+                        modoEdicion ? 'Edit Service' : 'Add Service'
+                        }
+                    </h4>
+                  
                       <form onSubmit={handleSubmit(onSubmit)}>
                           <div style={{ width: 500 }}>
 
@@ -330,18 +326,23 @@ const Services = () => {
                           <div>
                               {/* <Controller as={TextField} name="TextField" control={control} defaultValue="" /> */}
                           </div>
-                          <button type="submit">Add Service</button>
+                          {
+                          modoEdicion ? (
+                              <button className="btn btn-warning btn-block" type="submit">Edit Service</button>
+                          ) : (
+                              <button className="btn btn-dark btn-block" type="submit">Add Service</button>
+                          )
+                          }
                       </form>
                       {/* <Client ref={this.ClientRef}/> */}
 
             
                     </div>
-                  )
-                  }
+                  
+                  
                   <div className="flex-large">
                   <h2>View Service</h2>
-                    
-            }
+            
                   <ServicesTable 
                     serviceTotal={serviceTotal}
                     inputValue={inputValue}
@@ -354,7 +355,6 @@ const Services = () => {
                 </div>
               </div>
             </div>
-        </div>  
       </Fragment>
        
     );

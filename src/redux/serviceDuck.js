@@ -161,7 +161,7 @@ export const addService = (name,last_name,dni,address,email) => async (dispatch,
 }
 
 //deleteService
-export const  deleteService = (id) => async (dispatch, getState) => {
+export const deleteService = (id) => async (dispatch, getState) => {
     try {
         const response = await axios.delete(
             `http://localhost:8000/services/${id}`          

@@ -113,7 +113,7 @@ const Setting = () => {
                 <ul className="list-group">
                     {
                         asociado.length === 0 ? (
-                            <li className="list-group-item">Sin Tareas</li>
+                            <li className="list-group-item">Sin Asociados</li>
                         ) : (
                             asociado.map(items => (
                                 <li className="list-group-item" key={items.id}>

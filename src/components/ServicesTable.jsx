@@ -94,8 +94,8 @@ const ServicesTable = (props) => {
               <th># Id</th>
               <th>Service name</th>
               <th>Phone</th>
-              <th>Address</th>
-              <th>Email</th>
+              <th>Date service</th>
+              <th>Date aplication</th>
               <th>Actions</th>
           </tr>
           </thead>
@@ -107,8 +107,8 @@ const ServicesTable = (props) => {
                       <td>{servi.id}</td>
                       <td>{servi.name_service}</td>
                       <td>{servi.phone_service}</td>
-                      <td></td>
-                      <td></td>
+                      <td>{servi.date_service}</td>
+                      <td>{servi.date_aplication}</td>
                       <td>
                           <Button variant="outlined" color="primary"
                               onClick={
