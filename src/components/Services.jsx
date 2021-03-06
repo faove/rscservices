@@ -7,6 +7,7 @@ import ServicesEditForm from './ServicesEditForm';
 import DatePicker from "react-datepicker";
 import { useDispatch, useSelector} from 'react-redux';
 import { getClient } from '../redux/clientDuck';
+import { getCategory } from '../redux/categoryDuck';
 import { getServiceId, addService, updateService } from '../redux/serviceDuck';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -16,15 +17,33 @@ import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import FormControl from '@material-ui/core/FormControl';
 import { useForm, Controller } from 'react-hook-form';
 
+// const useStyles = makeStyles((theme) => ({
+//   root: {
+//     width: '100%',
+//     maxWidth: 500,
+//     backgroundColor: theme.palette.background.paper,
+//   },
+// }));
+
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    maxWidth: 500,
-    backgroundColor: theme.palette.background.paper,
+  formControl: {
+    margin: theme.spacing(3),
+    minWidth: 220,
   },
+  selectEmpty: {
+    marginTop: theme.spacing(3),
+  },
+  // root: {
+  //   width: '100%',
+  //   maxWidth: 500,
+  //   backgroundColor: theme.palette.background.paper,
+  // },
 }));
 
 const Services = () => {
@@ -38,25 +57,45 @@ const Services = () => {
     const [currentService, setCurrentService] = useState([]);
     const [modoEdicion, setModoEdicion] = useState(false)
 
-    // const [cliente, setCliente] = useState([]);
-
     const client = useSelector(store => store.client.array)
     const services = useSelector(store => store.service.array)
+    const category = useSelector(store => store.category.array)
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [startDate, setStartDate] = useState(new Date());
     const { register, setValue, reset, handleSubmit, errors, control } = useForm({defaultValues: searchResults});
     const [svalue, setSValue] = useState(null);
     const [inputValue, setInputValue] = useState('');
+    const [categorias, setCategorias] = useState('');
 
+    //Controla la seleccionde la Category
+    const handleChangeCategory = (event) => {
+      
+      setCategorias(Number(event.target.value))
+      console.log('handleChangeCategory:')
+      console.log(categorias)
+    };
+
+    //Este useEffect funciona como DidMount al momento de pintar todos los campos
+    useEffect(() => {
+      console.log('mounted')
+      dispatch(getCategory());
+      console.log(category)
+    }, []);
+
+    //Controla el Autocomplete
     const handleChange = event => {
-        // console.log('handleChange:')
-        // console.log(event.target.value)
+        
         setSearchTerm(event.target.value);
         setSValue(null)
         // console.log(searchTerm)
         // console.log(searchResults)
         // setRefreshKey(oldKey => oldKey + 1)
+        
+
+        console.log(category)
+        setCategorias(category)
+        console.log(categorias)
     };
 
     const editRow = (service) => {
@@ -79,12 +118,7 @@ const Services = () => {
 
     const handleClient =  e => {
         e.preventDefault();
-        // let regex = /\d*/;
-        // let str = e.target.value;
-        // let result = regex.test(str);
-        // let result = regex.exec(str);
-        // str = result[0].trim();
-        // console.log(str);
+
         
         console.log('handleClient')
         
@@ -111,36 +145,27 @@ const Services = () => {
           console.log('Undefined or Null')
           setServiceTotal([])
         }
-        // console.log(typeof(svalue.dni)=== "string")
-        // console.log(typeof(svalue.id))
 
-        // if (typeof(svalue.id) === "number"){
-
-        //   dispatch(getServiceDNI(svalue.id))
-        //   setServiceTotal(services)
-
-        // }else{
-
-        //   setServiceTotal([])  
-
-        // }
         
 
         console.log(services)
     }
 
     // useEffect(() => {
-    //     console.log('array cambiooooooooooooooooooooooo')
-    // },[searchResults])
+    //      console.log('array cambiooooooooooooooooooooooo')
+    //     dispatch(getCategory())
+    //  },[searchResults])
 
     useEffect(() => {
-        console.log(' useeEffect')
+        console.log('useeEffect')
         dispatch(getClient());
-        // console.log(client)
+        
         const results = client.filter(searchclient =>
             searchclient.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
-        setSearchResults(results);
+        setSearchResults(results)
+
+        
 
     },[searchTerm]);
 
@@ -285,25 +310,58 @@ const Services = () => {
                                   {errors?.name?.message}
                               </span>
                           </div>
-                          <div>
-                          <Controller
-                              control={control}
-                              name="date_service"
-                              render={({ onChange, onBlur, value }) => (
-                              <DatePicker
-                                  onBlur={onBlur}
-                                  ref={register}
-                                  selected={startDate} 
-                                  onChange={date => setStartDate(date)}
-                              />
-                              )}
-                              defaultValue={register}
-                          />
+                          <div className="row align-items-start">
+                          <div className="col">
+                            <FormControl className={classes.formControl}>
+                              <InputLabel id="demo-simple-select-label">Category</InputLabel>
+                                <Select
+                                  labelId="demo-simple-select-label"
+                                  id="demo-simple-select"
+                                  value={categorias === -1 ? '' : categorias}
+                                  onChange={handleChangeCategory}
+                                >
+                                {
+                                  category.map((categ, index) => (
+                                    <MenuItem key={index} value={categ.id}>
+                                      {categ.name}
+                                    </MenuItem>
+                                  ))
+                                  // category.length === 0 ? (
+                                  //   <MenuItem value="">No items</MenuItem>
+                                  // ) : (
+                                  //   category.map(items => (
+                                  //     <MenuItem
+                                  //     value={items[Object.keys(items)] + ""}
+                                  //     key={Object.keys(items)[0]}
+                                  //     >
+                                  //       {Object.keys(items)[0]}
+                                  //     </MenuItem>
+                                  //   ))
+                                  // )
+                                 }
+                                </Select>
+                            </FormControl>
                           </div>
-                          <div>
-                              <span className="text-danger text-small d-block mb-2">
-                                  {errors?.date_service?.message}
-                              </span>
+                          <div className="col">
+                            <Controller
+                                control={control}
+                                name="date_service"
+                                render={({ onChange, onBlur, value }) => (
+                                <DatePicker
+                                    onBlur={onBlur}
+                                    ref={register}
+                                    selected={startDate} 
+                                    onChange={date => setStartDate(date)}
+                                />
+                                )}
+                                defaultValue={register}
+                            />
+                            </div>
+                            <div>
+                                <span className="text-danger text-small d-block mb-2">
+                                    {errors?.date_service?.message}
+                                </span>
+                            </div>
                           </div>
                           <div>
                           <input 

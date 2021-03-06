@@ -1,6 +1,6 @@
 import axios from 'axios';
-//constante
 
+//constante
 const dataInicial =  {
     array : [],
     offset: 0
@@ -16,7 +16,7 @@ const UPDATE_CATEGORY = 'UPDATE_CATEGORY'
 //reducer
 export default function categoryReducer(state = dataInicial, action){
     switch(action.type){
-        case GET_CATEGORY:    
+        case GET_CATEGORY:   
             return {
                 ...state, 
                 array: action.payload.array
@@ -36,7 +36,6 @@ export default function categoryReducer(state = dataInicial, action){
             return {
                 ...state, 
                 array: varr
-                // array: state.array.map(array => array.id === action.payload.array.id ? action.payload.array : array)
             }
         case DELETE_CATEGORY:    
             return {
@@ -51,8 +50,9 @@ export default function categoryReducer(state = dataInicial, action){
 //actions
 export const getCategory = () => async (dispatch, getState)  => {
     try{
+        
         const {offset} = getState().category
-        const response = await axios.get(`http://localhost:8000/api/category?offset=${offset}&limit=20`)
+        const response = await axios.get(`http://localhost:8000/api/categories?offset=${offset}&limit=20`)
         dispatch({
             type: GET_CATEGORY,
             payload: {
@@ -73,7 +73,7 @@ export const getNextCategory = (numero) => async (dispatch, getState)  => {
         
         console.log('siguiente: ', siguiente)
 
-        const response = await axios.get(`http://localhost:8000/api/category?offset=${siguiente}&limit=20`)
+        const response = await axios.get(`http://localhost:8000/api/categories?offset=${siguiente}&limit=20`)
         dispatch({
             type: GET_CATEGORY_NEXT,
             payload: {
@@ -97,7 +97,7 @@ export const getNextCategory = (numero) => async (dispatch, getState)  => {
 export const getCategoryId = (id) => async (dispatch)  => {
     try{
         // const {offset} = getState().category
-        const response = await axios.get(`http://localhost:8000/api/category/${id}`)
+        const response = await axios.get(`http://localhost:8000/api/categories/${id}`)
         dispatch({
             type: GET_CATEGORY_ID,
             payload: {
@@ -117,7 +117,7 @@ export const addCategory = (name,last_name,dni,address,email) => async (dispatch
     // console.log('categoryDuck addCategory')
     // console.log(email)
     const response = await axios.post(
-      "http://localhost:8000/api/category",
+      "http://localhost:8000/api/categories",
       {
           name,last_name,dni,address,email
       }
@@ -138,7 +138,7 @@ export const addCategory = (name,last_name,dni,address,email) => async (dispatch
 }
 
 //deleteClient
-export const  deleteClient = (id) => async (dispatch, getState) => {
+export const  deleteCategory = (id) => async (dispatch, getState) => {
     try {
         // console.log('clienteDuck deleteClient')
         // console.log(id)
@@ -146,7 +146,7 @@ export const  deleteClient = (id) => async (dispatch, getState) => {
 
 
         const response = await axios.delete(
-            `http://localhost:8000/api/clients/${id}`          
+            `http://localhost:8000/api/categories/${id}`          
         )
         dispatch({
             type: DELETE_CATEGORY,
@@ -176,7 +176,7 @@ try {
     // console.log(id,updatedCategory)
     //setEditing(false);
     const response = await axios.put(
-    `http://localhost:8000/api/category/${id}`, updatedCategory)
+    `http://localhost:8000/api/categories/${id}`, updatedCategory)
         dispatch({
         type: UPDATE_CATEGORY,
         payload: {

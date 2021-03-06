@@ -25,26 +25,26 @@ const ServicesTable = (props) => {
             // <ListItem button style={style} key={index}>
             //         <ListItemText primary={`Item ${index + 1}`} />
             //     </ListItem>
-    console.log('props')
+    // console.log('props')
     
     // console.log(props.serviceTotal > 0 ? Array.from(props.serviceTotal.serviceTotal): props);
-    console.log(props.services.length)
+    // console.log(props.services.length)
     // const valores = props.serviceTotal.length > 0 ? (props.serviceTotal):(props);
     const valores = [];
     
-    console.log(valores.length > 0)
-    console.log(props.inputValue)
-    console.log('props.services')
-    console.log(props.services)
+    // console.log(valores.length > 0)
+    // console.log(props.inputValue)
+    // console.log('props.services')
+    // console.log(props.services)
 
     for (let i = 0; i < props.services.length; i++) {
       var name_service = props.services[i].name_service;
       var id = props.services[i].id;
       var phone_service = props.services[i].phone_service;
-      console.log(name_service);
+      // console.log(name_service);
       valores.push({id: id, name_service:name_service, phone_service:phone_service});
     }
-    console.log(valores)
+    // console.log(valores)
     // Array.from(props.svalue).forEach(child => {
     //   console.log(child)
     // });
