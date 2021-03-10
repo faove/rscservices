@@ -25,7 +25,6 @@ const ServicesTable = (props) => {
             // <ListItem button style={style} key={index}>
             //         <ListItemText primary={`Item ${index + 1}`} />
             //     </ListItem>
-    // console.log('props')
     
     // console.log(props.serviceTotal > 0 ? Array.from(props.serviceTotal.serviceTotal): props);
     // console.log(props.services.length)
@@ -44,7 +43,8 @@ const ServicesTable = (props) => {
       // console.log(name_service);
       valores.push({id: id, name_service:name_service, phone_service:phone_service});
     }
-    // console.log(valores)
+    console.log('props')
+    console.log(valores)
     // Array.from(props.svalue).forEach(child => {
     //   console.log(child)
     // });

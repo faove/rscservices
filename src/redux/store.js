@@ -4,13 +4,15 @@ import clientReducer from './clientDuck'
 import associateReducer from './associateDuck'
 import serviceReducer from './serviceDuck'
 import categoryReducer from './categoryDuck'
+import productReducer from './productDuck'
 
 const rootReducer = combineReducers({
 
     client : clientReducer,
     associate : associateReducer,
     service : serviceReducer,
-    category: categoryReducer
+    category: categoryReducer,
+    product : productReducer
     //user : userRedux
 })
 

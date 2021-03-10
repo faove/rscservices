@@ -36,6 +36,8 @@ export default function serviceReducer(state = dataInicial, action){
                 array: action.payload.array, offset: action.payload.offset
             }
         case POST_SERVICE_ADD: 
+            console.log('POST_SERVICE_ADD')
+            console.log(action.payload.array)
             return {
                 ...state, 
                 array: [...state.array, action.payload.array]
@@ -61,7 +63,7 @@ export default function serviceReducer(state = dataInicial, action){
 //actions
 export const getService = () => async (dispatch, getState)  => {
     try{
-        console.log('getService')
+        
         const {offset} = getState().service
         const response = await axios.get(`http://localhost:8000/services?offset=${offset}&limit=20`)
         dispatch({
@@ -135,14 +137,29 @@ export const getServiceDNI = (dni) => async (dispatch)  => {
 }
 
 //addService 
-export const addService = (name,last_name,dni,address,email) => async (dispatch, getState)  => {
+export const addService = (category_id, areas_id, associate_id,
+    client_id, product_id,name_service, gross_amount, rate_fixed, date_service
+    ) => async (dispatch, getState)  => {
   try {
-    // console.log('addServiceDuck addService')
-    // console.log(name)
+    console.log('addServiceDuck addService')
+    console.log(category_id)
+    console.log(areas_id)
+    console.log(associate_id)
+    console.log(client_id)
+
+
+    console.log(product_id)
+    console.log(name_service)
+    console.log(gross_amount)
+
+    console.log(rate_fixed)
+    console.log(date_service)
+
     const response = await axios.post(
-      "http://localhost:8000/services",
+      "http://localhost:8000/api/services",
       {
-          name,last_name,dni,address,email
+        category_id, areas_id, associate_id,
+        client_id, product_id,name_service, gross_amount, rate_fixed, date_service
       }
     )
     dispatch({

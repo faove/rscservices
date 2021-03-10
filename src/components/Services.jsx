@@ -1,17 +1,13 @@
-import React,{useState,Fragment,useEffect} from 'react';
+import { format, formatDistance, formatRelative, subDays } from 'date-fns'
+import React,{useState,Fragment,useEffect, createRef} from 'react';
 import ServicesTable from './ServicesTable';
-
-// import ServicesAddForm from './ServicesAddForm';
-import ServicesEditForm from './ServicesEditForm';
-
-import DatePicker from "react-datepicker";
 import { useDispatch, useSelector} from 'react-redux';
 import { getClient } from '../redux/clientDuck';
 import { getCategory } from '../redux/categoryDuck';
+import { getAssociate } from '../redux/associateDuck';
 import { getServiceId, addService, updateService } from '../redux/serviceDuck';
-import 'react-datepicker/dist/react-datepicker.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { TextField } from "@material-ui/core";
+import { unstable_createMuiStrictModeTheme as createMuiTheme, TextField } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -21,7 +17,14 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
-import { useForm, Controller } from 'react-hook-form';
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider, KeyboardDatePicker,} from '@material-ui/pickers';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import { useForm } from 'react-hook-form';
+
+
+
 
 // const useStyles = makeStyles((theme) => ({
 //   root: {
@@ -33,7 +36,7 @@ import { useForm, Controller } from 'react-hook-form';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
-    margin: theme.spacing(3),
+    margin: theme.spacing(2),
     minWidth: 220,
   },
   selectEmpty: {
@@ -44,10 +47,19 @@ const useStyles = makeStyles((theme) => ({
   //   maxWidth: 500,
   //   backgroundColor: theme.palette.background.paper,
   // },
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
 }));
 
 const Services = () => {
-
+    
+    const wrapper = createRef();
     const classes = useStyles();
 
     const dispatch = useDispatch()
@@ -58,6 +70,7 @@ const Services = () => {
     const [modoEdicion, setModoEdicion] = useState(false)
 
     const client = useSelector(store => store.client.array)
+    const associate = useSelector(store => store.associate.array)
     const services = useSelector(store => store.service.array)
     const category = useSelector(store => store.category.array)
     const [searchTerm, setSearchTerm] = useState("");
@@ -67,20 +80,41 @@ const Services = () => {
     const [svalue, setSValue] = useState(null);
     const [inputValue, setInputValue] = useState('');
     const [categorias, setCategorias] = useState('');
+    const [asociados, setAsociados] = useState('');
+
+    //Manejo Date
+    const [selectedDate, setSelectedDate] = useState(new Date());
+
+    const handleDateChange = (date) => {
+      setSelectedDate(date);
+    };
 
     //Controla la seleccionde la Category
     const handleChangeCategory = (event) => {
-      
+
       setCategorias(Number(event.target.value))
       console.log('handleChangeCategory:')
       console.log(categorias)
+      console.log(Number(event.target.value))
+
     };
 
-    //Este useEffect funciona como DidMount al momento de pintar todos los campos
+    //Controla la seleccion de Associates
+    const handleChangeAssociate = (event) => {
+      
+      setAsociados(Number(event.target.value))
+      console.log('handleChangeAssociate:')
+      console.log(asociados)
+      console.log(Number(event.target.value))
+      
+    };
+
+    //Este useEffect funciona como DidMount al momento de pintar todos los object
     useEffect(() => {
       console.log('mounted')
       dispatch(getCategory());
-      console.log(category)
+      dispatch(getAssociate());
+      console.log(associate)
     }, []);
 
     //Controla el Autocomplete
@@ -88,14 +122,11 @@ const Services = () => {
         
         setSearchTerm(event.target.value);
         setSValue(null)
-        // console.log(searchTerm)
-        // console.log(searchResults)
-        // setRefreshKey(oldKey => oldKey + 1)
-        
 
-        console.log(category)
-        setCategorias(category)
-        console.log(categorias)
+        // console.log(category)
+        // setCategorias(category)
+        // console.log(categorias)
+        // setAsociados(associate)
     };
 
     const editRow = (service) => {
@@ -104,8 +135,8 @@ const Services = () => {
       setModoEdicion(true);
       setCurrentService(
         { 
-          id: service.id,	type_services_id: service.type_services_id,
-          mode_services_id: service.mode_services_id,	areas_id: service.areas_id,	associate_id: service.associate_id,
+          id: service.id,	category_id: service.category_id,
+          areas_id: service.areas_id,	associate_id: service.associate_id,
           client_id: service.client_id, name_service: service.name_service, rate_variable: service.rate_variable,
           rate_fixed: service.rate_fixed,	rate_process: service.rate_process,	phone_service: service.phone_service,
           chat_service: service.chat_service,	chat_service_name: service.chat_service_name, fee_service: service.fee_service,
@@ -118,11 +149,7 @@ const Services = () => {
 
     const handleClient =  e => {
         e.preventDefault();
-
-        
         console.log('handleClient')
-        
-        
 
         setSValue(svalue)
 
@@ -145,16 +172,9 @@ const Services = () => {
           console.log('Undefined or Null')
           setServiceTotal([])
         }
-
-        
-
         console.log(services)
     }
 
-    // useEffect(() => {
-    //      console.log('array cambiooooooooooooooooooooooo')
-    //     dispatch(getCategory())
-    //  },[searchResults])
 
     useEffect(() => {
         console.log('useeEffect')
@@ -165,115 +185,134 @@ const Services = () => {
         );
         setSearchResults(results)
 
-        
-
     },[searchTerm]);
 
     const onSubmit = (data, e) => {
-      console.log('data')
-      console.log(data)
+
+      console.log('data onSubmit')
+      console.log(categorias)
+      const selectedDateService = format(selectedDate, 'MM/dd/yyyy')
+      console.log(selectedDateService)
+      console.log('modoEdicion')
+      console.log(modoEdicion)
+      console.log('asociados')
+      console.log(asociados)
 
       setCurrentService([
         ...currentService,
-        { type_services_id: 1,
-          mode_services_id: 1,	areas_id: 1,	associate_id: 1,
-          client_id: data.id, name_service: data.name_service, rate_variable: data.rate_variable,
+        { category_id: categorias,	areas_id: 1,	associate_id: asociados,
+          client_id: parseInt(data.id), product_id: 1, name_service: data.name_service, rate_variable: data.rate_variable,
           rate_fixed: data.rate_fixed,	rate_process: data.rate_process,	phone_service: data.phone_service,
           chat_service: data.chat_service,	chat_service_name: data.chat_service_name, fee_service: data.fee_service,
-          date_service: data.date_service,	date_aplication: data.date_aplication, date_pay: data.date_pay,
+          date_service: selectedDateService,	date_aplication: data.date_aplication, date_pay: data.date_pay,
           date_performance: data.date_performance}
       ])
+      console.log('currentService')
+      console.log(currentService)
+      console.log('data.id')
+      console.log(parseInt(data.id))
+      console.log('data.client_id')
+      console.log(data.client_id)
+      console.log('data.rate_fixed')
+      console.log(data.rate_fixed)
 
       // setValue('type_services_id', data.type_services_id);
       // setValue('mode_services_id', data.mode_services_id);
       // setValue('areas_id', data.areas_id);
-      setValue('type_services_id', 1);
-      setValue('mode_services_id', 1);
+      // setValue('type_services_id', 1);
+      // setValue('mode_services_id', 1);
+      setValue('category_id', categorias);
       setValue('areas_id', 1);
-      setValue('associate_id', 1);
-      setValue('client_id', data.id);
+      setValue('associate_id', asociados);
+      setValue('client_id', parseInt(data.id));
+      setValue('product_id', 1);
       setValue('name_service', data.name_service);
-      setValue('rate_variable', data.rate_variable);
+      setValue('rate_fixed', data.rate_fixed);
+      setValue('gross_amount', data.gross_amount);
       setValue('phone_service', data.phone_service);
-      setValue('chat_service', data.chat_service);
-      setValue('chat_service_name', data.chat_service_name);
-      setValue('fee_service', data.fee_service);
-      setValue('date_service', data.date_service);
-      setValue('date_aplication', data.date_aplication);
-      setValue('date_pay', data.date_pay);
-      setValue('date_performance', data.date_performance);
-
+      setValue('date_service', selectedDateService);
+      data.areas_id =1;
+      data.product_id=1;
+      // setValue('chat_service', data.chat_service);
+      // setValue('chat_service_name', data.chat_service_name);
+      // setValue('fee_service', data.fee_service);
+      
+      // setValue('date_aplication', data.date_aplication);
+      // setValue('date_pay', data.date_pay);
+      // setValue('date_performance', data.date_performance);
+      
       if (modoEdicion){
-        dispatch(updateService(data.id,data.name,data.last_name,data.dni,data.address,data.email));
-        setModoEdicion(false)
 
+        dispatch(updateService(data.id, categorias, 
+           data.areas_id, asociados, parseInt(data.id), data.product_id,
+          data.name_service, data.gross_amount, data.rate_fixed, selectedDateService));
+        setModoEdicion(false)
       }else{
-          dispatch(addService(data.name,data.last_name,data.dni,data.address,data.email));
+          dispatch(addService(categorias, 
+            data.areas_id, asociados, parseInt(data.id), data.product_id,
+            data.name_service, data.gross_amount, data.rate_fixed, selectedDateService));
       }
 
-      // limpiar campos
-    //   e.target.reset();
+      // limpiar campos  ref={this.wrapper}
+      // e.target.reset();
     }
-
+    // const wrapper = createRef(null);
     return (
-      <Fragment>
-            <div className="container">
-              <div className="flex-row">
-                <div className="flex-large">
-                    <div className="col-md-auto">
-                        {/* <Client 
-                        // getClient={getClient}
-                        /> */}
-                    </div>
+            <div >
+              <div  className="flex-row">
+                <div  className="flex-large">
+                    
                     <h4 className="text-center">
                         {
                         modoEdicion ? 'Edit Service' : 'Add Service'
                         }
                     </h4>
-                  
                       <form onSubmit={handleSubmit(onSubmit)}>
-                          <div style={{ width: 500 }}>
-
-                          <Autocomplete
-                              id="search"
-                              disableClearable
-                              options={searchResults}
-                              getOptionLabel={(option) => option.name + ' ' + option.last_name}
-                              // value={svalue}
-                              onChange={(event, newValue) => {
-                                  setSValue(newValue);
-                                  }}
-                              inputValue={inputValue}
-                              onInputChange={(event, newInputValue) => {
-                                  setInputValue(newInputValue);
-                              }}
-                              filterSelectedOptions
-                          //   options={searchResults.map((option) => option.id + ' ' + option.name + ' ' + option.last_name)}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="Search client"
-                                margin="normal"
-                                variant="outlined"
-                                onChange={handleChange} 
-                                // onChange={e => setSearchResults({ value: e.target.value })}
-                                // onSelect={handleClient(searchResults.name,"name")}
-                                // onSelect={handleChange}
-                                onSelect={handleClient}
-                              //   InputProps={{ ...params.InputProps, 
-                              //     inputRef: params.innerRef,
-                              //     type: 'search' }}
-                              /> 
-                            )}
-                          />
-                          </div>
-                          <div>
-                          <List component="nav" className={classes.root} aria-label="mailbox folders">
-                              <ListItem button divider>
-                                  <ListItemText primary={inputValue} />
-                              </ListItem>
-                          </List>
-                          </div>
+                          <Grid container justify="space-around">
+                              <Grid item xs={12}>
+                                <Paper  className={classes.paper}>
+                                  <Autocomplete
+                                      id="search"
+                                      disableClearable
+                                      options={searchResults}
+                                      getOptionLabel={(option) => option.name + ' ' + option.last_name}
+                                      // value={svalue}
+                                      onChange={(event, newValue) => {
+                                          setSValue(newValue);
+                                          }}
+                                      inputValue={inputValue}
+                                      onInputChange={(event, newInputValue) => {
+                                          setInputValue(newInputValue);
+                                      }}
+                                      filterSelectedOptions
+                                  //   options={searchResults.map((option) => option.id + ' ' + option.name + ' ' + option.last_name)}
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        label="Search client"
+                                        margin="normal"
+                                        variant="outlined"
+                                        onChange={handleChange} 
+                                        // onChange={e => setSearchResults({ value: e.target.value })}
+                                        // onSelect={handleClient(searchResults.name,"name")}
+                                        // onSelect={handleChange}
+                                        onSelect={handleClient}
+                                      //   InputProps={{ ...params.InputProps, 
+                                      //     inputRef: params.innerRef,
+                                      //     type: 'search' }}
+                                      /> 
+                                    )}
+                                  />
+                                  <div>
+                                  <List component="nav" className={classes.root} aria-label="mailbox folders">
+                                      <ListItem button divider>
+                                          <ListItemText primary={inputValue} />
+                                      </ListItem>
+                                  </List>
+                                  </div>
+                              </Paper>
+                            </Grid>
+                          </Grid>
                           <div>
                           <input 
                             type="hidden" 
@@ -287,6 +326,7 @@ const Services = () => {
                                     }
                             })}
                           />
+                          {/* Este Id es del client por la busquedad */}
                           <input type="hidden" 
                             name="id" id="id" htmlFor="id"
                             className="form-control"  
@@ -300,7 +340,7 @@ const Services = () => {
                               ref={register({
                                   required: {
                                       value: true, 
-                                      message: 'Name the service required'
+                                      message: 'Name client for service required'
                                   }
                               })}
                               />
@@ -311,39 +351,82 @@ const Services = () => {
                               </span>
                           </div>
                           <div className="row align-items-start">
-                          <div className="col">
-                            <FormControl className={classes.formControl}>
-                              <InputLabel id="demo-simple-select-label">Category</InputLabel>
-                                <Select
-                                  labelId="demo-simple-select-label"
-                                  id="demo-simple-select"
-                                  value={categorias === -1 ? '' : categorias}
-                                  onChange={handleChangeCategory}
-                                >
-                                {
-                                  category.map((categ, index) => (
-                                    <MenuItem key={index} value={categ.id}>
-                                      {categ.name}
-                                    </MenuItem>
-                                  ))
-                                  // category.length === 0 ? (
-                                  //   <MenuItem value="">No items</MenuItem>
-                                  // ) : (
-                                  //   category.map(items => (
-                                  //     <MenuItem
-                                  //     value={items[Object.keys(items)] + ""}
-                                  //     key={Object.keys(items)[0]}
-                                  //     >
-                                  //       {Object.keys(items)[0]}
-                                  //     </MenuItem>
-                                  //   ))
-                                  // )
-                                 }
-                                </Select>
-                            </FormControl>
-                          </div>
-                          <div className="col">
-                            <Controller
+                          
+                          <Grid container justify="space-around">
+                              <Grid item xs={12}>
+                                <Paper className={classes.paper}>
+                                  <FormControl className={classes.formControl}>
+                                  <InputLabel id="select-label-associate">Responsible associate</InputLabel>
+                                    <Select
+                                      labelId="select_associate_label"
+                                      id="select_asociate"
+                                      value={asociados === -1 ? '' : asociados}
+                                      onChange={handleChangeAssociate}
+                                    >
+                                    {
+                                      associate.map((associ, index) => (
+                                        <MenuItem key={index} value={associ.id}>
+                                          {associ.name}
+                                        </MenuItem>
+                                      ))
+                                    }
+                                    </Select>
+                                  </FormControl>
+                                  <FormControl className={classes.formControl}>
+                                  <InputLabel id="select-label-category">Category</InputLabel>
+                                    <Select
+                                      labelId="select_category_label"
+                                      id="select_category"
+                                      value={categorias === -1 ? '' : categorias}
+                                      onChange={handleChangeCategory}
+                                    >
+                                    {
+                                      category.map((categ, index) => (
+                                        <MenuItem  key={index} value={categ.id}>
+                                          {categ.name}
+                                        </MenuItem>
+                                      ))
+                                    }
+                                    </Select>
+                                  </FormControl>
+                                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                    <KeyboardDatePicker
+                                      disableToolbar
+                                      variant="inline"
+                                      format="dd/MM/yyyy"
+                                      margin="normal"
+                                      id="date_service"
+                                      label="Date picker inline"
+                                      value={selectedDate}
+                                      onChange={handleDateChange}
+                                      KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                      }}
+                                    />
+                                  </MuiPickersUtilsProvider>
+                                </Paper>
+                              </Grid>
+                                <div>
+                                    <span className="text-danger text-small d-block mb-2">
+                                        {errors?.date_service?.message}
+                                    </span>
+                                </div>
+                                <input 
+                                  placeholder="Tarifa"
+                                  type="text" 
+                                  name="rate_fixed"
+                                  ref={register({
+                                      required: {
+                                          value: true, 
+                                          message: 'Tarifa required'
+                                      }
+                                  })}
+                                  />
+                                <span className="text-danger text-small d-block mb-2">
+                                    {errors.rate_fixed && errors.rate_fixed.message}
+                                </span>
+                            </Grid>
+                            {/* <Controller
                                 control={control}
                                 name="date_service"
                                 render={({ onChange, onBlur, value }) => (
@@ -355,32 +438,11 @@ const Services = () => {
                                 />
                                 )}
                                 defaultValue={register}
-                            />
-                            </div>
-                            <div>
-                                <span className="text-danger text-small d-block mb-2">
-                                    {errors?.date_service?.message}
-                                </span>
-                            </div>
+                            /> */}
+                            
+                            
                           </div>
-                          <div>
-                          <input 
-                              placeholder="Tarifa"
-                              type="text" 
-                              name="rate_fixed"
-                              ref={register({
-                                  required: {
-                                      value: true, 
-                                      message: 'Tarifa required'
-                                  }
-                              })}
-                              />
-                          </div>
-                          <div>
-                              <span className="text-danger text-small d-block mb-2">
-                                  {errors.rate_fixed && errors.rate_fixed.message}
-                              </span>
-                          </div>
+                          
                           <div>
                               {/* <Controller as={TextField} name="TextField" control={control} defaultValue="" /> */}
                           </div>
@@ -393,29 +455,24 @@ const Services = () => {
                           }
                       </form>
                       {/* <Client ref={this.ClientRef}/> */}
-
-            
-                    </div>
-                  
-                  
-                  <div className="flex-large">
-                  <h2>View Service</h2>
-            
-                  <ServicesTable 
-                    serviceTotal={serviceTotal}
-                    inputValue={inputValue}
-                    services={services}
-                    // searchResults={searchResults}
-                    // searchTerm={searchTerm}
-                    //deleteService={deleteService} 
-                     editRow={editRow}
-                    />
+                      </div>    
+                      <div  className="flex-large">
+                      <h2>View Service</h2>
+                
+                      <ServicesTable 
+                        serviceTotal={serviceTotal}
+                        inputValue={inputValue}
+                        services={services}
+                        // searchResults={searchResults}
+                        // searchTerm={searchTerm}
+                        //deleteService={deleteService} 
+                        editRow={editRow}
+                        />
+                    
                 </div>
               </div>
             </div>
-      </Fragment>
-       
-    );
+    )
 }
 
 export default Services
