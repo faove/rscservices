@@ -6,26 +6,33 @@ const dataInicial =  {
 }
 
 const GET_SERVICE = 'GET_SERVICE'
-const GET_SERVICE_DNI = 'GET_SERVICE_DNI'
 const GET_SERVICE_ID = 'GET_SERVICE_ID'
 const GET_SERVICE_NEXT = 'GET_SERVICE_NEXT'
 const POST_SERVICE_ADD = 'POST_SERVICE_ADD'
 const DELETE_SERVICE = 'DELETE_SERVICE'
 const UPDATE_SERVICE = 'UPDATE_SERVICE'
+const GET_SERVICE_ASSOC = 'GET_SERVICE_ASSOC'
 
 //reducer
 export default function serviceReducer(state = dataInicial, action){
     switch(action.type){
         case GET_SERVICE:  
-        // console.log('state')
-        // console.log(state)
+        console.log('state')
+        console.log(state)
             return {
                 ...state, 
                 array: action.payload.array
             }
         case GET_SERVICE_ID:  
-            // console.log('state')
-            // console.log(state)
+            console.log('state')
+            console.log(state)
+            return {
+                ...state, 
+                array: action.payload.array
+            }
+        case GET_SERVICE_ASSOC:  
+            console.log('state')
+            console.log(state)
             return {
                 ...state, 
                 array: action.payload.array
@@ -65,7 +72,7 @@ export const getService = () => async (dispatch, getState)  => {
     try{
         
         const {offset} = getState().service
-        const response = await axios.get(`http://localhost:8000/services?offset=${offset}&limit=20`)
+        const response = await axios.get(`http://localhost:8000/api/services?offset=${offset}&limit=20`)
         dispatch({
             type: GET_SERVICE,
             payload: {
@@ -87,7 +94,7 @@ export const getNextService = (numero) => async (dispatch, getState)  => {
         
         console.log('siguiente: ', siguiente)
 
-        const response = await axios.get(`http://localhost:8000/services?offset=${siguiente}&limit=20`)
+        const response = await axios.get(`http://localhost:8000/api/services?offset=${siguiente}&limit=20`)
         dispatch({
             type: GET_SERVICE_NEXT,
             payload: {
@@ -106,7 +113,7 @@ export const getNextService = (numero) => async (dispatch, getState)  => {
 export const getServiceId = (id) => async (dispatch)  => {
     try{
         // const {offset} = getState().Service
-        const response = await axios.get(`http://localhost:8000/services/${id}`)
+        const response = await axios.get(`http://localhost:8000/api/services/${id}`)
         dispatch({
             type: GET_SERVICE_ID,
             payload: {
@@ -120,12 +127,12 @@ export const getServiceId = (id) => async (dispatch)  => {
 }
 
 //Get Service dni current
-export const getServiceDNI = (dni) => async (dispatch)  => {
+export const getServiceAssoc = (id) => async (dispatch)  => {
     try{
         // const {offset} = getState().Service
-        const response = await axios.get(`http://localhost:8000/services/${dni}`)
+        const response = await axios.get(`http://localhost:8000/services/associate/${id}`)
         dispatch({
-            type: GET_SERVICE_DNI,
+            type: GET_SERVICE_ASSOC,
             payload: {
                 array: response.data
             }
@@ -137,8 +144,8 @@ export const getServiceDNI = (dni) => async (dispatch)  => {
 }
 
 //addService 
-export const addService = (category_id, areas_id, associate_id,
-    client_id, product_id,name_service, gross_amount, rate_fixed, date_service
+export const addService = (category_id,areas_id,associate_id,
+    client_id,product_id,name_service,gross_amount,rate_fixed,date_service
     ) => async (dispatch, getState)  => {
   try {
     console.log('addServiceDuck addService')
@@ -155,11 +162,9 @@ export const addService = (category_id, areas_id, associate_id,
     console.log(rate_fixed)
     console.log(date_service)
 
-    const response = await axios.post(
-      "http://localhost:8000/api/services",
+    const response = await axios.post(`http://localhost:8000/api/services`,
       {
-        category_id, areas_id, associate_id,
-        client_id, product_id,name_service, gross_amount, rate_fixed, date_service
+        category_id, areas_id, associate_id, client_id, product_id,name_service, gross_amount, rate_fixed, date_service
       }
     )
     dispatch({
@@ -181,7 +186,7 @@ export const addService = (category_id, areas_id, associate_id,
 export const deleteService = (id) => async (dispatch, getState) => {
     try {
         const response = await axios.delete(
-            `http://localhost:8000/services/${id}`          
+            `http://localhost:8000/api/services/${id}`          
         )
         dispatch({
             type: DELETE_SERVICE,
@@ -195,11 +200,11 @@ export const deleteService = (id) => async (dispatch, getState) => {
 }
 
 // updateService
-export const updateService = (id,name,last_name,dni,address,email) => async (dispatch, getState) => {
+export const updateService = (id,category_id, areas_id, associate_id, client_id, product_id,name_service, gross_amount, rate_fixed, date_service) => async (dispatch, getState) => {
 
     try {
         const response = await axios.put(
-        `http://localhost:8000/services/${id}`, {name,last_name,dni,address,email})
+        `http://localhost:8000/api/services/${id}`, {category_id, areas_id, associate_id, client_id, product_id,name_service, gross_amount, rate_fixed, date_service})
             dispatch({
             type: UPDATE_SERVICE,
             payload: {

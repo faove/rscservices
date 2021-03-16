@@ -5,7 +5,7 @@ import { useDispatch, useSelector} from 'react-redux';
 import { getClient } from '../redux/clientDuck';
 import { getCategory } from '../redux/categoryDuck';
 import { getAssociate } from '../redux/associateDuck';
-import { getServiceId, addService, updateService } from '../redux/serviceDuck';
+import { getServiceAssoc, addService, updateService } from '../redux/serviceDuck';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { unstable_createMuiStrictModeTheme as createMuiTheme, TextField } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -166,7 +166,7 @@ const Services = () => {
 
         if (typeof(svalue) !== 'undefined' && svalue != null) {
           console.log('Not Undefined and Not Null')
-          dispatch(getServiceId(svalue.id))
+          dispatch(getServiceAssoc(svalue.id))
           setServiceTotal(svalue)
         } else {
           console.log('Undefined or Null')
@@ -191,7 +191,8 @@ const Services = () => {
 
       console.log('data onSubmit')
       console.log(categorias)
-      const selectedDateService = format(selectedDate, 'MM/dd/yyyy')
+      const selectedDateService = format(selectedDate, 'MM/dd/yyyy h:mm:ss')
+      // const dateService = format(selectedDateService, 'YYYY/MM/dd')
       console.log(selectedDateService)
       console.log('modoEdicion')
       console.log(modoEdicion)
@@ -213,8 +214,10 @@ const Services = () => {
       console.log(parseInt(data.id))
       console.log('data.client_id')
       console.log(data.client_id)
-      console.log('data.rate_fixed')
-      console.log(data.rate_fixed)
+      console.log('data.dateService')
+      console.log(data.date_service)
+      console.log('fecha')
+      console.log(selectedDateService)
 
       // setValue('type_services_id', data.type_services_id);
       // setValue('mode_services_id', data.mode_services_id);
@@ -240,6 +243,8 @@ const Services = () => {
       // setValue('date_aplication', data.date_aplication);
       // setValue('date_pay', data.date_pay);
       // setValue('date_performance', data.date_performance);
+
+      
       
       if (modoEdicion){
 
@@ -254,7 +259,7 @@ const Services = () => {
       }
 
       // limpiar campos  ref={this.wrapper}
-      // e.target.reset();
+      e.target.reset();
     }
     // const wrapper = createRef(null);
     return (
@@ -426,19 +431,6 @@ const Services = () => {
                                     {errors.rate_fixed && errors.rate_fixed.message}
                                 </span>
                             </Grid>
-                            {/* <Controller
-                                control={control}
-                                name="date_service"
-                                render={({ onChange, onBlur, value }) => (
-                                <DatePicker
-                                    onBlur={onBlur}
-                                    ref={register}
-                                    selected={startDate} 
-                                    onChange={date => setStartDate(date)}
-                                />
-                                )}
-                                defaultValue={register}
-                            /> */}
                             
                             
                           </div>

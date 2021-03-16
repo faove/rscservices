@@ -34,14 +34,14 @@ const ServicesTable = (props) => {
     // console.log(valores.length > 0)
     // console.log(props.inputValue)
     // console.log('props.services')
-    // console.log(props.services)
+    console.log(props.services)
 
     for (let i = 0; i < props.services.length; i++) {
       var name_service = props.services[i].name_service;
       var id = props.services[i].id;
-      var phone_service = props.services[i].phone_service;
+      var date_service = props.services[i].date_service;
       // console.log(name_service);
-      valores.push({id: id, name_service:name_service, phone_service:phone_service});
+      valores.push({id: id, name_service:name_service, date_service:date_service});
     }
     console.log('props')
     console.log(valores)
@@ -92,7 +92,7 @@ const ServicesTable = (props) => {
           <thead>
           <tr>
               <th># Id</th>
-              <th>Service name</th>
+              <th>Associate</th>
               <th>Phone</th>
               <th>Date service</th>
               <th>Date aplication</th>
