@@ -1,20 +1,80 @@
 import React,{useState, Fragment, useEffect} from 'react'
 import { useDispatch, useSelector} from 'react-redux';
-import { getAssociate, addAssociate, deleteAssociate, updateAssociate } from '../redux/associateDuck';
+import { getAreas, addArea, deleteArea, updateArea } from '../redux/areaDuck';
+import { getCategory } from '../redux/categoryDuck';
 import { useForm } from 'react-hook-form';
+import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Swal from 'sweetalert2';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import RSelect from "react-select";
 
-const Associate = () => {
+const useStyles = makeStyles((theme) => ({
+    formControl: {
+      margin: theme.spacing(2),
+      minWidth: 220,
+    },
+    selectEmpty: {
+      marginTop: theme.spacing(3),
+    },
+    root: {
+      flexGrow: 1,
+    },
+    paper: {
+      padding: theme.spacing(2),
+      textAlign: 'center',
+      color: theme.palette.text.secondary,
+    },
+  }));
+
+  
+
+const Area = () => {
+
+    const classes = useStyles();
 
     //-------------------------------------------
-    const [asociados, setAsociados] = useState([])
+    const [areas, setAreas] = useState([])
     const [modoEdicion, setModoEdicion] = useState(false)
     const [refreshKey, setRefreshKey] = useState(0);
-    const asociado = useSelector(store => store.associate.array)
-    const {setValue, register, reset, errors, handleSubmit} = useForm({defaultValues: asociado});
+    const area = useSelector(store => store.area.array)
+    const category = useSelector(store => store.category.array)
+    const {setValue, register, reset, errors, handleSubmit} = useForm({defaultValues: area});
     const dispatch = useDispatch()
+    const [categorias, setCategorias] = useState('');
+    const [status, setStatus] = useState('');
+    const [selectedOption, setSelectedOption] = useState("none");
+
+    const options = [
+        { value: "none", label: "Empty" },
+        { value: "1", label: "Enable" },
+        { value: "0", label: "Disable" }
+    ];
+
+    const handleTypeSelect = e => {
+        setSelectedOption(e.value);
+        console.log('handleTypeSelect');
+        console.log(selectedOption);
+    };
+    //Controla la seleccionde la Category
+    const handleChangeCategory = (event) => {
+
+        setCategorias(Number(event.target.value))
+        // console.log('handleChangeCategory:')
+        // console.log(categorias)
+        // console.log(Number(event.target.value))
+  
+    };
+
+    const handleChangeStatus = (event) => {
+        this.setStatus({value: event.target.value});
+        console.log('handleChangeStatus');
+        console.log(status);
+    };
 
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
@@ -22,7 +82,7 @@ const Associate = () => {
           cancelButton: 'btn btn-danger'
         },
         buttonsStyling: false
-      })
+    })
 
     const HandleButtonDelete = (id,name,lastname) =>{
 
@@ -36,10 +96,10 @@ const Associate = () => {
             reverseButtons: true
           }).then((result) => {
             if (result.isConfirmed) {
-                dispatch(deleteAssociate(id,name,lastname));
+                dispatch(deleteArea(id,name));
               swalWithBootstrapButtons.fire(
                 'Deleted!',
-                `Your Associate ${name} ${lastname} has been deleted.`,
+                `Your Area ${name} has been deleted.`,
                 'success'
               )
             } else if (
@@ -51,11 +111,10 @@ const Associate = () => {
               )
             }
           })
-
     }
     
 
-    const eliminarAsociado = (id,name,last_name) => {
+    const eliminarArea = (id,name,last_name) => {
         HandleButtonDelete(id,name,last_name)
     }
 
@@ -65,8 +124,12 @@ const Associate = () => {
     }
 
     useEffect(() => {
-        dispatch(getAssociate());
+        dispatch(getAreas());
     },[refreshKey])
+
+    useEffect(() => {
+        dispatch(getCategory());
+      }, []);
 
     const onSubmit = (data, e) => {
 
@@ -74,28 +137,25 @@ const Associate = () => {
             console.log('Campo vacio')
             return
         }
-        setAsociados([
-            ...asociados,
+        console.log(selectedOption);
+        setAreas([
+            ...areas,
             {name: data.name,
-            last_name: data.last_name,
-            dni: data.dni,
-            address: data.address,
-            email: data.email}
+            category_id: categorias,
+            status: selectedOption}
         ])
-
+        
         setValue('name', data.name);
-        setValue('last_name', data.last_name);
-        setValue('dni', data.dni);
-        setValue('address', data.address);
-        setValue('email', data.email);
+        setValue('category_id', categorias);
+        setValue('status', selectedOption);
         setRefreshKey(oldKey => oldKey +1)
         
         if (modoEdicion){
-            dispatch(updateAssociate(data.id,data.name,data.last_name,data.dni,data.address,data.email));
+            dispatch(updateArea(data.id,categorias,data.name,selectedOption));
             setModoEdicion(false)
-
+            
         }else{
-            dispatch(addAssociate(data.name,data.last_name,data.dni,data.address,data.email));
+            dispatch(addArea(categorias,data.name,selectedOption));
         }
         
         // limpiar campos
@@ -104,22 +164,22 @@ const Associate = () => {
     return (
         <Fragment>
             <div className="container mt-5">
-            <h1 className="text-center">Associates</h1>
+            <h1 className="text-center">Areas</h1>
             <hr/>
             <div className="row">
                 <div className="col-7">
-                <h4 className="text-center">Lista de Asociados</h4>
+                <h4 className="text-center">Lista de Areas</h4>
                 <ul className="list-group">
                     {
-                        asociado.length === 0 ? (
-                            <li className="list-group-item">Sin Asociados</li>
+                        area.length === 0 ? (
+                            <li className="list-group-item">Sin Areas</li>
                         ) : (
-                            asociado.map(items => (
+                            area.map(items => (  
                                 <li className="list-group-item" key={items.id}>
-                                <span className="lead">{items.name} {items.last_name} {items.email}</span>
+                                <span className="lead">{items.id} {items.name} {items.category_id} {items.status=true ? 'Enable' : 'Disable'}</span>
                                 <Button variant="contained" color="secondary"
                                 className="btn btn-sm btn-danger float-right mx-2"
-                                onClick={() => eliminarAsociado(items.id,items.name,items.last_name)
+                                onClick={() => eliminarArea(items.id,items.name,items.category_id)
                                 }
                                 startIcon={<DeleteIcon/>}
                                 >
@@ -141,7 +201,7 @@ const Associate = () => {
             <div className="col-5">
                     <h4 className="text-center">
                         {
-                        modoEdicion ? 'Editar Asociado' : 'Agregar Asociado'
+                        modoEdicion ? 'Editar Area' : 'Agregar Area'
                         }
                     </h4>
                     <form onSubmit={handleSubmit(onSubmit)}>
@@ -154,10 +214,28 @@ const Associate = () => {
                         />
                         <div className="row">
                             <div className="col-6">
+                                <FormControl className={classes.formControl}>
+                                  <InputLabel id="select-label-category">Category</InputLabel>
+                                    <Select
+                                      labelId="select_category_label"
+                                      id="select_category"
+                                    //   value={category}    
+                                      value={categorias === -1 ? '' : categorias}
+                                      onChange={handleChangeCategory}
+                                    >
+                                    {
+                                      category.map((categ, index) => (
+                                        <MenuItem  key={index} value={categ.id}>
+                                          {categ.name}
+                                        </MenuItem>
+                                      ))
+                                    }
+                                    </Select>
+                                </FormControl>
                                 <input 
                                     type="text" 
                                     className="form-control mb-2"
-                                    placeholder="Name Associate"
+                                    placeholder="Name Area"
                                     name="name" id="name"
                                     ref={register({
                                         required: {
@@ -165,8 +243,8 @@ const Associate = () => {
                                             message: 'Name es requerido'
                                             }
                                     })}
-                                    // onChange={e => setAsociado(e.target.value)}
-                                    // value={asociado.name}
+                                    // onChange={e => setArea(e.target.value)}
+                                    // value={area.name}
                                 />
                                 <div>
                                 <span className="text-danger text-small d-block mb-2">
@@ -174,79 +252,36 @@ const Associate = () => {
                                 </span>
                                 </div>
                             </div>
-                            <div className="col-6">
-                                <input 
-                                    type="text" 
-                                    className="form-control mb-2"
-                                    placeholder="Last Name Associate"
-                                    name="last_name" id="last_name"
-                                    ref={register({
-                                        required: {
-                                            value: true, 
-                                            message: 'Last name es requerido'
-                                            }
-                                    })}
-                                    // onChange={e => setAsociado(e.target.value)}
-                                    // value={asociado.last_name}
-                                />
-                                <span className="text-danger text-small d-block mb-2">
-                                    {errors?.last_name?.message}
-                                </span>
-                            </div>
                         </div>
+
                         <div className="row">
-                            <div className="col-12">
-                                <input 
-                                    type="text" 
-                                    className="form-control mb-2"
-                                    placeholder="Address"
-                                    name="address" id="address"
-                                    ref={register({
-                                        required: {
-                                            value: true, 
-                                            message: 'Address es requerido'
-                                            }
-                                    })}
-                                />
-                                <div>
-                                    <span className="text-danger text-small d-block mb-2">
-                                        {errors?.address?.message}
-                                    </span>
-                                </div>
-                                
-                            </div>
-                        </div>
-                        <div className="row">
+                            
                             <div className="col-6">
-                                <select className="form-select form-select-sm" 
+                                <RSelect
+                                    name="status" id="status"
+                                    options={options}
+                                    onChange={handleTypeSelect}
+                                    value={options.filter(function(option) {
+                                    return option.value === selectedOption;
+                                    })}
+                                    label="Single select"
+                                />
+                                {/* <select className="form-select form-select-sm" 
                                 aria-label=".form-select-sm example"
                                 ref={register}
-                                name="gender" id="gender"
+                                
+                                value={status.value}
+                                onChange={handleChangeStatus}
                                 >
-                                <option value="M">Masculino</option>
-                                <option value="F">Femenino</option>
-                                </select>
+                                <option value={true}>Enable</option>
+                                <option value={false}>Disable</option>
+                                </select> */}
                                 <span className="text-danger text-small d-block mb-2">
-                                    {errors?.gender?.message}
+                                    {errors?.status?.message}
                                 </span>
-                            </div>
-                            <div className="col-6">
-                                <input 
-                                    type="text" 
-                                    className="form-control mb-2"
-                                    placeholder="Email"
-                                    name="email" id="email"
-                                    ref={register({
-                                        required: "Required",
-                                        pattern: {
-                                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                          message: "Invalid email address"
-                                        }
-                                    })}
-                                />
                                 <div>
                                     <span className="text-danger text-small d-block mb-2">
-                                        {errors?.email?.message}
+                                        {errors?.status?.message}
                                     </span>
                                 </div>
                                 
@@ -269,4 +304,4 @@ const Associate = () => {
     )
 }
 
-export default Associate
+export default Area

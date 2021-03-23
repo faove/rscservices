@@ -34,17 +34,26 @@ const ServicesTable = (props) => {
     // console.log(valores.length > 0)
     // console.log(props.inputValue)
     // console.log('props.services')
-    console.log(props.services)
+    console.log('props.currentServiceAssoc',props.currentServiceAssoc.length)
 
-    for (let i = 0; i < props.services.length; i++) {
-      var name_service = props.services[i].name_service;
-      var id = props.services[i].id;
-      var date_service = props.services[i].date_service;
-      // console.log(name_service);
-      valores.push({id: id, name_service:name_service, date_service:date_service});
-    }
+    // props.services.map((service,index) => (
+    //   // console.log(service.id)
+    //   valores=service
+    //   // valores.push({id: service.id, name_service:service.name_service, date_service:service.date_service});
+    // ))
+
+    // for (let i = 0; i < props.services.length; i++) {
+    //     var name_service = props.services[i].name_service;
+    //     var id = props.services[i].id;
+    //     var date_service = props.services[i].date_service;
+    //     // console.log(name_service);
+    //     valores.push({id: id, name_service:name_service, date_service:date_service});
+    // }
     console.log('props')
-    console.log(valores)
+    // props.services.map( (servi,idx)  => (
+    //   <div key = {idx}>{servi}</div>
+    // ))
+    
     // Array.from(props.svalue).forEach(child => {
     //   console.log(child)
     // });
@@ -93,7 +102,7 @@ const ServicesTable = (props) => {
           <tr>
               <th># Id</th>
               <th>Associate</th>
-              <th>Phone</th>
+              <th>Category</th>
               <th>Date service</th>
               <th>Date aplication</th>
               <th>Actions</th>
@@ -101,14 +110,14 @@ const ServicesTable = (props) => {
           </thead>
           <tbody>
           {
-               valores.length > 0 ?
-                valores.map(servi  => (
+               props.currentServiceAssoc.length > 0 ?
+               props.currentServiceAssoc.map( (servi,idx)  => (
                       <tr key={servi.id}>
                       <td>{servi.id}</td>
-                      <td>{servi.name_service}</td>
-                      <td>{servi.phone_service}</td>
+                      <td>{servi.name_associates}</td>
+                      <td>{servi.name_categories}</td>
                       <td>{servi.date_service}</td>
-                      <td>{servi.date_aplication}</td>
+                      <td>{servi.rate_fixed}</td>
                       <td>
                           <Button variant="outlined" color="primary"
                               onClick={

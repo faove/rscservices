@@ -7,6 +7,8 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
 import Associate from './Associate';
+import Area from './Area';
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -85,7 +87,7 @@ export default function Setting() {
         Category
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Areas
+        <Area />
       </TabPanel>
       <TabPanel value={value} index={3}>
         User

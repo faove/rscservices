@@ -31,8 +31,8 @@ export default function serviceReducer(state = dataInicial, action){
                 array: action.payload.array
             }
         case GET_SERVICE_ASSOC:  
-            console.log('state')
-            console.log(state)
+            console.log('GET_SERVICE_ASSOC')
+            console.log(action.payload.array)
             return {
                 ...state, 
                 array: action.payload.array
@@ -126,7 +126,7 @@ export const getServiceId = (id) => async (dispatch)  => {
     }
 }
 
-//Get Service dni current
+//Get Service con el id del client current
 export const getServiceAssoc = (id) => async (dispatch)  => {
     try{
         // const {offset} = getState().Service

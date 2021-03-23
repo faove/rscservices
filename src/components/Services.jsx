@@ -64,15 +64,18 @@ const Services = () => {
 
     const dispatch = useDispatch()
 
-    const [editing, setEditing] = useState(false);
-    const [serviceTotal, setServiceTotal] = useState([]);
-    const [currentService, setCurrentService] = useState([]);
+    const [editing, setEditing] = useState(false)
+    const [serviceTotal, setServiceTotal] = useState([])
+    const [currentService, setCurrentService] = useState([])
+    const [currentServiceAssoc, setCurrentServiceAssoc] = useState([])
     const [modoEdicion, setModoEdicion] = useState(false)
+    const [serviceChange, setServiceChange] = useState(false)
 
     const client = useSelector(store => store.client.array)
     const associate = useSelector(store => store.associate.array)
-    const services = useSelector(store => store.service.array)
+    const service = useSelector(store => store.service.array)
     const category = useSelector(store => store.category.array)
+    const area = useSelector(store => store.category.array)
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [startDate, setStartDate] = useState(new Date());
@@ -81,6 +84,13 @@ const Services = () => {
     const [inputValue, setInputValue] = useState('');
     const [categorias, setCategorias] = useState('');
     const [asociados, setAsociados] = useState('');
+    const [areas, setAreas] = useState('');
+
+
+
+    // const {resp} = service[0].service;
+
+
 
     //Manejo Date
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -93,29 +103,77 @@ const Services = () => {
     const handleChangeCategory = (event) => {
 
       setCategorias(Number(event.target.value))
-      console.log('handleChangeCategory:')
-      console.log(categorias)
-      console.log(Number(event.target.value))
+      // console.log('handleChangeCategory:')
+      // console.log(categorias)
+      // console.log(Number(event.target.value))
 
     };
 
+    //Controla la seleccionde la Category
+    const handleChangeAreas = (event) => {
+
+      setAreas(Number(event.target.value))
+      console.log('handleChangeAreas:')
+      console.log(areas)
+      console.log(Number(event.target.value))
+
+    };
     //Controla la seleccion de Associates
     const handleChangeAssociate = (event) => {
       
       setAsociados(Number(event.target.value))
-      console.log('handleChangeAssociate:')
-      console.log(asociados)
-      console.log(Number(event.target.value))
+      // console.log('handleChangeAssociate:')
+      // console.log(asociados)
+      // console.log(Number(event.target.value))
       
     };
 
     //Este useEffect funciona como DidMount al momento de pintar todos los object
     useEffect(() => {
-      console.log('mounted')
+      // console.log('mounted')
       dispatch(getCategory());
       dispatch(getAssociate());
-      console.log(associate)
+      // console.log(associate)
     }, []);
+
+    useEffect(() => {
+      console.log('cambio service',service);
+      // setCurrentService([
+      //   ...currentService,
+      //       { 
+      //       id: service.id, category_id: service.category_id,
+      //       associate_id: service.associate_id,
+      //       name: service.name,last_name: service.last_name,email: service.email,
+      //       client_id: service.client_id, rate_fixed: service.rate_fixed,
+      //       date_service: service.date_service
+      //     }
+      // ])
+      // const {resp} = service;
+      // setCurrentService(
+      //   [...currentService,{service[0].service}]
+      // )
+      setCurrentServiceAssoc(
+        [...service]
+      )
+      console.log('currentService useEffect',currentServiceAssoc);
+
+    }, [service]);
+
+    //Indica modificacion en los servicios
+    const servicesChange = (id) => {
+      dispatch(getServiceAssoc(id))
+      
+      //setCurrentService([])
+
+      // setCurrentService([
+        //   ...currentService,
+        //   { id: id,	name: name,	last_name:last_name, email: email,
+        //     date_service: date_service, rate_fixed: rate_fixed}
+        // ])
+      console.log('CAll servicesChange -> currentService');
+      console.log('servicesChange',id);
+      console.log('servicesChange',currentService);
+    }
 
     //Controla el Autocomplete
     const handleChange = event => {
@@ -133,18 +191,16 @@ const Services = () => {
 
       setEditing(true);
       setModoEdicion(true);
-      setCurrentService(
-        { 
-          id: service.id,	category_id: service.category_id,
-          areas_id: service.areas_id,	associate_id: service.associate_id,
-          client_id: service.client_id, name_service: service.name_service, rate_variable: service.rate_variable,
-          rate_fixed: service.rate_fixed,	rate_process: service.rate_process,	phone_service: service.phone_service,
-          chat_service: service.chat_service,	chat_service_name: service.chat_service_name, fee_service: service.fee_service,
-          date_service: service.date_service,	date_aplication: service.date_aplication, date_pay: service.date_pay,
-          date_performance: service.date_performance
-
-        }
-      )
+      // setCurrentService(
+      //   { 
+      //     id: service.id,	name: service.name,
+      //     last_name: service.last_name,	email: service.email,
+      //     rate_fixed: service.rate_fixed,
+      //     date_service: service.date_service
+      //   }
+      // )
+      console.log('--------------------------editRow---------------------');
+      console.log(currentService);
     }
 
     const handleClient =  e => {
@@ -153,7 +209,7 @@ const Services = () => {
 
         setSValue(svalue)
 
-        console.log(svalue)
+        // console.log(svalue)
         // const array = searchResults.filter(item => item.dni === parseInt(str))
         // setSearchResults(results)
         // console.log(array.dni)
@@ -165,19 +221,27 @@ const Services = () => {
         reset(svalue)
 
         if (typeof(svalue) !== 'undefined' && svalue != null) {
-          console.log('Not Undefined and Not Null')
-          dispatch(getServiceAssoc(svalue.id))
-          setServiceTotal(svalue)
+
+          console.log('Not Undefined and Not Null',svalue.id)
+
+          servicesChange(svalue.id)
+          // dispatch(getServiceAssoc(svalue.id))
+          // setCurrentService(
+          //   [...currentService,
+          //   {service}]
+          // )
+          // setServiceTotal(svalue)
         } else {
           console.log('Undefined or Null')
-          setServiceTotal([])
+          // setServiceTotal([])
+          //setCurrentService([])
         }
-        console.log(services)
+        console.log('handleClient',currentService);
     }
 
 
     useEffect(() => {
-        console.log('useeEffect')
+        console.log('useeEffect select client')
         dispatch(getClient());
         
         const results = client.filter(searchclient =>
@@ -199,25 +263,40 @@ const Services = () => {
       console.log('asociados')
       console.log(asociados)
 
-      setCurrentService([
-        ...currentService,
-        { category_id: categorias,	areas_id: 1,	associate_id: asociados,
-          client_id: parseInt(data.id), product_id: 1, name_service: data.name_service, rate_variable: data.rate_variable,
-          rate_fixed: data.rate_fixed,	rate_process: data.rate_process,	phone_service: data.phone_service,
-          chat_service: data.chat_service,	chat_service_name: data.chat_service_name, fee_service: data.fee_service,
-          date_service: selectedDateService,	date_aplication: data.date_aplication, date_pay: data.date_pay,
-          date_performance: data.date_performance}
+      if(!data.name.trim()){
+        console.log('Campo vacio')
+        return
+      }
+
+
+      setCurrentServiceAssoc([
+        ...currentServiceAssoc,
+            { 
+            id: parseInt(data.id), category_id: categorias,associate_id: asociados,
+            name: data.name,last_name: data.last_name,
+            client_id: data.client_id, rate_fixed: data.rate_fixed,
+            date_service: selectedDateService
+          }
       ])
-      console.log('currentService')
-      console.log(currentService)
-      console.log('data.id')
-      console.log(parseInt(data.id))
-      console.log('data.client_id')
-      console.log(data.client_id)
-      console.log('data.dateService')
-      console.log(data.date_service)
-      console.log('fecha')
-      console.log(selectedDateService)
+      // setCurrentService([
+      //   ...currentService,
+      //   { category_id: categorias,	areas_id: 1,	associate_id: asociados,
+      //     client_id: parseInt(data.id), product_id: 1, name_service: data.name_service, rate_variable: data.rate_variable,
+      //     rate_fixed: data.rate_fixed,	rate_process: data.rate_process,	phone_service: data.phone_service,
+      //     chat_service: data.chat_service,	chat_service_name: data.chat_service_name, fee_service: data.fee_service,
+      //     date_service: selectedDateService,	date_aplication: data.date_aplication, date_pay: data.date_pay,
+      //     date_performance: data.date_performance}
+      // ])
+      console.log('currentServiceAssoc')
+      console.log(currentServiceAssoc)
+      // console.log('data.id')
+      // console.log(parseInt(data.id))
+      // console.log('data.client_id')
+      // console.log(data.client_id)
+      // console.log('data.dateService')
+      // console.log(data.date_service)
+      // console.log('fecha')
+      // console.log(selectedDateService)
 
       // setValue('type_services_id', data.type_services_id);
       // setValue('mode_services_id', data.mode_services_id);
@@ -257,6 +336,13 @@ const Services = () => {
             data.areas_id, asociados, parseInt(data.id), data.product_id,
             data.name_service, data.gross_amount, data.rate_fixed, selectedDateService));
       }
+
+      //Update or add new service
+      servicesChange(data.id)
+      // setCurrentService(
+      //   [...currentService,
+      //   {service}]
+      // )
 
       // limpiar campos  ref={this.wrapper}
       e.target.reset();
@@ -452,9 +538,9 @@ const Services = () => {
                       <h2>View Service</h2>
                 
                       <ServicesTable 
-                        serviceTotal={serviceTotal}
-                        inputValue={inputValue}
-                        services={services}
+                        // serviceTotal={serviceTotal}
+                        // inputValue={inputValue}
+                        currentServiceAssoc={currentServiceAssoc}
                         // searchResults={searchResults}
                         // searchTerm={searchTerm}
                         //deleteService={deleteService} 

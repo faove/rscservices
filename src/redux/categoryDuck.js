@@ -140,9 +140,6 @@ export const addCategory = (name,last_name,dni,address,email) => async (dispatch
 //deleteClient
 export const  deleteCategory = (id) => async (dispatch, getState) => {
     try {
-        // console.log('clienteDuck deleteClient')
-        // console.log(id)
-        // console.log(getState().client)
 
 
         const response = await axios.delete(
@@ -155,13 +152,6 @@ export const  deleteCategory = (id) => async (dispatch, getState) => {
             }
             
         }) 
-        // const data = await response;
-
-        // console.log('delete Client')
-        // console.log(data)
-        
-        //   const arrayFilter = cliente.filter(client => client.id !== id);
-        //   setCliente(arrayFilter);
 
     }catch (error){
       console.log(error)
@@ -172,9 +162,6 @@ export const  deleteCategory = (id) => async (dispatch, getState) => {
 export const updateCategory = (id,updatedCategory) => async (dispatch, getState) => {
 
 try {
-    // console.log('export update Categorye')
-    // console.log(id,updatedCategory)
-    //setEditing(false);
     const response = await axios.put(
     `http://localhost:8000/api/categories/${id}`, updatedCategory)
         dispatch({

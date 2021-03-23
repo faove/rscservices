@@ -68,3 +68,19 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+### npm i react-select   
+### npm i @material-ui/pickers
+### npm i --save date-fns@next @date-io/date-fns@1.x
+### npm i date-fns
+### npm i react-window
+### npm install fontsource-roboto
+### npm install sweetalert 
+### npm install @material-ui/icons
+### npm i redux-devtools redux-thunk
+### npm install react-hook-form 
+### npm i react-route-dom
+### npm install -g @angular/cli 
+### npm install animate.css --save
+
