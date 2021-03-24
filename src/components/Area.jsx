@@ -2,6 +2,7 @@ import React,{useState, Fragment, useEffect} from 'react'
 import { useDispatch, useSelector} from 'react-redux';
 import { getAreas, addArea, deleteArea, updateArea } from '../redux/areaDuck';
 import { getCategory } from '../redux/categoryDuck';
+import { getStatus } from '../redux/typestatusDuck'
 import { useForm } from 'react-hook-form';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -11,7 +12,6 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
-import RSelect from "react-select";
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -42,38 +42,31 @@ const Area = () => {
     const [modoEdicion, setModoEdicion] = useState(false)
     const [refreshKey, setRefreshKey] = useState(0);
     const area = useSelector(store => store.area.array)
+    const showstatus = useSelector(store => store.showstatus.array)
     const category = useSelector(store => store.category.array)
     const {setValue, register, reset, errors, handleSubmit} = useForm({defaultValues: area});
     const dispatch = useDispatch()
     const [categorias, setCategorias] = useState('');
-    const [status, setStatus] = useState('');
-    const [selectedOption, setSelectedOption] = useState("none");
+    const [status, setStatus] = useState(0);
 
-    const options = [
-        { value: "none", label: "Empty" },
-        { value: "1", label: "Enable" },
-        { value: "0", label: "Disable" }
-    ];
-
-    const handleTypeSelect = e => {
-        setSelectedOption(e.value);
-        console.log('handleTypeSelect');
-        console.log(selectedOption);
-    };
+    
     //Controla la seleccionde la Category
     const handleChangeCategory = (event) => {
 
         setCategorias(Number(event.target.value))
-        // console.log('handleChangeCategory:')
-        // console.log(categorias)
-        // console.log(Number(event.target.value))
+        console.log('handleChangeCategory:')
+        console.log(categorias)
+        console.log(Number(event.target.value))
   
     };
 
     const handleChangeStatus = (event) => {
-        this.setStatus({value: event.target.value});
+        console.log('Status');
+        console.log(status);
+        setStatus(event.target.value)
         console.log('handleChangeStatus');
         console.log(status);
+        console.log(event.target.value);
     };
 
     const swalWithBootstrapButtons = Swal.mixin({
@@ -119,16 +112,29 @@ const Area = () => {
     }
 
     const editar = items => {
+        console.log('Items----')
+        console.log(items)
+        setCategorias(items.category_id)
+        
+        setStatus(items.status)
+        console.log(items.status)
         reset(items)
         setModoEdicion(true)
     }
 
+    // useEffect(() => {
+    //   setStatus(status)
+    //   console.log('-------status----')
+    //   console.log(status)
+    // },[status])
+
     useEffect(() => {
-        dispatch(getAreas());
+      dispatch(getAreas());
     },[refreshKey])
 
     useEffect(() => {
         dispatch(getCategory());
+        dispatch(getStatus());
       }, []);
 
     const onSubmit = (data, e) => {
@@ -137,25 +143,24 @@ const Area = () => {
             console.log('Campo vacio')
             return
         }
-        console.log(selectedOption);
         setAreas([
             ...areas,
             {name: data.name,
             category_id: categorias,
-            status: selectedOption}
+            status: status}
         ])
         
         setValue('name', data.name);
         setValue('category_id', categorias);
-        setValue('status', selectedOption);
+        setValue('status', status);
         setRefreshKey(oldKey => oldKey +1)
         
         if (modoEdicion){
-            dispatch(updateArea(data.id,categorias,data.name,selectedOption));
+            dispatch(updateArea(data.id,categorias,data.name,status));
             setModoEdicion(false)
             
         }else{
-            dispatch(addArea(categorias,data.name,selectedOption));
+            dispatch(addArea(categorias,data.name,status));
         }
         
         // limpiar campos
@@ -176,7 +181,7 @@ const Area = () => {
                         ) : (
                             area.map(items => (  
                                 <li className="list-group-item" key={items.id}>
-                                <span className="lead">{items.id} {items.name} {items.category_id} {items.status=true ? 'Enable' : 'Disable'}</span>
+                                <span className="lead">{items.id} {items.name} {items.category_id} {items.status}</span>
                                 <Button variant="contained" color="secondary"
                                 className="btn btn-sm btn-danger float-right mx-2"
                                 onClick={() => eliminarArea(items.id,items.name,items.category_id)
@@ -257,32 +262,27 @@ const Area = () => {
                         <div className="row">
                             
                             <div className="col-6">
-                                <RSelect
-                                    name="status" id="status"
-                                    options={options}
-                                    onChange={handleTypeSelect}
-                                    value={options.filter(function(option) {
-                                    return option.value === selectedOption;
-                                    })}
-                                    label="Single select"
-                                />
-                                {/* <select className="form-select form-select-sm" 
-                                aria-label=".form-select-sm example"
-                                ref={register}
-                                
-                                value={status.value}
-                                onChange={handleChangeStatus}
-                                >
-                                <option value={true}>Enable</option>
-                                <option value={false}>Disable</option>
-                                </select> */}
-                                <span className="text-danger text-small d-block mb-2">
-                                    {errors?.status?.message}
-                                </span>
+                                <FormControl className={classes.formControl}>
+                                  <InputLabel id="select-label-status">Status</InputLabel>
+                                    <Select
+                                      labelId="select_status_label"
+                                      id="select_status"   
+                                      value={status === -1 ? '' : status}
+                                      onChange={handleChangeStatus}
+                                    >
+                                    {
+                                      showstatus.map((st, index) => (
+                                        <MenuItem  key={index} value={st.id}>
+                                          {st.name}
+                                        </MenuItem>
+                                      ))
+                                    }
+                                    </Select>
+                                </FormControl>
                                 <div>
-                                    <span className="text-danger text-small d-block mb-2">
-                                        {errors?.status?.message}
-                                    </span>
+                                  <span className="text-danger text-small d-block mb-2">
+                                      {errors?.select_status?.message}
+                                  </span>
                                 </div>
                                 
                             </div>

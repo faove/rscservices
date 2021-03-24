@@ -6,6 +6,7 @@ import areaReducer from './areaDuck'
 import serviceReducer from './serviceDuck'
 import categoryReducer from './categoryDuck'
 import productReducer from './productDuck'
+import typestatusReducer from './typestatusDuck'
 
 const rootReducer = combineReducers({
 
@@ -13,9 +14,9 @@ const rootReducer = combineReducers({
     associate : associateReducer,
     area : areaReducer,
     service : serviceReducer,
+    showstatus : typestatusReducer,
     category: categoryReducer,
     product : productReducer
-    //user : userRedux
 })
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
