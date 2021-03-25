@@ -10,6 +10,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Swal from 'sweetalert2';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 
@@ -47,6 +48,7 @@ const Area = () => {
     const {setValue, register, reset, errors, handleSubmit} = useForm({defaultValues: area});
     const dispatch = useDispatch()
     const [categorias, setCategorias] = useState('');
+    const [name, setName] = useState('');
     const [status, setStatus] = useState(0);
 
     
@@ -59,6 +61,10 @@ const Area = () => {
         console.log(Number(event.target.value))
   
     };
+
+    const handleChangeName = (event) => {
+      setName(event.target.value)
+    }
 
     const handleChangeStatus = (event) => {
         console.log('Status');
@@ -117,7 +123,8 @@ const Area = () => {
         setCategorias(items.category_id)
         
         setStatus(items.status)
-        console.log(items.status)
+        setName(items.name)
+        console.log(items.name)
         reset(items)
         setModoEdicion(true)
     }
@@ -139,28 +146,28 @@ const Area = () => {
 
     const onSubmit = (data, e) => {
 
-        if(!data.name.trim()){
+        if(!name.trim()){
             console.log('Campo vacio')
             return
         }
         setAreas([
             ...areas,
-            {name: data.name,
+            {name: name,
             category_id: categorias,
             status: status}
         ])
         
-        setValue('name', data.name);
+        setValue('name', name);
         setValue('category_id', categorias);
         setValue('status', status);
         setRefreshKey(oldKey => oldKey +1)
         
         if (modoEdicion){
-            dispatch(updateArea(data.id,categorias,data.name,status));
+            dispatch(updateArea(data.id,categorias,name,status));
             setModoEdicion(false)
             
         }else{
-            dispatch(addArea(categorias,data.name,status));
+            dispatch(addArea(categorias,name,status));
         }
         
         // limpiar campos
@@ -237,20 +244,31 @@ const Area = () => {
                                     }
                                     </Select>
                                 </FormControl>
-                                <input 
-                                    type="text" 
-                                    className="form-control mb-2"
-                                    placeholder="Name Area"
-                                    name="name" id="name"
-                                    ref={register({
-                                        required: {
-                                            value: true, 
-                                            message: 'Name es requerido'
-                                            }
-                                    })}
+                                <TextField 
+                                  id="name"  
+                                  name="name" multiline={true}
+                                  rows={2}
+                                  fullWidth={true}
+                                  style = {{width: 300}}
+                                  label="Area Name" 
+                                  variant="outlined" 
+                                  value={name}
+                                  onChange={handleChangeName}
+                                />
+                                {/* <input 
+                                    // type="text" 
+                                    // className="form-control mb-2"
+                                    // placeholder="Name Area"
+                                    // name="name" id="name"
+                                    // ref={register({
+                                    //     required: {
+                                    //         value: true, 
+                                    //         message: 'Name es requerido'
+                                    //         }
+                                    // })}
                                     // onChange={e => setArea(e.target.value)}
                                     // value={area.name}
-                                />
+                                /> */}
                                 <div>
                                 <span className="text-danger text-small d-block mb-2">
                                     {errors?.name?.message}
