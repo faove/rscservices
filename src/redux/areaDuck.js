@@ -157,10 +157,6 @@ export const  deleteArea = (id) => async (dispatch, getState) => {
 export const updateArea = (id,category_id,name,status) => async (dispatch, getState) => {
 
     try {
-        console.log('export update Area')
-        console.log(id)
-        console.log(category_id,name,status)
-        //setEditing(false);
         const response = await axios.put(
         `http://localhost:8000/api/areas/${id}`, {category_id,name,status})
             dispatch({

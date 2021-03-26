@@ -8,11 +8,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Swal from 'sweetalert2';
+import { capitalize } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
+
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -56,14 +58,12 @@ const Area = () => {
     const handleChangeCategory = (event) => {
 
         setCategorias(Number(event.target.value))
-        console.log('handleChangeCategory:')
-        console.log(categorias)
-        console.log(Number(event.target.value))
+        
   
     };
 
     const handleChangeName = (event) => {
-      setName(event.target.value)
+        setName(event.target.value.toLocaleUpperCase())
     }
 
     const handleChangeStatus = (event) => {
@@ -136,6 +136,8 @@ const Area = () => {
     // },[status])
 
     useEffect(() => {
+      console.log('llamado a getAreas')
+      console.log(areas)
       dispatch(getAreas());
     },[refreshKey])
 
@@ -146,21 +148,25 @@ const Area = () => {
 
     const onSubmit = (data, e) => {
 
-        if(!name.trim()){
-            console.log('Campo vacio')
-            return
-        }
+        // if(!name.trim()){
+        //     console.log('Campo vacio')
+        //     return
+        // }
+        console.log('onSubmit')
+        console.log(data)
+        console.log(name,categorias,status)
+
         setAreas([
             ...areas,
             {name: name,
             category_id: categorias,
             status: status}
         ])
-        
+        setValue('id', data.id);
         setValue('name', name);
         setValue('category_id', categorias);
         setValue('status', status);
-        setRefreshKey(oldKey => oldKey +1)
+        
         
         if (modoEdicion){
             dispatch(updateArea(data.id,categorias,name,status));
@@ -169,7 +175,10 @@ const Area = () => {
         }else{
             dispatch(addArea(categorias,name,status));
         }
-        
+        setCategorias(-1)
+        setName(-1)
+        setStatus(-1)
+        setRefreshKey(oldKey => oldKey + 1)
         // limpiar campos
         e.target.reset();
     }
@@ -188,7 +197,7 @@ const Area = () => {
                         ) : (
                             area.map(items => (  
                                 <li className="list-group-item" key={items.id}>
-                                <span className="lead">{items.id} {items.name} {items.category_id} {items.status}</span>
+                                <span className="lead">{items.id} {items.name}</span>
                                 <Button variant="contained" color="secondary"
                                 className="btn btn-sm btn-danger float-right mx-2"
                                 onClick={() => eliminarArea(items.id,items.name,items.category_id)
@@ -252,7 +261,7 @@ const Area = () => {
                                   style = {{width: 300}}
                                   label="Area Name" 
                                   variant="outlined" 
-                                  value={name}
+                                  value={name === -1 ? '' :name}
                                   onChange={handleChangeName}
                                 />
                                 {/* <input 
