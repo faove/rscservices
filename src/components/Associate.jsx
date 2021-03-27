@@ -39,7 +39,6 @@ const Associate = () => {
     const asociado = useSelector(store => store.associate.array)
     const {setValue, register, reset, errors, handleSubmit} = useForm({defaultValues: asociado});
     const dispatch = useDispatch()
-    
     const genero = [{id: 1, name:'Masculino'},{id: 2, name:'Femenino'}];
     
     const swalWithBootstrapButtons = Swal.mixin({
@@ -81,10 +80,6 @@ const Associate = () => {
     }
     
     const handleChangeGender = (event) => {
-        console.log('handleChangeGender')
-        console.log(event.target.value)
-        console.log('Gender');
-        console.log(gender);
         setGender(event.target.value)
     }
 
@@ -93,24 +88,18 @@ const Associate = () => {
     }
 
     const editar = items => {
-        console.log('----editar---')
-        console.log(gender)
         setGender(items.gender)
         reset(items)
         setModoEdicion(true)
     }
 
     useEffect(() => {
-        console.log('-------useEffect llama a getAss');
         dispatch(getAssociate());
-        
-        console.log(genero)
     },[refreshKey])
 
     const onSubmit = (data, e) => {
 
         if(!data.name.trim()){
-            console.log('Campo vacio')
             return
         }
         setAsociados([
@@ -132,7 +121,7 @@ const Associate = () => {
         setRefreshKey(oldKey => oldKey +1)
         
         if (modoEdicion){
-            dispatch(updateAssociate(data.id,data.name,data.last_name,data.dni,data.address,data.email,gender));
+            dispatch(updateAssociate(data.id,data.name.toLocaleUpperCase(),data.last_name.toLocaleUpperCase(),data.dni,data.address,data.email,gender));
             setModoEdicion(false)
 
         }else{
@@ -208,8 +197,6 @@ const Associate = () => {
                                             message: 'Name es requerido'
                                             }
                                     })}
-                                    // onChange={e => setAsociado(e.target.value)}
-                                    // value={asociado.name}
                                 />
                                 <div>
                                 <span className="text-danger text-small d-block mb-2">
@@ -229,8 +216,6 @@ const Associate = () => {
                                             message: 'Last name es requerido'
                                             }
                                     })}
-                                    // onChange={e => setAsociado(e.target.value)}
-                                    // value={asociado.last_name}
                                 />
                                 <span className="text-danger text-small d-block mb-2">
                                     {errors?.last_name?.message}
@@ -279,14 +264,6 @@ const Associate = () => {
                                     }
                                     </Select>
                                 </FormControl>
-                                {/* <select className="form-select form-select-sm" 
-                                aria-label=".form-select-sm example"
-                                ref={register}
-                                name="gender" id="gender"
-                                >
-                                <option value="M">Masculino</option>
-                                <option value="F">Femenino</option>
-                                </select> */}
                                 <span className="text-danger text-small d-block mb-2">
                                     {errors?.gender?.message}
                                 </span>
