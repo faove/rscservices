@@ -109,14 +109,14 @@ export const getAssociateId = (id) => async (dispatch)  => {
 }
 
 //addAssociate 
-export const addAssociate = (name,last_name,dni,address,email) => async (dispatch, getState)  => {
+export const addAssociate = (name,last_name,dni,address,email,gender) => async (dispatch, getState)  => {
   try {
     // console.log('AssociateDuck addAssociate')
     // console.log(name)
     const response = await axios.post(
       "http://localhost:8000/api/associates",
       {
-          name,last_name,dni,address,email
+          name,last_name,dni,address,email,gender
       }
     )
     dispatch({
@@ -152,11 +152,15 @@ export const  deleteAssociate = (id) => async (dispatch, getState) => {
 }
 
 // updateAssociate
-export const updateAssociate = (id,name,last_name,dni,address,email) => async (dispatch, getState) => {
+export const updateAssociate = (id,name,last_name,dni,address,email,gender) => async (dispatch, getState) => {
 
     try {
+        console.log('updateAssociate 9999')
+        console.log(name,last_name)
+        console.log(email)
+        console.log(gender)
         const response = await axios.put(
-        `http://localhost:8000/api/associates/${id}`, {name,last_name,dni,address,email})
+        `http://localhost:8000/api/associates/${id}`, {name,last_name,dni,address,email,gender})
             dispatch({
             type: UPDATE_ASSOCIATE,
             payload: {

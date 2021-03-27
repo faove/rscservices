@@ -8,7 +8,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Swal from 'sweetalert2';
-import { capitalize } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
@@ -58,7 +57,6 @@ const Area = () => {
     const handleChangeCategory = (event) => {
 
         setCategorias(Number(event.target.value))
-        
   
     };
 
@@ -118,8 +116,8 @@ const Area = () => {
     }
 
     const editar = items => {
-        console.log('Items----')
-        console.log(items)
+        console.log('showstatus----')
+        console.log(showstatus)
         setCategorias(items.category_id)
         
         setStatus(items.status)
@@ -153,15 +151,27 @@ const Area = () => {
         //     return
         // }
         console.log('onSubmit')
-        console.log(data)
-        console.log(name,categorias,status)
+        
+        console.log(data.id,name,categorias,status)
 
-        setAreas([
-            ...areas,
-            {name: name,
-            category_id: categorias,
-            status: status}
-        ])
+        // let aareas = areas.map( a => {
+        //   if (a.id === data.id){
+        //       let v = {id:data.id,category_id: categorias,name: name,status:status}
+        //       return {...a, v};
+        //     } else {
+        //       return a;
+        //     }
+        // });
+
+        // console.log(aareas)
+        // setAreas(aareas)
+        // setAreas([
+        //     ...areas,
+        //     {id: data.id,
+        //     name: name,
+        //     category_id: categorias,
+        //     status: status}
+        // ])
         setValue('id', data.id);
         setValue('name', name);
         setValue('category_id', categorias);
@@ -175,6 +185,7 @@ const Area = () => {
         }else{
             dispatch(addArea(categorias,name,status));
         }
+        dispatch(getAreas());
         setCategorias(-1)
         setName(-1)
         setStatus(-1)

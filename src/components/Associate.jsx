@@ -2,20 +2,46 @@ import React,{useState, Fragment, useEffect} from 'react'
 import { useDispatch, useSelector} from 'react-redux';
 import { getAssociate, addAssociate, deleteAssociate, updateAssociate } from '../redux/associateDuck';
 import { useForm } from 'react-hook-form';
+import { makeStyles } from '@material-ui/core/styles';
+import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
+import MenuItem from '@material-ui/core/MenuItem';
 import DeleteIcon from '@material-ui/icons/Delete';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 import Swal from 'sweetalert2';
 
-const Associate = () => {
+const useStyles = makeStyles((theme) => ({
+    formControl: {
+      margin: theme.spacing(2),
+      minWidth: 220,
+    },
+    selectEmpty: {
+      marginTop: theme.spacing(3),
+    },
+    root: {
+      flexGrow: 1,
+    },
+    paper: {
+      padding: theme.spacing(2),
+      textAlign: 'center',
+      color: theme.palette.text.secondary,
+    },
+  }));
 
+const Associate = () => {
+    const classes = useStyles();
     //-------------------------------------------
     const [asociados, setAsociados] = useState([])
     const [modoEdicion, setModoEdicion] = useState(false)
-    const [refreshKey, setRefreshKey] = useState(0);
+    const [refreshKey, setRefreshKey] = useState(0)
+    const [gender, setGender] = useState(0)
     const asociado = useSelector(store => store.associate.array)
     const {setValue, register, reset, errors, handleSubmit} = useForm({defaultValues: asociado});
     const dispatch = useDispatch()
-
+    
+    const genero = [{id: 1, name:'Masculino'},{id: 2, name:'Femenino'}];
+    
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
           confirmButton: 'btn btn-success',
@@ -54,18 +80,31 @@ const Associate = () => {
 
     }
     
+    const handleChangeGender = (event) => {
+        console.log('handleChangeGender')
+        console.log(event.target.value)
+        console.log('Gender');
+        console.log(gender);
+        setGender(event.target.value)
+    }
 
     const eliminarAsociado = (id,name,last_name) => {
         HandleButtonDelete(id,name,last_name)
     }
 
     const editar = items => {
+        console.log('----editar---')
+        console.log(gender)
+        setGender(items.gender)
         reset(items)
         setModoEdicion(true)
     }
 
     useEffect(() => {
+        console.log('-------useEffect llama a getAss');
         dispatch(getAssociate());
+        
+        console.log(genero)
     },[refreshKey])
 
     const onSubmit = (data, e) => {
@@ -80,6 +119,7 @@ const Associate = () => {
             last_name: data.last_name,
             dni: data.dni,
             address: data.address,
+            gender: gender,
             email: data.email}
         ])
 
@@ -88,15 +128,18 @@ const Associate = () => {
         setValue('dni', data.dni);
         setValue('address', data.address);
         setValue('email', data.email);
+        setValue('gender', gender);
         setRefreshKey(oldKey => oldKey +1)
         
         if (modoEdicion){
-            dispatch(updateAssociate(data.id,data.name,data.last_name,data.dni,data.address,data.email));
+            dispatch(updateAssociate(data.id,data.name,data.last_name,data.dni,data.address,data.email,gender));
             setModoEdicion(false)
 
         }else{
-            dispatch(addAssociate(data.name,data.last_name,data.dni,data.address,data.email));
+            dispatch(addAssociate(data.name,data.last_name,data.dni,data.address,data.email,gender));
         }
+        dispatch(getAssociate());
+        setGender(-1)
         
         // limpiar campos
         e.target.reset();
@@ -217,20 +260,38 @@ const Associate = () => {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-6">
-                                <select className="form-select form-select-sm" 
+                            <div className="col-12">
+                                <FormControl className={classes.formControl}>
+                                  <InputLabel id="select-label-category">Gender</InputLabel>
+                                    <Select
+                                      labelId="select_gender_label"
+                                      id="select_gender"
+                                    //   value={category}    
+                                      value={gender === -1 ? '' : gender}
+                                      onChange={handleChangeGender}
+                                    >
+                                    {
+                                      genero.map((g, index) => (
+                                        <MenuItem  key={index} value={g.id}>
+                                          {g.name}
+                                        </MenuItem>
+                                      ))
+                                    }
+                                    </Select>
+                                </FormControl>
+                                {/* <select className="form-select form-select-sm" 
                                 aria-label=".form-select-sm example"
                                 ref={register}
                                 name="gender" id="gender"
                                 >
                                 <option value="M">Masculino</option>
                                 <option value="F">Femenino</option>
-                                </select>
+                                </select> */}
                                 <span className="text-danger text-small d-block mb-2">
                                     {errors?.gender?.message}
                                 </span>
                             </div>
-                            <div className="col-6">
+                            <div className="col-12">
                                 <input 
                                     type="text" 
                                     className="form-control mb-2"
