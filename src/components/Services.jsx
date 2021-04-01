@@ -22,6 +22,7 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker,} from '@material-ui/picker
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import { useForm } from 'react-hook-form';
+import { FormatAlignLeftSharp } from '@material-ui/icons';
 
 
 
@@ -61,16 +62,12 @@ const Services = () => {
     
     const wrapper = createRef();
     const classes = useStyles();
-
     const dispatch = useDispatch()
-
     const [editing, setEditing] = useState(false)
     const [serviceTotal, setServiceTotal] = useState([])
     const [currentService, setCurrentService] = useState([])
     const [currentServiceAssoc, setCurrentServiceAssoc] = useState([])
     const [modoEdicion, setModoEdicion] = useState(false)
-    const [serviceChange, setServiceChange] = useState(false)
-
     const client = useSelector(store => store.client.array)
     const associate = useSelector(store => store.associate.array)
     const service = useSelector(store => store.service.array)
@@ -88,14 +85,24 @@ const Services = () => {
     const [areaCateg, setAreaCateg] = useState([]);
     //Manejo Date
     const [selectedDate, setSelectedDate] = useState(new Date());
+    //Manejo de Error
+    const [errorArea, setErrorArea] = useState(false)
+    const [errorCategory, setErrorCategory] = useState(false) 
+    const [errorAssociate, setErrorAssociate] = useState(false)
+    const [errorDate, setErrorDate] = useState(false)
 
     const handleDateChange = (date) => {
+      setErrorDate(false)
       setSelectedDate(date);
     };
 
     //Controla la seleccionde la Category
     const handleChangeCategory = (event) => {
 
+      console.log('handleErrorCategory:')
+      console.log(errorCategory)
+
+      setErrorCategory(false)
       setCategorias(Number(event.target.value))
       // console.log('handleChangeCategory:')
       // console.log(categorias)
@@ -104,6 +111,7 @@ const Services = () => {
 
     //Controla la seleccionde la Category
     const handleChangeArea = (event) => {
+      setErrorArea(false)
       setAreas(Number(event.target.value))
     };
 
@@ -118,12 +126,8 @@ const Services = () => {
     };
     //Controla la seleccion de Associates
     const handleChangeAssociate = (event) => {
-      
+      setErrorAssociate(false)
       setAsociados(Number(event.target.value))
-      // console.log('handleChangeAssociate:')
-      // console.log(asociados)
-      // console.log(Number(event.target.value))
-      
     };
 
     //Este useEffect funciona como DidMount al momento de pintar todos los object
@@ -253,23 +257,46 @@ const Services = () => {
 
     const onSubmit = (data, e) => {
 
-      console.log('data onSubmit')
+      console.log('data onSubmit-----------')
       console.log(categorias)
       console.log(areas)
-      const selectedDateService = format(selectedDate, 'MM/dd/yyyy h:mm:ss')
+      
       // const dateService = format(selectedDateService, 'YYYY/MM/dd')
-      console.log(selectedDateService)
+      
       console.log('modoEdicion')
       console.log(modoEdicion)
-      console.log('asociados')
-      console.log(asociados)
+      console.log('setErrorArea')
+      console.log(areas)
 
-      if(!data.name.trim()){
-        console.log('Campo vacio')
+      if (!asociados || asociados.length === 0){
+        console.log('Campo associate')
+        setErrorAssociate(true)
+        return
+      }
+      
+      if (!categorias || categorias.length === 0){
+        console.log('Campo categorias')
+        setErrorCategory(true)
         return
       }
 
+      if (!areas || areas.length === 0){
+        setErrorArea(true)
+        return
+      }
 
+      if(!data.name.trim()){
+        
+        return
+      }
+
+      if (!selectedDate || selectedDate.length === 0){
+        setErrorDate(true)
+        return
+      }
+      const selectedDateService = format(selectedDate, 'MM/dd/yyyy HH:MM:ss')
+      console.log(selectedDateService)
+      
       setCurrentServiceAssoc([
         ...currentServiceAssoc,
             { 
@@ -337,6 +364,10 @@ const Services = () => {
             data.areas_id, asociados, parseInt(data.id), data.product_id,
             data.name_service, data.gross_amount, data.rate_fixed, selectedDateService));
       }
+      setErrorArea(false)
+      setErrorCategory(false)
+      setErrorAssociate(false)
+      setErrorDate(false)
 
       //Update or add new service
       servicesChange(data.id)
@@ -454,6 +485,7 @@ const Services = () => {
                                       id="select_asociate"
                                       value={asociados === -1 ? '' : asociados}
                                       onChange={handleChangeAssociate}
+                                      error={asociados === '' && errorAssociate ===true}
                                     >
                                     {
                                       associate.map((associ, index) => (
@@ -471,6 +503,7 @@ const Services = () => {
                                       id="select_category"
                                       value={categorias === -1 ? '' : categorias}
                                       onChange={handleChangeCategory}
+                                      error={categorias === '' && errorCategory ===true}
                                     >
                                     {
                                       category.map((categ, index) => (
@@ -481,7 +514,6 @@ const Services = () => {
                                     }
                                     </Select>
                                   </FormControl>
-
                                   <FormControl className={classes.formControl}>
                                     <InputLabel id="select-label-area">Area</InputLabel>
                                       <Select
@@ -489,6 +521,7 @@ const Services = () => {
                                         id="select_area"
                                         value={areas === -1 ? '' : areas}
                                         onChange={handleChangeAreas}
+                                        error={areas === '' && errorArea ===true}
                                       >
                                       {
                                         area.map((ar, index) => (
@@ -509,6 +542,7 @@ const Services = () => {
                                       label="Date picker inline"
                                       value={selectedDate}
                                       onChange={handleDateChange}
+                                      error={selectedDate === '' ??  false}
                                       KeyboardButtonProps={{
                                         'aria-label': 'change date',
                                       }}
@@ -516,11 +550,6 @@ const Services = () => {
                                   </MuiPickersUtilsProvider>
                                 </Paper>
                               </Grid>
-                                <div>
-                                    <span className="text-danger text-small d-block mb-2">
-                                        {errors?.date_service?.message}
-                                    </span>
-                                </div>
                                 <input 
                                   placeholder="Tarifa"
                                   type="text" 
