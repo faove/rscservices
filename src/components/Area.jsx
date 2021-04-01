@@ -1,6 +1,6 @@
 import React,{useState, Fragment, useEffect} from 'react'
 import { useDispatch, useSelector} from 'react-redux';
-import { getAreas, addArea, deleteArea, updateArea } from '../redux/areaDuck';
+import { addArea, deleteArea, updateArea, getCategArea } from '../redux/areaDuck';
 import { getCategory } from '../redux/categoryDuck';
 import { getStatus } from '../redux/typestatusDuck'
 import { useForm } from 'react-hook-form';
@@ -40,7 +40,6 @@ const Area = () => {
     const classes = useStyles();
 
     //-------------------------------------------
-    const [areas, setAreas] = useState([])
     const [modoEdicion, setModoEdicion] = useState(false)
     const [refreshKey, setRefreshKey] = useState(0);
     const area = useSelector(store => store.area.array)
@@ -51,26 +50,25 @@ const Area = () => {
     const [categorias, setCategorias] = useState('');
     const [name, setName] = useState('');
     const [status, setStatus] = useState(0);
+    const [error, setError] = useState(false)
+    const [errorStatus, setErrorStatus] = useState(false)
+    const [errorCategory, setErrorCategory] = useState(false)
 
     
     //Controla la seleccionde la Category
     const handleChangeCategory = (event) => {
-
+        setErrorCategory(false)
         setCategorias(Number(event.target.value))
-  
     };
 
     const handleChangeName = (event) => {
+        setError(false)
         setName(event.target.value.toLocaleUpperCase())
     }
 
     const handleChangeStatus = (event) => {
-        console.log('Status');
-        console.log(status);
+        setErrorStatus(false)
         setStatus(event.target.value)
-        console.log('handleChangeStatus');
-        console.log(status);
-        console.log(event.target.value);
     };
 
     const swalWithBootstrapButtons = Swal.mixin({
@@ -116,27 +114,18 @@ const Area = () => {
     }
 
     const editar = items => {
-        console.log('showstatus----')
-        console.log(showstatus)
         setCategorias(items.category_id)
-        
         setStatus(items.status)
         setName(items.name)
-        console.log(items.name)
         reset(items)
         setModoEdicion(true)
     }
 
-    // useEffect(() => {
-    //   setStatus(status)
-    //   console.log('-------status----')
-    //   console.log(status)
-    // },[status])
 
     useEffect(() => {
-      console.log('llamado a getAreas')
-      console.log(areas)
-      dispatch(getAreas());
+      // console.log('llamado a getCategArea')
+      // console.log(areas)
+      dispatch(getCategArea());
     },[refreshKey])
 
     useEffect(() => {
@@ -145,14 +134,24 @@ const Area = () => {
       }, []);
 
     const onSubmit = (data, e) => {
+      
 
-        // if(!name.trim()){
-        //     console.log('Campo vacio')
-        //     return
-        // }
-        console.log('onSubmit')
+        if (!categorias || categorias.length === 0){
+            setErrorCategory(true)
+            return
+        }
+        if(!name.length){
+            setError(true)
+            return
+        }
+        if(!status || status.length === 0){
+          setErrorStatus(true)
+          return
+        }
+
+        // console.log('onSubmit') !name.trim()
         
-        console.log(data.id,name,categorias,status)
+        // console.log(data.id,name,categorias,status)
 
         // let aareas = areas.map( a => {
         //   if (a.id === data.id){
@@ -185,11 +184,14 @@ const Area = () => {
         }else{
             dispatch(addArea(categorias,name,status));
         }
-        dispatch(getAreas());
+        dispatch(getCategArea());
         setCategorias(-1)
         setName(-1)
         setStatus(-1)
         setRefreshKey(oldKey => oldKey + 1)
+        setError(false)
+        setErrorStatus(false)
+
         // limpiar campos
         e.target.reset();
     }
@@ -202,31 +204,52 @@ const Area = () => {
                 <div className="col-7">
                 <h4 className="text-center">Lista de Areas</h4>
                 <ul className="list-group">
+                  <li className="lead left-0">Category - Area</li>
                     {
-                        area.length === 0 ? (
-                            <li className="list-group-item">Sin Areas</li>
-                        ) : (
-                            area.map(items => (  
-                                <li className="list-group-item" key={items.id}>
-                                <span className="lead">{items.id} {items.name}</span>
-                                <Button variant="contained" color="secondary"
-                                className="btn btn-sm btn-danger float-right mx-2"
-                                onClick={() => eliminarArea(items.id,items.name,items.category_id)
-                                }
-                                startIcon={<DeleteIcon/>}
-                                >
-                                Delete
-                                </Button>
-                                <Button variant="outlined" color="primary"
-                                className="btn btn-sm btn-danger float-right mx-2"
-                                onClick={
-                                    () => editar(items) 
-                                }
-                                >Edit
-                                </Button>
-                                </li>
-                            ))
-                        )
+                      area.length === 0 ? (
+                          <li className="list-group-item">Sin Areas</li>
+                      ) : (
+                        area.map(items => items.status === 1 ? 
+                              (<li className="list-group-item" key={items.id}>
+                                <span className="lead" >{items.name_categories} - {items.name}</span>
+                                  
+                              <Button variant="contained" color="secondary"
+                              className="btn btn-sm btn-danger float-right mx-2"
+                              onClick={() => eliminarArea(items.id,items.name,items.category_id)
+                              }
+                              startIcon={<DeleteIcon/>}
+                              >
+                              Delete
+                              </Button>
+                              <Button variant="outlined" color="primary"
+                              className="btn btn-sm btn-danger float-right mx-2"
+                              onClick={
+                                  () => editar(items) 
+                              }
+                              >Edit
+                              </Button>
+                              </li>
+                              ):(
+                              <li className="list-group-item" style={{backgroundColor:'#EEE8AA'}} key={items.id}>
+                              <span className="lead" >{items.name_categories} - {items.name}</span>
+                                
+                              <Button variant="contained" color="secondary"
+                              className="btn btn-sm btn-danger float-right mx-2"
+                              onClick={() => eliminarArea(items.id,items.name,items.category_id)
+                              }
+                              startIcon={<DeleteIcon/>}
+                              >
+                              Delete
+                              </Button>
+                              <Button variant="outlined" color="primary"
+                              className="btn btn-sm btn-danger float-right mx-2"
+                              onClick={
+                                  () => editar(items) 
+                              }
+                              >Edit
+                              </Button>
+                              </li>)    
+                        ))
                     }
                 </ul>
             </div>
@@ -251,9 +274,10 @@ const Area = () => {
                                     <Select
                                       labelId="select_category_label"
                                       id="select_category"
-                                    //   value={category}    
                                       value={categorias === -1 ? '' : categorias}
                                       onChange={handleChangeCategory}
+                                      error={categorias === '' && errorCategory ===true}
+                                      // helperText={categorias === 0 ? 'Empty field!' : ' '}
                                     >
                                     {
                                       category.map((categ, index) => (
@@ -274,31 +298,12 @@ const Area = () => {
                                   variant="outlined" 
                                   value={name === -1 ? '' :name}
                                   onChange={handleChangeName}
+                                  error={name === "" && error ===true}
+                                  helperText={name === "" ? 'Empty field!' : ' '}
                                 />
-                                {/* <input 
-                                    // type="text" 
-                                    // className="form-control mb-2"
-                                    // placeholder="Name Area"
-                                    // name="name" id="name"
-                                    // ref={register({
-                                    //     required: {
-                                    //         value: true, 
-                                    //         message: 'Name es requerido'
-                                    //         }
-                                    // })}
-                                    // onChange={e => setArea(e.target.value)}
-                                    // value={area.name}
-                                /> */}
-                                <div>
-                                <span className="text-danger text-small d-block mb-2">
-                                    {errors?.name?.message}
-                                </span>
-                                </div>
                             </div>
                         </div>
-
                         <div className="row">
-                            
                             <div className="col-6">
                                 <FormControl className={classes.formControl}>
                                   <InputLabel id="select-label-status">Status</InputLabel>
@@ -307,6 +312,8 @@ const Area = () => {
                                       id="select_status"   
                                       value={status === -1 ? '' : status}
                                       onChange={handleChangeStatus}
+                                      error={status === 0 && errorStatus ===true}
+                                      // helperText={status === 0 ? 'Empty field!' : ' '}
                                     >
                                     {
                                       showstatus.map((st, index) => (

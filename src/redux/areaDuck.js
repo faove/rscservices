@@ -7,6 +7,7 @@ const dataInicial =  {
 
 const GET_AREA = 'GET_AREA'
 const GET_AREA_ID = 'GET_AREA_ID'
+const GET_AREA_CATEG = 'GET_AREA_CATEG'
 const GET_AREA_NEXT = 'GET_AREA_NEXT'
 const POST_AREA_ADD = 'POST_AREA_ADD'
 const DELETE_AREA = 'DELETE_AREA'
@@ -16,8 +17,8 @@ const UPDATE_AREA = 'UPDATE_AREA'
 export default function areaReducer(state = dataInicial, action){
     switch(action.type){
         case GET_AREA:  
-        // console.log('state')
-        // console.log(state)
+            console.log('GET_AREA')
+            console.log(action.payload.array)
             return {
                 ...state, 
                 array: action.payload.array
@@ -27,15 +28,20 @@ export default function areaReducer(state = dataInicial, action){
                 ...state, 
                 array: action.payload.array, offset: action.payload.offset
             }
+        case GET_AREA_CATEG:  
+            console.log('GET_AREA_CATEG')
+            console.log(action.payload.array)
+            return {
+                ...state, 
+                array: action.payload.array
+            }
         case POST_AREA_ADD: 
             return {
                 ...state, 
                 array: [...state.array, action.payload.array]
             }
         case UPDATE_AREA:   
-            
             const varr = state.array.map(array => array.id === action.payload.array.id ? action.payload.array : array)
-
             return {
                 ...state, 
                 array: varr
@@ -171,4 +177,21 @@ export const updateArea = (id,category_id,name,status) => async (dispatch, getSt
         console.log(error)
     }
 
+}
+
+//Get Service con el id del client current
+export const getCategArea = (id) => async (dispatch)  => {
+    try{
+        // const {offset} = getState().Service
+        const response = await axios.get(`http://localhost:8000/api/areas/categories/${id}`)
+        dispatch({
+            type: GET_AREA_CATEG,
+            payload: {
+                array: response.data
+            }
+        })  
+
+    }catch(error){
+        console.log(error)
+    }
 }

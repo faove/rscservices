@@ -75,7 +75,7 @@ const Services = () => {
     const associate = useSelector(store => store.associate.array)
     const service = useSelector(store => store.service.array)
     const category = useSelector(store => store.category.array)
-    const area = useSelector(store => store.category.array)
+    const area = useSelector(store => store.area.array)
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [startDate, setStartDate] = useState(new Date());
@@ -85,13 +85,7 @@ const Services = () => {
     const [categorias, setCategorias] = useState('');
     const [asociados, setAsociados] = useState('');
     const [areas, setAreas] = useState('');
-
-
-
-    // const {resp} = service[0].service;
-
-
-
+    const [areaCateg, setAreaCateg] = useState([]);
     //Manejo Date
     const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -106,7 +100,11 @@ const Services = () => {
       // console.log('handleChangeCategory:')
       // console.log(categorias)
       // console.log(Number(event.target.value))
+    };
 
+    //Controla la seleccionde la Category
+    const handleChangeArea = (event) => {
+      setAreas(Number(event.target.value))
     };
 
     //Controla la seleccionde la Category
@@ -200,7 +198,9 @@ const Services = () => {
       //   }
       // )
       console.log('--------------------------editRow---------------------');
-      console.log(currentService);
+      console.log(service);
+      setCategorias(service.category_id)
+      setAreas(service.areas)
     }
 
     const handleClient =  e => {
@@ -255,6 +255,7 @@ const Services = () => {
 
       console.log('data onSubmit')
       console.log(categorias)
+      console.log(areas)
       const selectedDateService = format(selectedDate, 'MM/dd/yyyy h:mm:ss')
       // const dateService = format(selectedDateService, 'YYYY/MM/dd')
       console.log(selectedDateService)
@@ -304,7 +305,7 @@ const Services = () => {
       // setValue('type_services_id', 1);
       // setValue('mode_services_id', 1);
       setValue('category_id', categorias);
-      setValue('areas_id', 1);
+      setValue('areas_id', 1);           //ojo add areas
       setValue('associate_id', asociados);
       setValue('client_id', parseInt(data.id));
       setValue('product_id', 1);
@@ -479,6 +480,24 @@ const Services = () => {
                                       ))
                                     }
                                     </Select>
+                                  </FormControl>
+
+                                  <FormControl className={classes.formControl}>
+                                    <InputLabel id="select-label-area">Area</InputLabel>
+                                      <Select
+                                        labelId="select_area_label"
+                                        id="select_area"
+                                        value={areas === -1 ? '' : areas}
+                                        onChange={handleChangeAreas}
+                                      >
+                                      {
+                                        area.map((ar, index) => (
+                                          <MenuItem  key={index} value={ar.id}>
+                                            {ar.name}
+                                          </MenuItem>
+                                        ))
+                                      }
+                                      </Select>
                                   </FormControl>
                                   <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                     <KeyboardDatePicker
