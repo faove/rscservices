@@ -5,7 +5,9 @@ import { useDispatch, useSelector} from 'react-redux';
 import { getClient } from '../redux/clientDuck';
 import { getCategory } from '../redux/categoryDuck';
 import { getAssociate } from '../redux/associateDuck';
-import { getServiceAssoc, addService, updateService } from '../redux/serviceDuck';
+import { getCategArea } from '../redux/areaDuck';
+import { addService, updateService } from '../redux/serviceDuck';
+import { getServiceAssoc } from '../redux/serviceAssocDuck';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { unstable_createMuiStrictModeTheme as createMuiTheme, TextField } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -22,18 +24,10 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker,} from '@material-ui/picker
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import { useForm } from 'react-hook-form';
-import { FormatAlignLeftSharp } from '@material-ui/icons';
 
 
 
 
-// const useStyles = makeStyles((theme) => ({
-//   root: {
-//     width: '100%',
-//     maxWidth: 500,
-//     backgroundColor: theme.palette.background.paper,
-//   },
-// }));
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -60,29 +54,32 @@ const useStyles = makeStyles((theme) => ({
 
 const Services = () => {
     
-    const wrapper = createRef();
+    // const wrapper = createRef(); 
     const classes = useStyles();
     const dispatch = useDispatch()
-    const [editing, setEditing] = useState(false)
-    const [serviceTotal, setServiceTotal] = useState([])
-    const [currentService, setCurrentService] = useState([])
-    const [currentServiceAssoc, setCurrentServiceAssoc] = useState([])
-    const [modoEdicion, setModoEdicion] = useState(false)
+    
     const client = useSelector(store => store.client.array)
     const associate = useSelector(store => store.associate.array)
-    const service = useSelector(store => store.service.array)
+    const serviceassoc = useSelector(store => store.serviceassoc.array)
     const category = useSelector(store => store.category.array)
     const area = useSelector(store => store.area.array)
+
+    const [editing, setEditing] = useState(false)
+    // const [serviceTotal, setServiceTotal] = useState([])
+    const [idServiceAssoc, setIdServiceAssoc] = useState([])
+
+    // const [currentServiceAssoc, setCurrentServiceAssoc] = useState([])
+    const [modoEdicion, setModoEdicion] = useState(false)
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
-    const [startDate, setStartDate] = useState(new Date());
+    // const [startDate, setStartDate] = useState(new Date());
     const { register, setValue, reset, handleSubmit, errors, control } = useForm({defaultValues: searchResults});
     const [svalue, setSValue] = useState(null);
     const [inputValue, setInputValue] = useState('');
     const [categorias, setCategorias] = useState('');
     const [asociados, setAsociados] = useState('');
     const [areas, setAreas] = useState('');
-    const [areaCateg, setAreaCateg] = useState([]);
+    // const [areaCateg, setAreaCateg] = useState([]);
     //Manejo Date
     const [selectedDate, setSelectedDate] = useState(new Date());
     //Manejo de Error
@@ -90,6 +87,18 @@ const Services = () => {
     const [errorCategory, setErrorCategory] = useState(false) 
     const [errorAssociate, setErrorAssociate] = useState(false)
     const [errorDate, setErrorDate] = useState(false)
+
+
+
+   
+  
+    // const eliminarService = (id,name,client_id) => {
+    //   console.log('delete+++')
+    //   console.log(client_id)
+    //   console.log(name)
+    //   console.log(id)
+    //   HandleButtonDelete(id,name,client_id)
+    // }
 
     const handleDateChange = (date) => {
       setErrorDate(false)
@@ -100,24 +109,27 @@ const Services = () => {
     const handleChangeCategory = (event) => {
 
       console.log('handleErrorCategory:')
-      console.log(errorCategory)
+      console.log(event.target.value)
 
       setErrorCategory(false)
       setCategorias(Number(event.target.value))
+
+      //Call function getCategArea
+      dispatch(getCategArea(event.target.value));
       // console.log('handleChangeCategory:')
       // console.log(categorias)
       // console.log(Number(event.target.value))
     };
 
     //Controla la seleccionde la Category
-    const handleChangeArea = (event) => {
-      setErrorArea(false)
-      setAreas(Number(event.target.value))
-    };
+    // const handleChangeArea = (event) => {
+    //   setErrorArea(false)
+    //   setAreas(Number(event.target.value))
+    // };
 
     //Controla la seleccionde la Category
     const handleChangeAreas = (event) => {
-
+      setErrorArea(false)
       setAreas(Number(event.target.value))
       console.log('handleChangeAreas:')
       console.log(areas)
@@ -128,6 +140,9 @@ const Services = () => {
     const handleChangeAssociate = (event) => {
       setErrorAssociate(false)
       setAsociados(Number(event.target.value))
+      console.log('handleChangeAssociate:')
+      console.log(asociados)
+      console.log(Number(event.target.value))
     };
 
     //Este useEffect funciona como DidMount al momento de pintar todos los object
@@ -138,8 +153,8 @@ const Services = () => {
       // console.log(associate)
     }, []);
 
-    useEffect(() => {
-      console.log('cambio service',service);
+    // useEffect(() => {
+    //   console.log('cambio service',service);
       // setCurrentService([
       //   ...currentService,
       //       { 
@@ -154,12 +169,17 @@ const Services = () => {
       // setCurrentService(
       //   [...currentService,{service[0].service}]
       // )
-      setCurrentServiceAssoc(
-        [...service]
-      )
-      console.log('currentService useEffect',currentServiceAssoc);
+      // setCurrentServiceAssoc(
+      //   [...service]
+      // )
 
-    }, [service]);
+      // setCurrentServiceAssoc(
+      //   [...service]
+      // )
+
+      // console.log('currentService useEffect',currentServiceAssoc);
+
+    // }, [service]);
 
     //Indica modificacion en los servicios
     const servicesChange = (id) => {
@@ -172,9 +192,9 @@ const Services = () => {
         //   { id: id,	name: name,	last_name:last_name, email: email,
         //     date_service: date_service, rate_fixed: rate_fixed}
         // ])
-      console.log('CAll servicesChange -> currentService');
+      // console.log('CAll servicesChange -> currentService');
       console.log('servicesChange',id);
-      console.log('servicesChange',currentService);
+      // console.log('servicesChange',currentService);
     }
 
     //Controla el Autocomplete
@@ -229,7 +249,6 @@ const Services = () => {
           console.log('Not Undefined and Not Null',svalue.id)
 
           servicesChange(svalue.id)
-          // dispatch(getServiceAssoc(svalue.id))
           // setCurrentService(
           //   [...currentService,
           //   {service}]
@@ -240,12 +259,11 @@ const Services = () => {
           // setServiceTotal([])
           //setCurrentService([])
         }
-        console.log('handleClient',currentService);
+        // console.log('handleClient',currentService);
     }
 
 
     useEffect(() => {
-        console.log('useeEffect select client')
         dispatch(getClient());
         
         const results = client.filter(searchclient =>
@@ -255,27 +273,39 @@ const Services = () => {
 
     },[searchTerm]);
 
+
+
+    useEffect(() => {
+      console.log('llamado a getServiceAssoc+++++++++++')
+      console.log(typeof(idServiceAssoc))
+      console.log(typeof(idServiceAssoc.id))
+      console.log(idServiceAssoc.id)
+      console.log(idServiceAssoc.key)
+
+      if (typeof(idServiceAssoc.id) !== 'object' && idServiceAssoc.id != null) {
+        dispatch(getServiceAssoc(idServiceAssoc.id))
+      }
+    },[idServiceAssoc.key])
+
     const onSubmit = (data, e) => {
 
-      console.log('data onSubmit-----------')
-      console.log(categorias)
-      console.log(areas)
+      console.log('data onSubmit---asociados--------')
+      // console.log(asociados)
+      // console.log(areas)
       
       // const dateService = format(selectedDateService, 'YYYY/MM/dd')
       
-      console.log('modoEdicion')
-      console.log(modoEdicion)
-      console.log('setErrorArea')
-      console.log(areas)
+      // console.log('modoEdicion')
+      // console.log(modoEdicion)
+      // console.log('setErrorArea')
+      // console.log(areas)
 
       if (!asociados || asociados.length === 0){
-        console.log('Campo associate')
         setErrorAssociate(true)
         return
       }
       
       if (!categorias || categorias.length === 0){
-        console.log('Campo categorias')
         setErrorCategory(true)
         return
       }
@@ -286,7 +316,6 @@ const Services = () => {
       }
 
       if(!data.name.trim()){
-        
         return
       }
 
@@ -295,17 +324,18 @@ const Services = () => {
         return
       }
       const selectedDateService = format(selectedDate, 'MM/dd/yyyy HH:MM:ss')
-      console.log(selectedDateService)
-      
-      setCurrentServiceAssoc([
-        ...currentServiceAssoc,
-            { 
-            id: parseInt(data.id), category_id: categorias,associate_id: asociados,
-            name: data.name,last_name: data.last_name,
-            client_id: data.client_id, rate_fixed: data.rate_fixed,
-            date_service: selectedDateService
-          }
-      ])
+      // console.log(selectedDateService)
+
+      // setCurrentServiceAssoc([
+      //   // ...currentServiceAssoc,
+      //   ...service,
+      //       { 
+      //       id: parseInt(data.id), category_id: categorias,associate_id: asociados,
+      //       area_id:area, name: data.name,last_name: data.last_name,
+      //       client_id: data.client_id, rate_fixed: data.rate_fixed,
+      //       date_service: selectedDateService
+      //     }
+      // ])
       // setCurrentService([
       //   ...currentService,
       //   { category_id: categorias,	areas_id: 1,	associate_id: asociados,
@@ -315,8 +345,8 @@ const Services = () => {
       //     date_service: selectedDateService,	date_aplication: data.date_aplication, date_pay: data.date_pay,
       //     date_performance: data.date_performance}
       // ])
-      console.log('currentServiceAssoc')
-      console.log(currentServiceAssoc)
+      console.log('Service id')
+      console.log(parseInt(data.id))
       // console.log('data.id')
       // console.log(parseInt(data.id))
       // console.log('data.client_id')
@@ -332,17 +362,17 @@ const Services = () => {
       // setValue('type_services_id', 1);
       // setValue('mode_services_id', 1);
       setValue('category_id', categorias);
-      setValue('areas_id', 1);           //ojo add areas
+      setValue('areas_id', areas);           //ojo add areas
       setValue('associate_id', asociados);
       setValue('client_id', parseInt(data.id));
-      setValue('product_id', 1);
+      // setValue('product_id', 1);
       setValue('name_service', data.name_service);
       setValue('rate_fixed', data.rate_fixed);
       setValue('gross_amount', data.gross_amount);
       setValue('phone_service', data.phone_service);
       setValue('date_service', selectedDateService);
-      data.areas_id =1;
-      data.product_id=1;
+      //data.areas_id =1;
+      // data.product_id=1;
       // setValue('chat_service', data.chat_service);
       // setValue('chat_service_name', data.chat_service_name);
       // setValue('fee_service', data.fee_service);
@@ -356,12 +386,12 @@ const Services = () => {
       if (modoEdicion){
 
         dispatch(updateService(data.id, categorias, 
-           data.areas_id, asociados, parseInt(data.id), data.product_id,
+          areas, asociados, parseInt(data.id),
           data.name_service, data.gross_amount, data.rate_fixed, selectedDateService));
         setModoEdicion(false)
       }else{
           dispatch(addService(categorias, 
-            data.areas_id, asociados, parseInt(data.id), data.product_id,
+            areas, asociados, parseInt(data.id),
             data.name_service, data.gross_amount, data.rate_fixed, selectedDateService));
       }
       setErrorArea(false)
@@ -370,7 +400,12 @@ const Services = () => {
       setErrorDate(false)
 
       //Update or add new service
-      servicesChange(data.id)
+      dispatch(getServiceAssoc(parseInt(data.id)))
+      setIdServiceAssoc({id: parseInt(data.id), key: Math.random(data.id)})
+      // servicesChange(data.id)
+      setAsociados(-1)
+      setCategorias(-1)
+      setAreas(-1)
       // setCurrentService(
       //   [...currentService,
       //   {service}]
@@ -384,7 +419,7 @@ const Services = () => {
             <div >
               <div  className="flex-row">
                 <div  className="flex-large">
-                    
+                <div  className="flex-large">  
                     <h4 className="text-center">
                         {
                         modoEdicion ? 'Edit Service' : 'Add Service'
@@ -558,6 +593,10 @@ const Services = () => {
                                       required: {
                                           value: true, 
                                           message: 'Tarifa required'
+                                      },
+                                      pattern: {
+                                        value: /^[0-9\.]+$/, 
+                                          message: 'Tarifa es requerido, debe ser numerico'
                                       }
                                   })}
                                   />
@@ -583,19 +622,69 @@ const Services = () => {
                       {/* <Client ref={this.ClientRef}/> */}
                       </div>    
                       <div  className="flex-large">
+                      {/* <table>
+                        <thead>
+                        <tr>
+                          <th>Associate</th>
+                          <th>Category</th>
+                          <th>Area</th>
+                          <th>Date service</th>
+                          <th>Rate</th>
+                          <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            {
+                              serviceassoc.length > 0 ?
+                              serviceassoc.map( (servi,idx)  => (
+                                      <tr key={servi.id}>
+                                        <td>{servi.name_associates}</td>
+                                        <td>{servi.name_categories}</td>
+                                        <td>{servi.name_areas}</td>
+                                        <td>{servi.date_service}</td>
+                                        <td>{servi.rate_fixed}</td>
+                                        <td>
+                                          <Button variant="outlined" color="primary"
+                                          className="btn btn-sm btn-danger float-right mx-2"
+                                          onClick={
+                                              () => editRow(servi)
+                                          }
+                                          >Edit
+                                          </Button>
+                                          <Button variant="contained" color="secondary"
+                                            className="btn btn-sm btn-danger float-right mx-2"
+                                            onClick={() => eliminarService(servi.id,servi.name_areas,servi.client_id)
+                                            }
+                                            startIcon={<DeleteIcon/>}
+                                            >
+                                            Delete
+                                          </Button>
+                                      </td>
+                                  </tr>
+                                  )) : (
+                              
+                                      <tr>
+                                      <td colSpan={3}>No service</td>
+                                      </tr>
+                                  )
+                          }
+                          </tbody>
+                      </table> */}
                       <h2>View Service</h2>
                 
                       <ServicesTable 
                         // serviceTotal={serviceTotal}
                         // inputValue={inputValue}
-                        currentServiceAssoc={currentServiceAssoc}
+                        serviceassoc={serviceassoc}
+                        // currentServiceAssoc={currentServiceAssoc}
                         // searchResults={searchResults}
                         // searchTerm={searchTerm}
-                        //deleteService={deleteService} 
+                        // eliminarService={eliminarService} 
                         editRow={editRow}
                         />
                     
-                </div>
+                    </div>
+                  </div>
               </div>
             </div>
     )

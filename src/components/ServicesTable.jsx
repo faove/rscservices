@@ -1,19 +1,89 @@
-import React, {useState,Fragment} from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useState, useEffect} from 'react';
+// import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button'
 import DeleteIcon from '@material-ui/icons/Delete';
+import Swal from 'sweetalert2';
+import { deleteService } from '../redux/serviceDuck';
+import { getServiceAssoc } from '../redux/serviceAssocDuck';
+import { useDispatch, useSelector} from 'react-redux';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    height: 400,
-    maxWidth: 300,
-    backgroundColor: theme.palette.background.paper,
-  },
-}));
+
+// const useStyles = makeStyles((theme) => ({
+//   root: {
+//     width: '100%',
+//     height: 400,
+//     maxWidth: 300,
+//     backgroundColor: theme.palette.background.paper,
+//   },
+// }));
 
 
 const ServicesTable = (props) => {
+
+  const dispatch = useDispatch()
+  // const service = useSelector(store => store.service.array)
+  const [idServiceAssocDel, setIdServiceAssocDel] = useState([])
+  
+
+  useEffect(() => {
+
+    console.log('setIdServiceAssocDel.......................')
+    console.log(idServiceAssocDel)
+    console.log(idServiceAssocDel.id)
+    console.log(idServiceAssocDel.key)
+    dispatch(getServiceAssoc(idServiceAssocDel.id))
+  },[idServiceAssocDel.key])
+
+  const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+      confirmButton: 'btn btn-success',
+      cancelButton: 'btn btn-danger'
+    },
+    buttonsStyling: false
+  })
+
+  const HandleButtonDelete = (id,name,client_id) =>{
+
+    swalWithBootstrapButtons.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+            dispatch(deleteService(id))
+            
+            dispatch(getServiceAssoc(client_id))
+            
+            // setIdServiceAssocDel(client_id)
+            setIdServiceAssocDel({id: client_id, key: Math.random()})
+
+          swalWithBootstrapButtons.fire(
+            'Deleted!',
+            `Your Service ${name} has been deleted.`,
+            'success'
+          )
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            'Cancelled'
+          )
+        }
+      })
+  }
+
+  const eliminarService = (id,name,client_id) => {
+    console.log('delete+++')
+    console.log(client_id)
+    console.log(name)
+    console.log(id)
+    HandleButtonDelete(id,name,client_id)
+  }
     //const { index, style } = props;
     // <div className="container">
             //     <div className="row">
@@ -29,12 +99,12 @@ const ServicesTable = (props) => {
     // console.log(props.serviceTotal > 0 ? Array.from(props.serviceTotal.serviceTotal): props);
     // console.log(props.services.length)
     // const valores = props.serviceTotal.length > 0 ? (props.serviceTotal):(props);
-    const valores = [];
+    // const valores = [];
     
     // console.log(valores.length > 0)
     // console.log(props.inputValue)
     // console.log('props.services')
-    console.log('props.currentServiceAssoc',props.currentServiceAssoc.length)
+    console.log('props.serviceassoc',props.serviceassoc)
 
     // props.services.map((service,index) => (
     //   // console.log(service.id)
@@ -49,7 +119,7 @@ const ServicesTable = (props) => {
     //     // console.log(name_service);
     //     valores.push({id: id, name_service:name_service, date_service:date_service});
     // }
-    console.log('props')
+    // console.log('props')
     // props.services.map( (servi,idx)  => (
     //   <div key = {idx}>{servi}</div>
     // ))
@@ -100,22 +170,22 @@ const ServicesTable = (props) => {
       <table>
           <thead>
           <tr>
-              <th># Id</th>
               <th>Associate</th>
               <th>Category</th>
+              <th>Area</th>
               <th>Date service</th>
-              <th>Date aplication</th>
+              <th>Rate</th>
               <th>Actions</th>
           </tr>
           </thead>
           <tbody>
           {
-               props.currentServiceAssoc.length > 0 ?
-               props.currentServiceAssoc.map( (servi,idx)  => (
+               props.serviceassoc.length > 0 ?
+               props.serviceassoc.map( (servi,idx)  => (
                       <tr key={servi.id}>
-                      <td>{servi.id}</td>
                       <td>{servi.name_associates}</td>
                       <td>{servi.name_categories}</td>
+                      <td>{servi.name_areas}</td>
                       <td>{servi.date_service}</td>
                       <td>{servi.rate_fixed}</td>
                       <td>
@@ -127,9 +197,10 @@ const ServicesTable = (props) => {
                             Edit
                           </Button>
                           <Button variant="contained" color="secondary"
-                              // onClick={() => 
+                              onClick={() => 
+                                eliminarService(servi.id,servi.name_areas,servi.client_id)
                               //   // HandleButtonDelete(servi.id,servi.name,servi.last_name)
-                              // }
+                              }
                               startIcon={<DeleteIcon/>}
                           >
                           Delete

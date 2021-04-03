@@ -43,8 +43,6 @@ export default function serviceReducer(state = dataInicial, action){
                 array: action.payload.array, offset: action.payload.offset
             }
         case POST_SERVICE_ADD: 
-            console.log('POST_SERVICE_ADD')
-            console.log(action.payload.array)
             return {
                 ...state, 
                 array: [...state.array, action.payload.array]
@@ -57,7 +55,9 @@ export default function serviceReducer(state = dataInicial, action){
                 ...state, 
                 array: varr
             }
-        case DELETE_SERVICE:    
+        case DELETE_SERVICE: 
+        console.log('POST_SERVICE_del')
+        console.log(action.payload.array)   
             return {
                 ...state, 
                 array: state.array.filter(array => array.id !== action.payload.array)
@@ -127,44 +127,42 @@ export const getServiceId = (id) => async (dispatch)  => {
 }
 
 //Get Service con el id del client current
-export const getServiceAssoc = (id) => async (dispatch)  => {
-    try{
-        // const {offset} = getState().Service
-        const response = await axios.get(`http://localhost:8000/services/associate/${id}`)
-        dispatch({
-            type: GET_SERVICE_ASSOC,
-            payload: {
-                array: response.data
-            }
-        })  
+// export const getServiceAssoc = (id) => async (dispatch)  => {
+//     try{
+//         // const {offset} = getState().Service
+//         const response = await axios.get(`http://localhost:8000/services/associate/${id}`)
+//         dispatch({
+//             type: GET_SERVICE_ASSOC,
+//             payload: {
+//                 array: response.data
+//             }
+//         })  
 
-    }catch(error){
-        console.log(error)
-    }
-}
+//     }catch(error){
+//         console.log(error)
+//     }
+// }
 
 //addService 
 export const addService = (category_id,areas_id,associate_id,
-    client_id,product_id,name_service,gross_amount,rate_fixed,date_service
+    client_id,name_service,gross_amount,rate_fixed,date_service
     ) => async (dispatch, getState)  => {
   try {
-    console.log('addServiceDuck addService')
-    console.log(category_id)
-    console.log(areas_id)
-    console.log(associate_id)
-    console.log(client_id)
+    
+    // console.log(areas_id)
+    // console.log(associate_id)
+    // console.log(client_id)
 
 
-    console.log(product_id)
-    console.log(name_service)
-    console.log(gross_amount)
+    // console.log(name_service)
+    // console.log(gross_amount)
 
-    console.log(rate_fixed)
-    console.log(date_service)
+    // console.log(rate_fixed)
+    // console.log(date_service)
 
     const response = await axios.post(`http://localhost:8000/api/services`,
       {
-        category_id, areas_id, associate_id, client_id, product_id,name_service, gross_amount, rate_fixed, date_service
+        category_id, areas_id, associate_id, client_id,name_service, gross_amount, rate_fixed, date_service
       }
     )
     dispatch({
@@ -185,6 +183,8 @@ export const addService = (category_id,areas_id,associate_id,
 //deleteService
 export const deleteService = (id) => async (dispatch, getState) => {
     try {
+        console.log('deleteService')
+        console.log(id)
         const response = await axios.delete(
             `http://localhost:8000/api/services/${id}`          
         )
@@ -200,11 +200,11 @@ export const deleteService = (id) => async (dispatch, getState) => {
 }
 
 // updateService
-export const updateService = (id,category_id, areas_id, associate_id, client_id, product_id,name_service, gross_amount, rate_fixed, date_service) => async (dispatch, getState) => {
+export const updateService = (id,category_id, areas_id, associate_id, client_id, name_service, gross_amount, rate_fixed, date_service) => async (dispatch, getState) => {
 
     try {
         const response = await axios.put(
-        `http://localhost:8000/api/services/${id}`, {category_id, areas_id, associate_id, client_id, product_id,name_service, gross_amount, rate_fixed, date_service})
+        `http://localhost:8000/api/services/${id}`, {category_id, areas_id, associate_id, client_id, name_service, gross_amount, rate_fixed, date_service})
             dispatch({
             type: UPDATE_SERVICE,
             payload: {
