@@ -182,20 +182,20 @@ const Services = () => {
     // }, [service]);
 
     //Indica modificacion en los servicios
-    const servicesChange = (id) => {
-      dispatch(getServiceAssoc(id))
+    // const servicesChange = (id) => {
+    //   dispatch(getServiceAssoc(id))
       
-      //setCurrentService([])
+    //   //setCurrentService([])
 
-      // setCurrentService([
-        //   ...currentService,
-        //   { id: id,	name: name,	last_name:last_name, email: email,
-        //     date_service: date_service, rate_fixed: rate_fixed}
-        // ])
-      // console.log('CAll servicesChange -> currentService');
-      console.log('servicesChange',id);
-      // console.log('servicesChange',currentService);
-    }
+    //   // setCurrentService([
+    //     //   ...currentService,
+    //     //   { id: id,	name: name,	last_name:last_name, email: email,
+    //     //     date_service: date_service, rate_fixed: rate_fixed}
+    //     // ])
+    //   // console.log('CAll servicesChange -> currentService');
+    //   console.log('servicesChange=============',id);
+    //   // console.log('servicesChange',currentService);
+    // }
 
     //Controla el Autocomplete
     const handleChange = event => {
@@ -211,25 +211,20 @@ const Services = () => {
 
     const editRow = (service) => {
 
+
+      // console.log('--------------------------editRow---------------------');
+      // console.log(service);
       setEditing(true);
       setModoEdicion(true);
-      // setCurrentService(
-      //   { 
-      //     id: service.id,	name: service.name,
-      //     last_name: service.last_name,	email: service.email,
-      //     rate_fixed: service.rate_fixed,
-      //     date_service: service.date_service
-      //   }
-      // )
-      console.log('--------------------------editRow---------------------');
-      console.log(service);
+      setAsociados(service.associate_id)
       setCategorias(service.category_id)
-      setAreas(service.areas)
+      setAreas(service.areas_id)
+      reset(service)
     }
 
     const handleClient =  e => {
         e.preventDefault();
-        console.log('handleClient')
+        // console.log('handleClient')
 
         setSValue(svalue)
 
@@ -246,16 +241,16 @@ const Services = () => {
 
         if (typeof(svalue) !== 'undefined' && svalue != null) {
 
-          console.log('Not Undefined and Not Null',svalue.id)
-
-          servicesChange(svalue.id)
+          // console.log('Not Undefined and Not Null',svalue.id)
+          setIdServiceAssoc({id:svalue.id,key:Math.random()})
+          // servicesChange(svalue.id)
           // setCurrentService(
           //   [...currentService,
           //   {service}]
           // )
           // setServiceTotal(svalue)
-        } else {
-          console.log('Undefined or Null')
+        // } else {
+        //   console.log('Undefined or Null')
           // setServiceTotal([])
           //setCurrentService([])
         }
@@ -276,20 +271,21 @@ const Services = () => {
 
 
     useEffect(() => {
-      console.log('llamado a getServiceAssoc+++++++++++')
-      console.log(typeof(idServiceAssoc))
-      console.log(typeof(idServiceAssoc.id))
-      console.log(idServiceAssoc.id)
-      console.log(idServiceAssoc.key)
+      // console.log('llamado a getServiceAssoc+++++++++++')
+      // console.log(typeof(idServiceAssoc))
+      // console.log(typeof(idServiceAssoc.id))
+      // console.log(idServiceAssoc.id)
+      // console.log(idServiceAssoc.key)
 
       if (typeof(idServiceAssoc.id) !== 'object' && idServiceAssoc.id != null) {
+        // console.log('CAll')
         dispatch(getServiceAssoc(idServiceAssoc.id))
       }
     },[idServiceAssoc.key])
 
     const onSubmit = (data, e) => {
 
-      console.log('data onSubmit---asociados--------')
+      // console.log('data onSubmit---asociados--------')
       // console.log(asociados)
       // console.log(areas)
       
@@ -345,8 +341,8 @@ const Services = () => {
       //     date_service: selectedDateService,	date_aplication: data.date_aplication, date_pay: data.date_pay,
       //     date_performance: data.date_performance}
       // ])
-      console.log('Service id')
-      console.log(parseInt(data.id))
+      // console.log('Service id')
+      // console.log(parseInt(data.id))
       // console.log('data.id')
       // console.log(parseInt(data.id))
       // console.log('data.client_id')
@@ -509,7 +505,6 @@ const Services = () => {
                               </span>
                           </div>
                           <div className="row align-items-start">
-                          
                           <Grid container justify="space-around">
                               <Grid item xs={12}>
                                 <Paper className={classes.paper}>
@@ -604,12 +599,6 @@ const Services = () => {
                                     {errors.rate_fixed && errors.rate_fixed.message}
                                 </span>
                             </Grid>
-                            
-                            
-                          </div>
-                          
-                          <div>
-                              {/* <Controller as={TextField} name="TextField" control={control} defaultValue="" /> */}
                           </div>
                           {
                           modoEdicion ? (
@@ -619,57 +608,8 @@ const Services = () => {
                           )
                           }
                       </form>
-                      {/* <Client ref={this.ClientRef}/> */}
                       </div>    
                       <div  className="flex-large">
-                      {/* <table>
-                        <thead>
-                        <tr>
-                          <th>Associate</th>
-                          <th>Category</th>
-                          <th>Area</th>
-                          <th>Date service</th>
-                          <th>Rate</th>
-                          <th>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                            {
-                              serviceassoc.length > 0 ?
-                              serviceassoc.map( (servi,idx)  => (
-                                      <tr key={servi.id}>
-                                        <td>{servi.name_associates}</td>
-                                        <td>{servi.name_categories}</td>
-                                        <td>{servi.name_areas}</td>
-                                        <td>{servi.date_service}</td>
-                                        <td>{servi.rate_fixed}</td>
-                                        <td>
-                                          <Button variant="outlined" color="primary"
-                                          className="btn btn-sm btn-danger float-right mx-2"
-                                          onClick={
-                                              () => editRow(servi)
-                                          }
-                                          >Edit
-                                          </Button>
-                                          <Button variant="contained" color="secondary"
-                                            className="btn btn-sm btn-danger float-right mx-2"
-                                            onClick={() => eliminarService(servi.id,servi.name_areas,servi.client_id)
-                                            }
-                                            startIcon={<DeleteIcon/>}
-                                            >
-                                            Delete
-                                          </Button>
-                                      </td>
-                                  </tr>
-                                  )) : (
-                              
-                                      <tr>
-                                      <td colSpan={3}>No service</td>
-                                      </tr>
-                                  )
-                          }
-                          </tbody>
-                      </table> */}
                       <h2>View Service</h2>
                 
                       <ServicesTable 
@@ -678,8 +618,8 @@ const Services = () => {
                         serviceassoc={serviceassoc}
                         // currentServiceAssoc={currentServiceAssoc}
                         // searchResults={searchResults}
-                        // searchTerm={searchTerm}
-                        // eliminarService={eliminarService} 
+                        getServiceAssoc={getServiceAssoc}
+                        setIdServiceAssoc={setIdServiceAssoc} 
                         editRow={editRow}
                         />
                     

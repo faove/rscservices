@@ -1,38 +1,39 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect } from 'react';
+import { format, formatDistance, formatRelative, subDays } from 'date-fns'
 // import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button'
 import DeleteIcon from '@material-ui/icons/Delete';
 import Swal from 'sweetalert2';
 import { deleteService } from '../redux/serviceDuck';
-import { getServiceAssoc } from '../redux/serviceAssocDuck';
+// import { getServiceAssoc } from '../redux/serviceAssocDuck';
 import { useDispatch, useSelector} from 'react-redux';
+import { Modal,Container,Row,Col } from 'react-bootstrap';
+import { MuiPickersUtilsProvider, KeyboardDatePicker,} from '@material-ui/pickers';
+import { unstable_createMuiStrictModeTheme as createMuiTheme, TextField } from '@material-ui/core';
+import DateFnsUtils from '@date-io/date-fns';
+import { useForm } from 'react-hook-form';
 
-
-// const useStyles = makeStyles((theme) => ({
-//   root: {
-//     width: '100%',
-//     height: 400,
-//     maxWidth: 300,
-//     backgroundColor: theme.palette.background.paper,
-//   },
-// }));
 
 
 const ServicesTable = (props) => {
 
   const dispatch = useDispatch()
+
+  const [modalShow, setModalShow] = useState(false);
+  const { register, setValue, reset, handleSubmit, errors, control } = useForm();
+
   // const service = useSelector(store => store.service.array)
-  const [idServiceAssocDel, setIdServiceAssocDel] = useState([])
+  // const [idServiceAssocDel, setIdServiceAssocDel] = useState([])
   
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    console.log('setIdServiceAssocDel.......................')
-    console.log(idServiceAssocDel)
-    console.log(idServiceAssocDel.id)
-    console.log(idServiceAssocDel.key)
-    dispatch(getServiceAssoc(idServiceAssocDel.id))
-  },[idServiceAssocDel.key])
+  //   console.log('setIdServiceAssocDel.......................')
+  //   console.log(idServiceAssocDel)
+  //   console.log(idServiceAssocDel.id)
+  //   console.log(idServiceAssocDel.key)
+  //   dispatch(getServiceAssoc(idServiceAssocDel.id))
+  // },[idServiceAssocDel.key])
 
   const swalWithBootstrapButtons = Swal.mixin({
     customClass: {
@@ -55,11 +56,11 @@ const ServicesTable = (props) => {
       }).then((result) => {
         if (result.isConfirmed) {
             dispatch(deleteService(id))
-            
-            dispatch(getServiceAssoc(client_id))
+            dispatch(props.getServiceAssoc(client_id))
+            props.setIdServiceAssoc({id:client_id,key:Math.random()})
             
             // setIdServiceAssocDel(client_id)
-            setIdServiceAssocDel({id: client_id, key: Math.random()})
+            // setIdServiceAssocDel({id: client_id, key: Math.random()})
 
           swalWithBootstrapButtons.fire(
             'Deleted!',
@@ -84,88 +85,93 @@ const ServicesTable = (props) => {
     console.log(id)
     HandleButtonDelete(id,name,client_id)
   }
-    //const { index, style } = props;
-    // <div className="container">
-            //     <div className="row">
-            //         <div className="col-9">.col-9</div>
-            //         <div className="col-4">.col-4<br>Since 9 + 4 = 13 &gt; 12, this 4-column-wide div gets wrapped onto a new line as one contiguous unit.</div>
-            //         <div className="col-6">.col-6<br>Subsequent columns continue along the new line.</div>
-            //     </div>
-            // </div>
-            // <ListItem button style={style} key={index}>
-            //         <ListItemText primary={`Item ${index + 1}`} />
-            //     </ListItem>
+
+  const AddModalProduct = (props) => {
+
+    setValue('service_id',props.service_id)
+
+    return (
+
+      <Modal {...props} aria-labelledby="contained-modal-title-vcenter" size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Add Product
+           { 
+           
+           console.log(props.service_id)
+           }
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="show-grid">
+          <Container>
+            <Row>
+              <Col xs={18} md={12}>
+              <TextField
+                id="name_products"
+                label="Description Product"
+                multiline
+                fullWidth
+                rows={3}
+                defaultValue="Default Value"
+                variant="outlined"
+              />
+              </Col>
+
+            </Row>
+  
+            <Row>
+              <Col xs={6} md={4}>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <KeyboardDatePicker
+                  disableToolbar
+                  variant="inline"
+                  format="dd/MM/yyyy"
+                  margin="normal"
+                  id="date_start"
+                  label="Date Start"
+                  // value={selectedDate}
+                  // onChange={handleDateChange}
+                  // error={selectedDate === '' ??  false}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
+                />
+              </MuiPickersUtilsProvider>
+              </Col>
+              <Col xs={6} md={4}>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <KeyboardDatePicker
+                  disableToolbar
+                  variant="inline"
+                  format="dd/MM/yyyy"
+                  margin="normal"
+                  id="date_end"
+                  label="Date End"
+                  // value={selectedDate}
+                  // onChange={handleDateChange}
+                  // error={selectedDate === '' ??  false}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
+                />
+              </MuiPickersUtilsProvider>
+              </Col>
+              <Col xs={6} md={4}>
+              <input type="text" 
+                name="services_id" id="services_id" htmlFor="services_id"
+                className="form-control" ref ={register} 
+              />
+              </Col>
+            </Row>
+          </Container>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={props.onHide}>Close</Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
     
-    // console.log(props.serviceTotal > 0 ? Array.from(props.serviceTotal.serviceTotal): props);
-    // console.log(props.services.length)
-    // const valores = props.serviceTotal.length > 0 ? (props.serviceTotal):(props);
-    // const valores = [];
-    
-    // console.log(valores.length > 0)
-    // console.log(props.inputValue)
-    // console.log('props.services')
-    console.log('props.serviceassoc',props.serviceassoc)
-
-    // props.services.map((service,index) => (
-    //   // console.log(service.id)
-    //   valores=service
-    //   // valores.push({id: service.id, name_service:service.name_service, date_service:service.date_service});
-    // ))
-
-    // for (let i = 0; i < props.services.length; i++) {
-    //     var name_service = props.services[i].name_service;
-    //     var id = props.services[i].id;
-    //     var date_service = props.services[i].date_service;
-    //     // console.log(name_service);
-    //     valores.push({id: id, name_service:name_service, date_service:date_service});
-    // }
-    // console.log('props')
-    // props.services.map( (servi,idx)  => (
-    //   <div key = {idx}>{servi}</div>
-    // ))
-    
-    // Array.from(props.svalue).forEach(child => {
-    //   console.log(child)
-    // });
-    // console.log(props.svalue)
-    // console.log(JSON.parse(props.client))
-    // props.client.forEach(function(element){
-                  //   console.log(element);
-
-                    
-                  // })
-                  
-                  // rows > 0 ? (
-                  //     <div style={{ height: 400, width: '100%' }}>
-                  //       <DataGrid  rows={rows} columns={columns} pageSize={5} checkboxSelection />
-                  //     </div>
-                  //     ) : (
-                  //     <div colSpan={3}>No service asociado</div>
-                  //     ) 
-
-                  // props.svalue > 0 ?
-                  //     props.svalue.map(search  => (
-                          
-                  //       <div key={search.svalue.id}>{search.svalue.name}</div>
-                          
-                  //     )) : (
-                  //     <div colSpan={3}>No service asociado</div>
-                  // )
-              
-                
-                 
-                    // if(typeof(props.client)) === "string"){data = JSON.parse(props.client))}
-
-                    // props.svalue.length > 0 ?
-                    //     props.svalue.map(search  => (
-                            
-                    //         <DataGrid key={search.id} rows={search} columns={columns} pageSize={5} checkboxSelection />
-                    //         // Array.from(parent.children).forEach(child => {
-                    //         //     console.log(child)
-                    //         // });
-                    // )) : (
-                    //     <div colSpan={3}>No service asociado</div>
-                    // )
     return (
       <table>
           <thead>
@@ -189,6 +195,23 @@ const ServicesTable = (props) => {
                       <td>{servi.date_service}</td>
                       <td>{servi.rate_fixed}</td>
                       <td>
+                      
+                          <>
+                            <Button variant="primary" onClick={() => setModalShow(true)}>
+                              Products
+                            </Button>
+
+                            <AddModalProduct show={modalShow} 
+                              id={servi.id} 
+                              areas_id={servi.areas_id} 
+                              associate_id={servi.associate_id} 
+                              category_id={servi.category_id} 
+                              client_id={servi.client_id} 
+                              date_service={servi.date_service} 
+                              onHide={() => setModalShow(false)} 
+                            
+                            />
+                          </>
                           <Button variant="outlined" color="primary"
                               onClick={
                                   () => {props.editRow(servi)}

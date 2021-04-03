@@ -57,7 +57,8 @@ export default function serviceReducer(state = dataInicial, action){
             }
         case DELETE_SERVICE: 
         console.log('POST_SERVICE_del')
-        console.log(action.payload.array)   
+        console.log(action.payload.array) 
+        console.log(state.array.id)
             return {
                 ...state, 
                 array: state.array.filter(array => array.id !== action.payload.array)
