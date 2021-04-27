@@ -9,6 +9,8 @@ const GET_SERVICE_ASSOC = 'GET_SERVICE_ASSOC'
 export default function serviceAssocReducer(state = dataInicial, action){
     switch(action.type){
         case GET_SERVICE_ASSOC:
+            console.log('GET_SERVICE_ASSOC')
+            console.log(action.payload.array)
             return {
                 ...state,
                 array: action.payload.array

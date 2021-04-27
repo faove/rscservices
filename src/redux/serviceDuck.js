@@ -11,7 +11,7 @@ const GET_SERVICE_NEXT = 'GET_SERVICE_NEXT'
 const POST_SERVICE_ADD = 'POST_SERVICE_ADD'
 const DELETE_SERVICE = 'DELETE_SERVICE'
 const UPDATE_SERVICE = 'UPDATE_SERVICE'
-const GET_SERVICE_ASSOC = 'GET_SERVICE_ASSOC'
+// const GET_SERVICE_ASSOC = 'GET_SERVICE_ASSOC'
 
 //reducer
 export default function serviceReducer(state = dataInicial, action){
@@ -30,13 +30,13 @@ export default function serviceReducer(state = dataInicial, action){
                 ...state, 
                 array: action.payload.array
             }
-        case GET_SERVICE_ASSOC:  
-            console.log('GET_SERVICE_ASSOC')
-            console.log(action.payload.array)
-            return {
-                ...state, 
-                array: action.payload.array
-            }
+        // case GET_SERVICE_ASSOC:  
+        //     console.log('GET_SERVICE_ASSOC')
+        //     console.log(action.payload.array)
+        //     return {
+        //         ...state, 
+        //         array: action.payload.array
+        //     }
         case GET_SERVICE_NEXT:    
             return {
                 ...state, 
@@ -146,7 +146,7 @@ export const getServiceId = (id) => async (dispatch)  => {
 
 //addService 
 export const addService = (category_id,areas_id,associate_id,
-    client_id,name_service,gross_amount,rate_fixed,date_service
+    client_id,name_service,gross_amount,date_service
     ) => async (dispatch, getState)  => {
   try {
     
@@ -158,12 +158,11 @@ export const addService = (category_id,areas_id,associate_id,
     // console.log(name_service)
     // console.log(gross_amount)
 
-    // console.log(rate_fixed)
     // console.log(date_service)
 
     const response = await axios.post(`http://localhost:8000/api/services`,
       {
-        category_id, areas_id, associate_id, client_id,name_service, gross_amount, rate_fixed, date_service
+        category_id, areas_id, associate_id, client_id,name_service, gross_amount, date_service
       }
     )
     dispatch({
@@ -201,11 +200,11 @@ export const deleteService = (id) => async (dispatch, getState) => {
 }
 
 // updateService
-export const updateService = (id,category_id, areas_id, associate_id, client_id, name_service, gross_amount, rate_fixed, date_service) => async (dispatch, getState) => {
+export const updateService = (id,category_id, areas_id, associate_id, client_id, name_service, gross_amount, date_service) => async (dispatch, getState) => {
 
     try {
         const response = await axios.put(
-        `http://localhost:8000/api/services/${id}`, {category_id, areas_id, associate_id, client_id, name_service, gross_amount, rate_fixed, date_service})
+        `http://localhost:8000/api/services/${id}`, {category_id, areas_id, associate_id, client_id, name_service, gross_amount, date_service})
             dispatch({
             type: UPDATE_SERVICE,
             payload: {

@@ -8,6 +8,7 @@ import { getAssociate } from '../redux/associateDuck';
 import { getCategArea } from '../redux/areaDuck';
 import { addService, updateService } from '../redux/serviceDuck';
 import { getServiceAssoc } from '../redux/serviceAssocDuck';
+import { getTypeProducts } from '../redux/typeproductDuck';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { unstable_createMuiStrictModeTheme as createMuiTheme, TextField } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -24,10 +25,6 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker,} from '@material-ui/picker
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import { useForm } from 'react-hook-form';
-
-
-
-
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -63,15 +60,18 @@ const Services = () => {
     const serviceassoc = useSelector(store => store.serviceassoc.array)
     const category = useSelector(store => store.category.array)
     const area = useSelector(store => store.area.array)
+    const typeproduct = useSelector(store => store.typeproduct.array)
 
     const [editing, setEditing] = useState(false)
     // const [serviceTotal, setServiceTotal] = useState([])
     const [idServiceAssoc, setIdServiceAssoc] = useState([])
-
+    //Boolean que indica si add un product
+    const [editingProduct, setEditingProduct] = useState(false)
     // const [currentServiceAssoc, setCurrentServiceAssoc] = useState([])
     const [modoEdicion, setModoEdicion] = useState(false)
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
+    const [searchTypeProduct, setSearchTypeProduct] = useState([]);
     // const [startDate, setStartDate] = useState(new Date());
     const { register, setValue, reset, handleSubmit, errors, control } = useForm({defaultValues: searchResults});
     const [svalue, setSValue] = useState(null);
@@ -88,18 +88,6 @@ const Services = () => {
     const [errorAssociate, setErrorAssociate] = useState(false)
     const [errorDate, setErrorDate] = useState(false)
 
-
-
-   
-  
-    // const eliminarService = (id,name,client_id) => {
-    //   console.log('delete+++')
-    //   console.log(client_id)
-    //   console.log(name)
-    //   console.log(id)
-    //   HandleButtonDelete(id,name,client_id)
-    // }
-
     const handleDateChange = (date) => {
       setErrorDate(false)
       setSelectedDate(date);
@@ -108,17 +96,14 @@ const Services = () => {
     //Controla la seleccionde la Category
     const handleChangeCategory = (event) => {
 
-      console.log('handleErrorCategory:')
-      console.log(event.target.value)
+      // console.log('handleErrorCategory:')
+      // console.log(event.target.value)
 
       setErrorCategory(false)
       setCategorias(Number(event.target.value))
-
       //Call function getCategArea
       dispatch(getCategArea(event.target.value));
-      // console.log('handleChangeCategory:')
-      // console.log(categorias)
-      // console.log(Number(event.target.value))
+      
     };
 
     //Controla la seleccionde la Category
@@ -147,66 +132,38 @@ const Services = () => {
 
     //Este useEffect funciona como DidMount al momento de pintar todos los object
     useEffect(() => {
-      // console.log('mounted')
-      dispatch(getCategory());
-      dispatch(getAssociate());
-      // console.log(associate)
+
+      if (!categorias){
+        console.log('mounted getCategory');
+        dispatch(getCategory());
+      }
+      if (!asociados){
+        console.log('mounted getasociados');
+        dispatch(getAssociate());
+      }
+      console.log('mounted getTypeProducts')
+      dispatch(getTypeProducts());
+     
+      // setSearchTypeProduct(typeproduct)
+      // console.log('product type 1 useEffect');
+      // console.log(searchTypeProduct);
+      //setSearchTypeProduct(...typeproduct)
     }, []);
 
-    // useEffect(() => {
-    //   console.log('cambio service',service);
-      // setCurrentService([
-      //   ...currentService,
-      //       { 
-      //       id: service.id, category_id: service.category_id,
-      //       associate_id: service.associate_id,
-      //       name: service.name,last_name: service.last_name,email: service.email,
-      //       client_id: service.client_id, rate_fixed: service.rate_fixed,
-      //       date_service: service.date_service
-      //     }
-      // ])
-      // const {resp} = service;
-      // setCurrentService(
-      //   [...currentService,{service[0].service}]
-      // )
-      // setCurrentServiceAssoc(
-      //   [...service]
-      // )
-
-      // setCurrentServiceAssoc(
-      //   [...service]
-      // )
-
-      // console.log('currentService useEffect',currentServiceAssoc);
-
-    // }, [service]);
-
-    //Indica modificacion en los servicios
-    // const servicesChange = (id) => {
-    //   dispatch(getServiceAssoc(id))
-      
-    //   //setCurrentService([])
-
-    //   // setCurrentService([
-    //     //   ...currentService,
-    //     //   { id: id,	name: name,	last_name:last_name, email: email,
-    //     //     date_service: date_service, rate_fixed: rate_fixed}
-    //     // ])
-    //   // console.log('CAll servicesChange -> currentService');
-    //   console.log('servicesChange=============',id);
-    //   // console.log('servicesChange',currentService);
-    // }
-
+    
     //Controla el Autocomplete
     const handleChange = event => {
-        
-        setSearchTerm(event.target.value);
-        setSValue(null)
 
-        // console.log(category)
-        // setCategorias(category)
-        // console.log(categorias)
-        // setAsociados(associate)
+      // console.log('handleChange getTypeProducts')
+      // dispatch(getTypeProducts());  
+      setSearchTerm(event.target.value);
+      // dispatch(getTypeProducts());
+      // setSearchTypeProduct(...typeproduct)
+      // console.log('product type 2 handleChange');
+      // console.log(searchTypeProduct);
+      console.log('product type 3');
+      console.log(typeproduct);
+      setSValue(null)
     };
 
     const editRow = (service) => {
@@ -228,15 +185,6 @@ const Services = () => {
 
         setSValue(svalue)
 
-        // console.log(svalue)
-        // const array = searchResults.filter(item => item.dni === parseInt(str))
-        // setSearchResults(results)
-        // console.log(array.dni)
-        // console.log(svalue)
-        // console.log(array[0].id,array[0].name, array[0].last_name)
-        // setValue('id', svalue.id);
-        // setValue('name', svalue.name);
-        // setValue('last_name', svalue.last_name);
         reset(svalue)
 
         if (typeof(svalue) !== 'undefined' && svalue != null) {
@@ -260,23 +208,15 @@ const Services = () => {
 
     useEffect(() => {
         dispatch(getClient());
-        
         const results = client.filter(searchclient =>
             searchclient.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setSearchResults(results)
-
     },[searchTerm]);
 
 
 
     useEffect(() => {
-      // console.log('llamado a getServiceAssoc+++++++++++')
-      // console.log(typeof(idServiceAssoc))
-      // console.log(typeof(idServiceAssoc.id))
-      // console.log(idServiceAssoc.id)
-      // console.log(idServiceAssoc.key)
-
       if (typeof(idServiceAssoc.id) !== 'object' && idServiceAssoc.id != null) {
         // console.log('CAll')
         dispatch(getServiceAssoc(idServiceAssoc.id))
@@ -285,16 +225,6 @@ const Services = () => {
 
     const onSubmit = (data, e) => {
 
-      // console.log('data onSubmit---asociados--------')
-      // console.log(asociados)
-      // console.log(areas)
-      
-      // const dateService = format(selectedDateService, 'YYYY/MM/dd')
-      
-      // console.log('modoEdicion')
-      // console.log(modoEdicion)
-      // console.log('setErrorArea')
-      // console.log(areas)
 
       if (!asociados || asociados.length === 0){
         setErrorAssociate(true)
@@ -320,37 +250,7 @@ const Services = () => {
         return
       }
       const selectedDateService = format(selectedDate, 'MM/dd/yyyy HH:MM:ss')
-      // console.log(selectedDateService)
-
-      // setCurrentServiceAssoc([
-      //   // ...currentServiceAssoc,
-      //   ...service,
-      //       { 
-      //       id: parseInt(data.id), category_id: categorias,associate_id: asociados,
-      //       area_id:area, name: data.name,last_name: data.last_name,
-      //       client_id: data.client_id, rate_fixed: data.rate_fixed,
-      //       date_service: selectedDateService
-      //     }
-      // ])
-      // setCurrentService([
-      //   ...currentService,
-      //   { category_id: categorias,	areas_id: 1,	associate_id: asociados,
-      //     client_id: parseInt(data.id), product_id: 1, name_service: data.name_service, rate_variable: data.rate_variable,
-      //     rate_fixed: data.rate_fixed,	rate_process: data.rate_process,	phone_service: data.phone_service,
-      //     chat_service: data.chat_service,	chat_service_name: data.chat_service_name, fee_service: data.fee_service,
-      //     date_service: selectedDateService,	date_aplication: data.date_aplication, date_pay: data.date_pay,
-      //     date_performance: data.date_performance}
-      // ])
-      // console.log('Service id')
-      // console.log(parseInt(data.id))
-      // console.log('data.id')
-      // console.log(parseInt(data.id))
-      // console.log('data.client_id')
-      // console.log(data.client_id)
-      // console.log('data.dateService')
-      // console.log(data.date_service)
-      // console.log('fecha')
-      // console.log(selectedDateService)
+   
 
       // setValue('type_services_id', data.type_services_id);
       // setValue('mode_services_id', data.mode_services_id);
@@ -363,32 +263,24 @@ const Services = () => {
       setValue('client_id', parseInt(data.id));
       // setValue('product_id', 1);
       setValue('name_service', data.name_service);
-      setValue('rate_fixed', data.rate_fixed);
+      setValue('gross_amount', data.gross_amount);
       setValue('gross_amount', data.gross_amount);
       setValue('phone_service', data.phone_service);
       setValue('date_service', selectedDateService);
-      //data.areas_id =1;
-      // data.product_id=1;
-      // setValue('chat_service', data.chat_service);
-      // setValue('chat_service_name', data.chat_service_name);
-      // setValue('fee_service', data.fee_service);
-      
-      // setValue('date_aplication', data.date_aplication);
-      // setValue('date_pay', data.date_pay);
-      // setValue('date_performance', data.date_performance);
-
       
       
       if (modoEdicion){
 
         dispatch(updateService(data.id, categorias, 
           areas, asociados, parseInt(data.id),
-          data.name_service, data.gross_amount, data.rate_fixed, selectedDateService));
+          data.name_service, data.gross_amount, data.gross_amount, selectedDateService));
         setModoEdicion(false)
+
       }else{
+        
           dispatch(addService(categorias, 
             areas, asociados, parseInt(data.id),
-            data.name_service, data.gross_amount, data.rate_fixed, selectedDateService));
+            data.name_service, data.gross_amount, data.gross_amount, selectedDateService));
       }
       setErrorArea(false)
       setErrorCategory(false)
@@ -398,19 +290,13 @@ const Services = () => {
       //Update or add new service
       dispatch(getServiceAssoc(parseInt(data.id)))
       setIdServiceAssoc({id: parseInt(data.id), key: Math.random(data.id)})
-      // servicesChange(data.id)
       setAsociados(-1)
       setCategorias(-1)
       setAreas(-1)
-      // setCurrentService(
-      //   [...currentService,
-      //   {service}]
-      // )
 
       // limpiar campos  ref={this.wrapper}
       e.target.reset();
     }
-    // const wrapper = createRef(null);
     return (
             <div >
               <div  className="flex-row">
@@ -581,22 +467,22 @@ const Services = () => {
                                 </Paper>
                               </Grid>
                                 <input 
-                                  placeholder="Tarifa"
+                                  placeholder="Gross Amount"
                                   type="text" 
-                                  name="rate_fixed"
+                                  name="gross_amount"
                                   ref={register({
                                       required: {
                                           value: true, 
-                                          message: 'Tarifa required'
+                                          message: 'Gross Amount required'
                                       },
                                       pattern: {
                                         value: /^[0-9\.]+$/, 
-                                          message: 'Tarifa es requerido, debe ser numerico'
+                                          message: 'Gross Amount is required, debe ser numerico'
                                       }
                                   })}
                                   />
                                 <span className="text-danger text-small d-block mb-2">
-                                    {errors.rate_fixed && errors.rate_fixed.message}
+                                    {errors.gross_amount && errors.gross_amount.message}
                                 </span>
                             </Grid>
                           </div>
@@ -613,9 +499,9 @@ const Services = () => {
                       <h2>View Service</h2>
                 
                       <ServicesTable 
-                        // serviceTotal={serviceTotal}
-                        // inputValue={inputValue}
-                        serviceassoc={serviceassoc}
+                        typeproduct={typeproduct}
+                        // inputValue={inputValue} searchTypeProduct}
+                        serviceassoc={serviceassoc} 
                         // currentServiceAssoc={currentServiceAssoc}
                         // searchResults={searchResults}
                         getServiceAssoc={getServiceAssoc}

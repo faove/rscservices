@@ -8,6 +8,7 @@ import serviceAssocReducer from './serviceAssocDuck'
 import categoryReducer from './categoryDuck'
 import productReducer from './productDuck'
 import typestatusReducer from './typestatusDuck'
+import typeproductReducer from './typeproductDuck'
 
 const rootReducer = combineReducers({
 
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
     area : areaReducer,
     service : serviceReducer,
     serviceassoc : serviceAssocReducer,
+    typeproduct : typeproductReducer,
     showstatus : typestatusReducer,
     category: categoryReducer,
     product : productReducer

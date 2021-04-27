@@ -206,7 +206,7 @@ const ServicesAddForm = (props) => {
                 <input 
                     placeholder="Tarifa"
                     type="text" 
-                    name="rate_fixed"
+                    name="gross_amount"
                     ref={register({
                         required: {
                             value: true, 
@@ -217,7 +217,7 @@ const ServicesAddForm = (props) => {
                 </div>
                 <div>
                     <span className="text-danger text-small d-block mb-2">
-                        {errors.rate_fixed && errors.rate_fixed.message}
+                        {errors.gross_amount && errors.gross_amount.message}
                     </span>
                 </div>
                 <div>
