@@ -1,24 +1,31 @@
 import React, {useState, useEffect } from 'react';
-import { format, formatDistance, formatRelative, subDays } from 'date-fns'
 // import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button'
 import DeleteIcon from '@material-ui/icons/Delete';
 import Swal from 'sweetalert2';
 import { deleteService } from '../redux/serviceDuck';
-import { updateProduct } from '../redux/productDuck';
 import { useDispatch, useSelector} from 'react-redux';
-import { Modal,Container,Row,Col } from 'react-bootstrap';
+import { Container,Row,Col } from 'react-bootstrap';
 import { makeStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-import FormControl from '@material-ui/core/FormControl';
-import { MuiPickersUtilsProvider, KeyboardDatePicker,} from '@material-ui/pickers';
-import { unstable_createMuiStrictModeTheme as createMuiTheme, TextField } from '@material-ui/core';
-import DateFnsUtils from '@date-io/date-fns';
 import { useForm } from 'react-hook-form';
+import Products from './Products';
 
 const useStyles = makeStyles((theme) => ({
+  // paper: {
+  //   position: 'absolute',
+  //   width: 400,
+  //   backgroundColor: theme.palette.background.paper,
+  //   border: '2px solid #000',
+  //   boxShadow: theme.shadows[5],
+  //   // padding: theme.spacing(2,4,3),
+  //   padding: "16px 32px 24px",
+  //   top: '50%',
+  //   left: '50%',
+  //   transform: 'translate(-50%,-50%)',
+  // },
+  // textfield:{
+  //   width: '100%'
+  // },
   formControl: {
     margin: theme.spacing(2),
     minWidth: 220,
@@ -42,21 +49,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
+
 const ServicesTable = (props) => {
-  const classes = useStyles();
+  // const classes = useStyles();
   const dispatch = useDispatch()
 
   // const typeproduct = useSelector(store => store.area.array)
 
   const [modalShow, setModalShow] = useState(false);
-  const [errorTypeProduct,setErrorTypeProduct] = useState(false);
-  const [tipoproduct, setTipoProduct] = useState('');
+  
   const [errorDescripProduct, setErrorDescripProduct] = useState(false)
 
   const [descripProduct, setDescripProduct] = useState('');
   
   const { register, setValue, reset, handleSubmit, errors, control } = useForm();
-  const product = useSelector(store => store.product.array)
+  
+
   // const service = useSelector(store => store.service.array)
   // const [idServiceAssocDel, setIdServiceAssocDel] = useState([])
   
@@ -129,153 +137,155 @@ const ServicesTable = (props) => {
   //   // console.log(props)
   // },[]);
 
-  const HandleChangeTypeProduct = (event) => {
-    console.log('HandleChangeTypeProduct:')
-    console.log(event.target.value)
-    setErrorTypeProduct(true)
-    setTipoProduct(Number(event.target.value))
+  // const HandleChangeTypeProduct = (event) => {
+  //   console.log('HandleChangeTypeProduct:')
+  //   console.log(event.target.value)
+  //   setErrorTypeProduct(true)
+  //   setTipoProduct(Number(event.target.value))
 
-    //dispatch(getTypeProducts());
+  //   //dispatch(getTypeProducts());
 
-  }
+  // }
+
   
+
   
-  const AddModalProduct = (props) => {
-    // console.log('----props-typeproduct---');
-    // console.log(props.typeproduct);
-    // const typeproduct = props.typeproduct;
-    setValue('service_id',props.service_id)
+  // const AddModalProduct2 = (props) => {
+  //   // console.log('----props-typeproduct---');
+  //   // console.log(props.typeproduct);
+  //   // const typeproduct = props.typeproduct;
+  //   setValue('service_id',props.service_id)
     
-    //Function add product
-    const handleAddProduct = event => {
+  //   //Function add product
+  //   const handleAddProduct = event => {
 
-      console.log('---------------handleAddProduct----------');
-      //service_id
-      console.log(props);
-      let lexico = "" + props.category_id + "-" + props.areas_id + "-" + tipoproduct + "";
-      //product_id
-      // console.log(name_products);
-      console.log(lexico);
-      // console.log(tipoproduct)
-      // dispatch(addProduct(props.id, tipoproduct,lexico,name_products ));  
-      setDescripProduct(-1)
-    };
-    const handleChangeDescriproduct = event => {
-      console.log('----handleChangeDescriproduct----');
-      setErrorDescripProduct(false)
-      setDescripProduct(event.target.value)
-    }
+  //     console.log('---------------handleAddProduct----------');
+  //     //service_id
+  //     console.log(props);
+  //     let lexico = "" + props.category_id + "-" + props.areas_id + "-" + tipoproduct + "";
+  //     //product_id
+  //     // console.log(name_products);
+  //     console.log(lexico);
+  //     // console.log(tipoproduct)
+  //     // dispatch(addProduct(props.id, tipoproduct,lexico,name_products ));  
+  //     setDescripProduct(-1)
+  //   };
+  //   const handleChangeDescriproduct = event => {
+  //     console.log('----handleChangeDescriproduct----');
+  //     setErrorDescripProduct(false)
+  //     setDescripProduct(event.target.value)
+  //   }
 
     
-      return (
+  //     return (
       
-        <Modal {...props} aria-labelledby="contained-modal-title-vcenter" size="lg">
-          <Modal.Header closeButton>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Add Product
-              {/* {console.log('---AddModalProducts---')}
-                      {console.log(props)} */}
-                      {console.log('---AddModalProducts---')}
-                      {console.log(props)}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body className="show-grid">
-            <Container>
-              <Row>
-                <Col xs={18} md={12}>
+  //       <Modal {...props} aria-labelledby="contained-modal-title-vcenter" size="lg">
+  //         <Modal.Header closeButton>
+  //           <Modal.Title id="contained-modal-title-vcenter">
+  //             Add Product
+  //             {/* {console.log('---AddModalProducts---')}
+  //                     {console.log(props)} */}
+  //                     {console.log('---AddModalProducts---')}
+  //                     {console.log(props)}
+  //           </Modal.Title>
+  //         </Modal.Header>
+  //         <Modal.Body className="show-grid">
+  //           <Container>
+  //             <Row>
+  //               <Col xs={18} md={12}>
                 
-                <FormControl className={classes.formControl}>
-                  <InputLabel id="select-label-type-products">Responsible type products</InputLabel>
-                    <Select
-                      labelId="select_type_products_label"
-                      id="select_typeproduct"
-                      value={tipoproduct === -1 ? '' : tipoproduct}
-                      onChange={HandleChangeTypeProduct}
-                      error={tipoproduct === '' && errorTypeProduct ===true}
-                    >
-                    {
-                      props.typeproduct.map((tprod, index) => (
-                        <MenuItem key={index} value={tprod.id}>
-                          {tprod.name}
-                        </MenuItem>
-                      ))
-                    }
-                    </Select>
-                </FormControl>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={18} md={12}>
-                <TextField
-                  id="name_products"
-                  label="Description Product"
-                  value={descripProduct === -1 ? '' : descripProduct}
-                  onChange={handleChangeDescriproduct}
-                  multiline
-                  fullWidth
-                  rows={3}
-                  defaultValue="Default Value"
-                  variant="outlined"
-                />
-                </Col>
+  //               <FormControl className={classes.formControl}>
+  //                 <InputLabel id="select-label-type-products">Responsible type products</InputLabel>
+  //                   <Select
+  //                     labelId="select_type_products_label"
+  //                     id="select_typeproduct"
+  //                     value={tipoproduct === -1 ? '' : tipoproduct}
+  //                     onChange={HandleChangeTypeProduct}
+  //                     error={tipoproduct === '' && errorTypeProduct ===true}
+  //                   >
+  //                   {
+  //                     props.typeproduct.map((tprod, index) => (
+  //                       <MenuItem key={index} value={tprod.id}>
+  //                         {tprod.name}
+  //                       </MenuItem>
+  //                     ))
+  //                   }
+  //                   </Select>
+  //               </FormControl>
+  //               </Col>
+  //             </Row>
+  //             <Row>
+  //               <Col xs={18} md={12}>
+  //               <TextField
+  //                 id="name_products"
+  //                 label="Description Product"
+  //                 value={descripProduct === -1 ? '' : descripProduct}
+  //                 onChange={handleChangeDescriproduct}
+  //                 multiline
+  //                 fullWidth
+  //                 rows={3}
+  //                 defaultValue="Default Value"
+  //                 variant="outlined"
+  //               />
+  //               </Col>
 
-              </Row>
+  //             </Row>
     
-              <Row>
-                <Col xs={6} md={4}>
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                  <KeyboardDatePicker
-                    disableToolbar
-                    variant="inline"
-                    format="dd/MM/yyyy"
-                    margin="normal"
-                    id="date_start"
-                    label="Date Start"
-                    // value={selectedDate}
-                    // onChange={handleDateChange}
-                    // error={selectedDate === '' ??  false}
-                    KeyboardButtonProps={{
-                      'aria-label': 'change date',
-                    }}
-                  />
-                </MuiPickersUtilsProvider>
-                </Col>
-                <Col xs={6} md={4}>
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                  <KeyboardDatePicker
-                    disableToolbar
-                    variant="inline"
-                    format="dd/MM/yyyy"
-                    margin="normal"
-                    id="date_end"
-                    label="Date End"
-                    // value={selectedDate}
-                    // onChange={handleDateChange}
-                    // error={selectedDate === '' ??  false}
-                    KeyboardButtonProps={{
-                      'aria-label': 'change date',
-                    }}
-                  />
-                </MuiPickersUtilsProvider>
-                </Col>
-                <Col xs={6} md={4}>
-                <input type="text" 
-                  name="services_id" id="services_id" htmlFor="services_id"
-                  className="form-control" ref ={register} 
-                />
-                </Col>
-              </Row>
-            </Container>
-          </Modal.Body>
-          <Modal.Footer>
-          <Button onClick={handleAddProduct}>Add</Button>
-            <Button onClick={props.onHide}>Close</Button>
-          </Modal.Footer>
-        </Modal>
+  //             <Row>
+  //               <Col xs={6} md={4}>
+  //               <MuiPickersUtilsProvider utils={DateFnsUtils}>
+  //                 <KeyboardDatePicker
+  //                   disableToolbar
+  //                   variant="inline"
+  //                   format="dd/MM/yyyy"
+  //                   margin="normal"
+  //                   id="date_start"
+  //                   label="Date Start"
+  //                   // value={selectedDate}
+  //                   // onChange={handleDateChange}
+  //                   // error={selectedDate === '' ??  false}
+  //                   KeyboardButtonProps={{
+  //                     'aria-label': 'change date',
+  //                   }}
+  //                 />
+  //               </MuiPickersUtilsProvider>
+  //               </Col>
+  //               <Col xs={6} md={4}>
+  //               <MuiPickersUtilsProvider utils={DateFnsUtils}>
+  //                 <KeyboardDatePicker
+  //                   disableToolbar
+  //                   variant="inline"
+  //                   format="dd/MM/yyyy"
+  //                   margin="normal"
+  //                   id="date_end"
+  //                   label="Date End"
+  //                   // value={selectedDate}
+  //                   // onChange={handleDateChange}
+  //                   // error={selectedDate === '' ??  false}
+  //                   KeyboardButtonProps={{
+  //                     'aria-label': 'change date',
+  //                   }}
+  //                 />
+  //               </MuiPickersUtilsProvider>
+  //               </Col>
+  //               <Col xs={6} md={4}>
+  //               <input type="text" 
+  //                 name="services_id" id="services_id" htmlFor="services_id"
+  //                 className="form-control" ref ={register} 
+  //               />
+  //               </Col>
+  //             </Row>
+  //           </Container>
+  //         </Modal.Body>
+  //         <Modal.Footer>
+  //         <Button onClick={handleAddProduct}>Add</Button>
+  //           <Button onClick={props.onHide}>Close</Button>
+  //         </Modal.Footer>
+  //       </Modal>
       
-      );
+  //     );
     
-  }
+  // }
     
     return (
       <table>
@@ -300,23 +310,9 @@ const ServicesTable = (props) => {
                       <td>{servi.date_service}</td>
                       <td>{servi.gross_amount}</td>
                       <td>
-                      
-                          <>
-                            <Button variant="primary" onClick={() => setModalShow(true)}>
-                              Products
-                            </Button>
-                            <AddModalProduct show={modalShow} 
-                              id={servi.id} 
-                              areas_id={servi.areas_id} 
-                              associate_id={servi.associate_id} 
-                              category_id={servi.category_id} 
-                              client_id={servi.client_id} 
-                              date_service={servi.date_service} 
-                              typeproduct={props.typeproduct}
-                              onHide={() => setModalShow(false)} 
-                            
-                            />
-                          </>
+                          <Products 
+                          typeproduct={props.typeproduct}
+                          />
                           <Button variant="outlined" color="primary"
                               onClick={
                                   () => {props.editRow(servi)}
@@ -333,7 +329,6 @@ const ServicesTable = (props) => {
                           >
                           Delete
                           </Button>
-                          
                       </td>
                   </tr>
                   )) : (
