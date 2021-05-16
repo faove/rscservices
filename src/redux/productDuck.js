@@ -110,8 +110,9 @@ export const getProductId = (id) => async (dispatch)  => {
 //Behind 20 Product
 
 //addProduct 
-export const addProduct = (services_id, product_id, lexido, name_products,date_start,date_end,date_pay,quota,amount,invoice_number,
-    method_payment,payment_reference, deadlines,status) => async (dispatch, getState)  => {
+// ,date_pay,quota,amount,invoice_number,
+//     method_payment,payment_reference, deadlines,status
+export const addProduct = (services_id, product_id, lexido, name_products,date_start,date_end) => async (dispatch, getState)  => {
   try {
     console.log('ProducteDuck addProduct')
     console.log(services_id)
@@ -119,8 +120,7 @@ export const addProduct = (services_id, product_id, lexido, name_products,date_s
       "http://localhost:8000/api/products",
       {
          services_id, lexido, name_products,date_start,
-         date_end,date_pay,quota,amount,invoice_number,
-         method_payment,payment_reference, deadlines,status	
+         date_end
       }
     )
     dispatch({
@@ -130,7 +130,8 @@ export const addProduct = (services_id, product_id, lexido, name_products,date_s
         }
         
     }) 
-
+    // ,date_pay,quota,amount,invoice_number,
+    // method_payment,payment_reference, deadlines,status	
   }catch (error){
     console.log(error)
   }

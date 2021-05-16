@@ -234,21 +234,21 @@ const ServicesTable = (props) => {
   //             <Row>
   //               <Col xs={6} md={4}>
   //               <MuiPickersUtilsProvider utils={DateFnsUtils}>
-  //                 <KeyboardDatePicker
-  //                   disableToolbar
-  //                   variant="inline"
-  //                   format="dd/MM/yyyy"
-  //                   margin="normal"
-  //                   id="date_start"
-  //                   label="Date Start"
-  //                   // value={selectedDate}
-  //                   // onChange={handleDateChange}
-  //                   // error={selectedDate === '' ??  false}
-  //                   KeyboardButtonProps={{
-  //                     'aria-label': 'change date',
-  //                   }}
-  //                 />
-  //               </MuiPickersUtilsProvider>
+                //   <KeyboardDatePicker
+                //     disableToolbar
+                //     variant="inline"
+                //     format="dd/MM/yyyy"
+                //     margin="normal"
+                //     id="date_start"
+                //     label="Date Start"
+                //     // value={selectedDate}
+                //     // onChange={handleDateChange}
+                //     // error={selectedDate === '' ??  false}
+                //     KeyboardButtonProps={{
+                //       'aria-label': 'change date',
+                //     }}
+                //   />
+                // </MuiPickersUtilsProvider>
   //               </Col>
   //               <Col xs={6} md={4}>
   //               <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -311,7 +311,8 @@ const ServicesTable = (props) => {
                       <td>{servi.gross_amount}</td>
                       <td>
                           <Products 
-                          typeproduct={props.typeproduct}
+                          // typeproduct={props.typeproduct}
+                          props_var = {props}
                           />
                           <Button variant="outlined" color="primary"
                               onClick={

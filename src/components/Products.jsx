@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { format, formatDistance, formatRelative, subDays } from 'date-fns'
 import Modal from '@material-ui/core/Modal';
-import { updateProduct } from '../redux/productDuck';
+import { updateProduct, addProduct } from '../redux/productDuck';
 import { useDispatch, useSelector} from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -39,8 +39,8 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(16, 32, 24),
   },
   formControl: {
-    margin: theme.spacing(4),
-    minWidth: 420,
+    margin: theme.spacing(0),
+    minWidth: 500,
   },
   root: {
     flexGrow: 1,
@@ -85,12 +85,23 @@ const Products = (props) => {
         console.log('---------------handleAddProduct----------');
         //service_id
         console.log(props);
-        let lexico = "" + props.category_id + "-" + props.areas_id + "-" + tipoproduct + "";
+        // console.log(props_var);
+        let lexico = "" + props.props_var.category_id + "-" + props.props_var.areas_id + "-" + tipoproduct + "";
         //product_id
         // console.log(name_products);
         console.log(lexico);
-        // console.log(tipoproduct)
-        // dispatch(addProduct(props.id, tipoproduct,lexico,name_products ));  
+        let name_products = "Prueba";
+        let date_start = '12-01-2021';
+        let date_end = '12-04-2021';
+        console.log(tipoproduct);
+        console.log(name_products);
+        console.log(date_start);
+        console.log(date_end);
+
+        dispatch(addProduct(props.id, tipoproduct, lexico, name_products, date_start, date_end));  
+
+        // services_id, product_id, lexido, name_products,date_start,date_end
+        // services_id, product_id, lexido, name_products,
         setDescripProduct(-1)
     };
 
@@ -113,10 +124,10 @@ const Products = (props) => {
     useEffect(() => {
 
         console.log('useEffect in Product')
-        if  (props.typeproduct !== 'undefined' && props.typeproduct != null){
+        if  (props.props_var.typeproduct !== 'undefined' && props.props_var.typeproduct != null){
             
-            console.log(props.typeproduct)
-            setNameProduct(props.typeproduct)
+            console.log(props.props_var.typeproduct)
+            setNameProduct(props.props_var.typeproduct)
         }
         console.log('-----nameProduct')
         console.log(nameProduct)
@@ -129,7 +140,7 @@ const Products = (props) => {
     const body = (
         <div style={modalStyle} className={classes.paper}>
                 <Row>
-                    <Col xs={18} md={12}>
+                    <Col xs={24} md={16}>
                     <FormControl className={classes.formControl}>
                         <InputLabel id="select-label-type-products">Responsible type products</InputLabel>
                         <Select
@@ -152,23 +163,59 @@ const Products = (props) => {
                         }
                         </Select>
                     </FormControl>
-                    <Paper className={classes.papergrid}>
-                        <Grid container wrap="nowrap" spacing={2}>
-                        <Grid item xs zeroMinWidth>
-                            <Typography noWrap>{tipoproduct}</Typography>
-                        </Grid>
-                        </Grid>
-                    </Paper>
-                    <Button onClick={handleAddProduct}>Add</Button>
-                    <Button onClick={props.onHide}>Close</Button>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12} md={8}>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <KeyboardDatePicker
+                            disableToolbar
+                            variant="inline"
+                            format="dd/MM/yyyy"
+                            margin="normal"
+                            id="date_start"
+                            label="Date Start"
+                            // value={selectedDate}
+                            // onChange={handleDateChange}
+                            // error={selectedDate === '' ??  false}
+                            KeyboardButtonProps={{
+                            'aria-label': 'change date',
+                            }}
+                        />
+                        </MuiPickersUtilsProvider>
+                    </Col>
+                    <Col xs={12} md={8}>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <KeyboardDatePicker
+                            disableToolbar
+                            variant="inline"
+                            format="dd/MM/yyyy"
+                            margin="normal"
+                            id="date_end"
+                            label="Date End"
+                            // value={selectedDate}
+                            // onChange={handleDateChange}
+                            // error={selectedDate === '' ??  false}
+                            KeyboardButtonProps={{
+                            'aria-label': 'change date',
+                            }}
+                        />
+                        </MuiPickersUtilsProvider>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={18} md={12}>
-
+                        <Paper className={classes.papergrid}>
+                            <Grid container wrap="nowrap" spacing={2}>
+                            <Grid item xs zeroMinWidth>
+                                <Typography noWrap>{tipoproduct}</Typography>
+                            </Grid>
+                            </Grid>
+                        </Paper>
+                        <Button onClick={handleAddProduct}>Add</Button>
+                        <Button onClick={props.props_var.onHide}>Close</Button>
                     </Col>
                 </Row>
-        
                         
     </div>
     );
