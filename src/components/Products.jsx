@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { format, formatDistance, formatRelative, subDays } from 'date-fns'
+import { format, toDate, formatDistance, formatRelative, subDays } from 'date-fns'
 import Modal from '@material-ui/core/Modal';
 import { updateProduct, addProduct } from '../redux/productDuck';
 import { useDispatch, useSelector} from 'react-redux';
@@ -16,6 +16,9 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker,} from '@material-ui/picker
 import DateFnsUtils from '@date-io/date-fns';
 import Button from '@material-ui/core/Button';
 import { Container,Row,Col } from 'react-bootstrap';
+import { useForm } from 'react-hook-form';
+
+
 
 
 function getModalStyle() {
@@ -64,11 +67,18 @@ const Products = (props) => {
     const product = useSelector(store => store.product.array);
     const [errorTypeProduct,setErrorTypeProduct] = useState(false);
     const [tipoproduct, setTipoProduct] = useState('');
+    const [selectedDateStart,setSelectedDateStart] = useState(new Date());
+    const [selectedDateEnd,setSelectedDateEnd] = useState(new Date());
     const [nombreproduct, setNombreProduct] = useState('');
     const [modalShow, setModalShow] = useState(false);
     const [errorDescripProduct, setErrorDescripProduct] = useState(false)
     const [descripProduct, setDescripProduct] = useState('');
     const [nameProduct, setNameProduct] = useState([]);
+    const {  handleSubmit } = useForm({});
+    //Constantes de Errores
+    const [errorTipoProduct, setErrorTipoProduct] = useState(false);
+    const [errorDateStart, setErrorDateStart] = useState(false);
+    const [errorDateEnd, setErrorDateEnd] = useState(false);
 
 
     const handleOpen = () => {
@@ -80,25 +90,41 @@ const Products = (props) => {
     };
 
     //Function add product
-    const handleAddProduct = event => {
+    const onSubmit = (data, e) => {
 
         console.log('---------------handleAddProduct----------');
-        //service_id
-        console.log(props);
-        // console.log(props_var);
-        let lexico = "" + props.props_var.category_id + "-" + props.props_var.areas_id + "-" + tipoproduct + "";
-        //product_id
-        // console.log(name_products);
-        console.log(lexico);
-        let name_products = "Prueba";
-        let date_start = '12-01-2021';
-        let date_end = '12-04-2021';
-        console.log(tipoproduct);
-        console.log(name_products);
-        console.log(date_start);
-        console.log(date_end);
 
-        dispatch(addProduct(props.id, tipoproduct, lexico, name_products, date_start, date_end));  
+        if (!tipoproduct || tipoproduct.length === 0){
+            setErrorTipoProduct(true)
+            return
+        }
+        if (!selectedDateStart || selectedDateStart.length === 0){
+            setErrorDateStart(true)
+            return
+        }
+        if (!selectedDateEnd || selectedDateEnd.length === 0){
+            setErrorDateEnd(true)
+            return
+        }
+        //service_id
+        //console.log(event.target);
+        console.log(tipoproduct);
+        // console.log(event.target.value);
+        // console.log(props_var);
+        let lexico = "" + props.category_id + "-" + props.areas_id + "-" + tipoproduct + "";
+        //product_id
+        //console.log(props.category_id);
+        //console.log(lexico);
+        let status =true;
+        let description_product = '';
+        // let date_end = '12-04-2021';
+        console.log(lexico);
+        //console.log(name_products);
+        
+        console.log(format(toDate(selectedDateStart), 'yyyy/MM/dd'));
+        console.log(format(toDate(selectedDateEnd), 'yyyy/MM/dd'));
+
+       dispatch(addProduct(props.servi_id, tipoproduct, lexico, description_product, format(toDate(selectedDateStart), 'yyyy/MM/dd'), format(toDate(selectedDateEnd), 'yyyy/MM/dd'),status));  
 
         // services_id, product_id, lexido, name_products,date_start,date_end
         // services_id, product_id, lexido, name_products,
@@ -139,6 +165,7 @@ const Products = (props) => {
 
     const body = (
         <div style={modalStyle} className={classes.paper}>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <Row>
                     <Col xs={24} md={16}>
                     <FormControl className={classes.formControl}>
@@ -175,7 +202,7 @@ const Products = (props) => {
                             margin="normal"
                             id="date_start"
                             label="Date Start"
-                            // value={selectedDate}
+                            value={selectedDateStart}
                             // onChange={handleDateChange}
                             // error={selectedDate === '' ??  false}
                             KeyboardButtonProps={{
@@ -193,7 +220,7 @@ const Products = (props) => {
                             margin="normal"
                             id="date_end"
                             label="Date End"
-                            // value={selectedDate}
+                            value={selectedDateEnd}
                             // onChange={handleDateChange}
                             // error={selectedDate === '' ??  false}
                             KeyboardButtonProps={{
@@ -212,11 +239,12 @@ const Products = (props) => {
                             </Grid>
                             </Grid>
                         </Paper>
-                        <Button onClick={handleAddProduct}>Add</Button>
+                        <button className="btn btn-warning btn-block" type="submit">Add</button>
+                        {/* <Button onClick={handle}>Add</Button> */}
                         <Button onClick={props.props_var.onHide}>Close</Button>
                     </Col>
                 </Row>
-                        
+                </form>        
     </div>
     );
 

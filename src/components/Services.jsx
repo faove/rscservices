@@ -73,7 +73,7 @@ const Services = () => {
     const [searchResults, setSearchResults] = useState([]);
     const [searchTypeProduct, setSearchTypeProduct] = useState([]);
     // const [startDate, setStartDate] = useState(new Date());
-    const { register, setValue, reset, handleSubmit, errors, control } = useForm({defaultValues: searchResults});
+    const { register, setValue, reset, handleSubmit, errors } = useForm({defaultValues: searchResults});
     const [svalue, setSValue] = useState(null);
     const [inputValue, setInputValue] = useState('');
     const [categorias, setCategorias] = useState('');

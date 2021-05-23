@@ -311,7 +311,10 @@ const ServicesTable = (props) => {
                       <td>{servi.gross_amount}</td>
                       <td>
                           <Products 
-                          // typeproduct={props.typeproduct}
+                          servi_id={servi.id}
+                          category_id={servi.category_id}
+                          areas_id={servi.areas_id}
+                          client_id={servi.client_id}
                           props_var = {props}
                           />
                           <Button variant="outlined" color="primary"
