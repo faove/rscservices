@@ -8,7 +8,6 @@ import { getAssociate } from '../redux/associateDuck';
 import { getCategArea } from '../redux/areaDuck';
 import { addService, updateService } from '../redux/serviceDuck';
 import { getServiceAssoc } from '../redux/serviceAssocDuck';
-import { getTypeProducts } from '../redux/typeproductDuck';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { unstable_createMuiStrictModeTheme as createMuiTheme, TextField } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -60,7 +59,7 @@ const Services = () => {
     const serviceassoc = useSelector(store => store.serviceassoc.array)
     const category = useSelector(store => store.category.array)
     const area = useSelector(store => store.area.array)
-    const typeproduct = useSelector(store => store.typeproduct.array)
+    //
 
     const [editing, setEditing] = useState(false)
     // const [serviceTotal, setServiceTotal] = useState([])
@@ -96,8 +95,8 @@ const Services = () => {
     //Controla la seleccionde la Category
     const handleChangeCategory = (event) => {
 
-      // console.log('handleErrorCategory:')
-      // console.log(event.target.value)
+      console.log('handleErrorCategory:')
+      console.log(event.target.value)
 
       setErrorCategory(false)
       setCategorias(Number(event.target.value))
@@ -141,8 +140,8 @@ const Services = () => {
         console.log('mounted getasociados');
         dispatch(getAssociate());
       }
-      console.log('mounted getTypeProducts')
-      dispatch(getTypeProducts());
+      // console.log('mounted getTypeProducts')
+      // dispatch(getTypeProducts());
      
       // setSearchTypeProduct(typeproduct)
       // console.log('product type 1 useEffect');
@@ -162,7 +161,7 @@ const Services = () => {
       // console.log('product type 2 handleChange');
       // console.log(searchTypeProduct);
       console.log('product type 3');
-      console.log(typeproduct);
+      //console.log(typeproduct);
       setSValue(null)
     };
 
@@ -499,7 +498,7 @@ const Services = () => {
                       <h2>View Service</h2>
                 
                       <ServicesTable 
-                        typeproduct={typeproduct}
+                        // typeproduct={typeproduct}
                         // inputValue={inputValue} searchTypeProduct}
                         serviceassoc={serviceassoc} 
                         // currentServiceAssoc={currentServiceAssoc}

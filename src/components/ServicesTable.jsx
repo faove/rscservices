@@ -312,8 +312,11 @@ const ServicesTable = (props) => {
                       <td>
                           <Products 
                           servi_id={servi.id}
+                          associate_name={servi.name_associates}
                           category_id={servi.category_id}
+                          categoria_name={servi.name_categories}
                           areas_id={servi.areas_id}
+                          areas_name={servi.name_areas}
                           client_id={servi.client_id}
                           props_var = {props}
                           />

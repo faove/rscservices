@@ -10,8 +10,8 @@ const GET_TYPEPRODUCTS = 'GET_TYPEPRODUCTS'
 export default function typeproductReducer(state = dataInicial, action){
     switch(action.type){
         case GET_TYPEPRODUCTS:  
-            console.log('GET_TYPEPRODUCTS+++++++++++++++++++++++++++')
-            console.log(action.payload.array)
+            // console.log('GET_TYPEPRODUCTS+++++++++++++++++++++++++++')
+            // console.log(action.payload.array)
             return {
                 ...state, 
                 array: action.payload.array
@@ -22,9 +22,10 @@ export default function typeproductReducer(state = dataInicial, action){
 }
 
 //actions
-export const getTypeProducts = () => async (dispatch)  => {
+export const getTypeProducts = (areasid) => async (dispatch)  => {
     try{
-        const response = await axios.get(`http://localhost:8000/api/typeproducts`)
+        
+        const response = await axios.get(`http://localhost:8000/api/typeproducts/areas/${areasid}`)
         dispatch({
             type: GET_TYPEPRODUCTS,
             payload: {
