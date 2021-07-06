@@ -27,6 +27,8 @@ export default function productReducer(state = dataInicial, action){
                 array: action.payload.array, offset: action.payload.offset
             }
         case POST_PRODUCT_ADD:    
+            console.log('POST_PRODUCT_ADD+++++++++++++++++++++++++++')
+            console.log(action.payload.array)
             return {
                 ...state, 
                 array: [...state.array, action.payload.array]
@@ -112,14 +114,14 @@ export const getProductId = (id) => async (dispatch)  => {
 //addProduct 
 // ,date_pay,quota,amount,invoice_number,
 //     method_payment,payment_reference, deadlines,status
-export const addProduct = (services_id, type_product_id, lexido, description_product, date_start, date_end, status) => async (dispatch, getState)  => {
+export const addProduct = (services_id, area_id, category_id, selectedDateStart, type_product_id, lexido, description_product, date_start, date_end, status) => async (dispatch, getState)  => {
   try {
     console.log('ProducteDuck addProduct')
     console.log(services_id)
     const response = await axios.post(
       "http://localhost:8000/api/products",
       {
-         services_id, type_product_id, lexido, description_product,date_start,
+         services_id, area_id, category_id, selectedDateStart, type_product_id, lexido, description_product,date_start,
          date_end, status
       }
     )

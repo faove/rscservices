@@ -219,7 +219,7 @@ const Products = (props) => {
         //console.log(format(toDate(selectedDateStart), 'yyyy/MM/dd'));
         //console.log(format(toDate(selectedDateEnd), 'yyyy/MM/dd'));
         
-        //dispatch(addProduct(props.servi_id, tipoproduct, lexico, description_product, format(toDate(selectedDateStart), 'yyyy/MM/dd'), format(toDate(selectedDateEnd), 'yyyy/MM/dd'),status));  
+        //dispatch(addProduct(props.servi_id, props.areas_id, props.category_id, selectedDateStart, tipoproduct, lexico, description_product, format(toDate(selectedDateStart), 'yyyy/MM/dd'), format(toDate(selectedDateEnd), 'yyyy/MM/dd'),status));  
 
         // services_id, product_id, lexido, name_products,date_start,date_end
         // services_id, product_id, lexido, name_products,
@@ -242,11 +242,17 @@ const Products = (props) => {
     
     }
     useEffect(()=> {
+
+        if (!selectedDateStart || selectedDateStart.length === 0){
+          setErrorDateStart(true)
+          return
+        }
+
         console.log('------useEffect typeproduct----------------')
         
         setDataProduct(typeproduct)
         console.log(dataProduct)
-        // dispatch(addProduct(props.servi_id, tipoproduct, lexico, description_product, 
+        // dispatch(addProduct(props.servi_id, props.areas_id, props.category_id, selectedDateStart, tipoproduct, lexico, description_product, 
         //     format(toDate(selectedDateStart), 'yyyy/MM/dd'), format(toDate(selectedDateEnd), 'yyyy/MM/dd'),
         //     status));  
             
