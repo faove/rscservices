@@ -27,7 +27,7 @@ export default function serviceAssocReducer(state = dataInicial, action){
 //Consulta a los servicios que tiene asignado elasociado
 export const getServiceAssoc = (id) => async (dispatch)  => {
     try{
-        const response = await axios.get(`http://localhost:8000/services/associate/${id}`)
+        const response = await axios.get(`http://localhost:8000/api/services/associate/${id}`)
             dispatch({
                 type: GET_SERVICE_ASSOC,
                 payload: {
