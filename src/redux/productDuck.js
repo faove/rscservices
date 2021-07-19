@@ -112,12 +112,11 @@ export const getProductId = (id) => async (dispatch)  => {
 export const addProduct = (services_id, area_id, category_id, selected_date_start, type_product_id, lexido, description_product, date_start,  status) => async (dispatch, getState)  => {
   try {
     console.log('ProducteDuck addProduct')
-    console.log(services_id)
+    console.log(services_id,area_id, category_id, selected_date_start, type_product_id, lexido, description_product,date_start,status)
     const response = await axios.post(
       "http://localhost:8000/api/products/add",
       {
-         services_id, area_id, category_id, selected_date_start, type_product_id, lexido, description_product,date_start,
-         status
+         services_id, area_id, category_id, selected_date_start, type_product_id, lexido, description_product,date_start,status
       }
     )
     dispatch({
