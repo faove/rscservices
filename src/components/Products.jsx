@@ -200,9 +200,9 @@ const Products = (props) => {
         }
         let lexico = "" + props.category_id + "-" + props.areas_id + "-" + tipoproduct + "";
         let status = true;
-        let description_product = '';
+        let description_products = '';
         //Llamada a añadir todos los products 
-        dispatch(addProduct(props.servi_id, props.areas_id, props.category_id, selectedDateStart, tipoproduct, lexico, description_product, format(toDate(selectedDateStart), 'yyyy/MM/dd'), status));  
+        dispatch(addProduct(props.servi_id, props.areas_id, props.category_id, format(toDate(selectedDateStart), 'yyyy/MM/dd'), tipoproduct, lexico, description_products,  status));  
     
         //Dependiendo del area, trae todos tipos de productos
         // dispatch(getTypeProducts(props.areas_id));
