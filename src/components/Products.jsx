@@ -75,31 +75,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-
-
 const Products = (props) => {
 
     const classes = useStyles();
     const dispatch = useDispatch();
+    const {  handleSubmit } = useForm({});
     const [editRowsModel, setEditRowsModel] = useState({});
     // getModalStyle is not a pure function, we roll the style only on the first render
     const [modalStyle] = useState(getModalStyle);
     const [open, setOpen] = useState(false);
-    const product = useSelector(store => store.product.array);
+    //Duck Constants
+    const addproduct = useSelector(store => store.product.array);
     const typeproduct = useSelector(store => store.typeproduct.array)
-    const [errorTypeProduct,setErrorTypeProduct] = useState(false);
+   
     const [tipoproduct, setTipoProduct] = useState('');
     const [selectedDateStart,setSelectedDateStart] = useState(new Date());
     const [selectedDateEnd,setSelectedDateEnd] = useState(new Date());
-    const [nombreproduct, setNombreProduct] = useState('');
-    const [modalShow, setModalShow] = useState(false);
-    const [errorDescripProduct, setErrorDescripProduct] = useState(false)
+    
     const [descripProduct, setDescripProduct] = useState('');
     const [nameProduct, setNameProduct] = useState([]);
     const [dataProduct, setDataProduct] = useState([]);
-    const {  handleSubmit } = useForm({});
+    const [typeProduct, setTypeProduct] = useState([]);
+    
     //Constantes de Errores
+    const [errorDescripProduct, setErrorDescripProduct] = useState(false)
+    const [errorTypeProduct,setErrorTypeProduct] = useState(false);
     const [errorTipoProduct, setErrorTipoProduct] = useState(false);
     const [errorDateStart, setErrorDateStart] = useState(false);
     const [errorDateEnd, setErrorDateEnd] = useState(false);
@@ -131,13 +131,18 @@ const Products = (props) => {
             width: 5 
         },
         { 
-            title: 'Lexido',
-            field: 'lexido', 
+            title: 'services_id',
+            field: 'services_id', 
+            width: 5 
+        },
+        { 
+            title: 'type_product_id',
+            field: 'type_product_id', 
             width: 5 
         },
         { 
             title: 'Description',
-            field: 'name', 
+            field: 'description_products', 
             width: 150,
             editable: true,
         },
@@ -155,6 +160,16 @@ const Products = (props) => {
           width: 110,
           editable: true,
         },
+        { 
+            title: 'updated_at',
+            field: 'updated_at', 
+            width: 5 
+        },
+        { 
+            title: 'created_at',
+            field: 'created_at', 
+            width: 5 
+        }
       ];
 
     const handleOpen = () => {
@@ -172,55 +187,41 @@ const Products = (props) => {
     const handleClose = () => {
         setOpen(false);
     };
-    
-      
-    const rows = [
-    { id: 1, description_products: 'Snow', date_start: '15/01/1998', age: 35 },
-    { id: 2, description_products: 'Custodia', date_start: '22/01/2001', age: 35 },
-    ];
-
+     
     //Function add product
     const onSubmit = (data, e) => {
 
         console.log('---------------handleAddProduct----------');
         console.log('mounted getTypeProducts')
         console.log(props.areas_id);
-        dispatch(getTypeProducts(props.areas_id));
+        if (!selectedDateStart || selectedDateStart.length === 0){
+          setErrorDateStart(true)
+          return
+        }
+        let lexico = "" + props.category_id + "-" + props.areas_id + "-" + tipoproduct + "";
+        let status = true;
+        let description_product = '';
+        //Llamada a añadir todos los products 
+        dispatch(addProduct(props.servi_id, props.areas_id, props.category_id, selectedDateStart, tipoproduct, lexico, description_product, format(toDate(selectedDateStart), 'yyyy/MM/dd'), status));  
+    
+        //Dependiendo del area, trae todos tipos de productos
+        // dispatch(getTypeProducts(props.areas_id));
         //console.log(typeproduct);
         // if (!tipoproduct || tipoproduct.length === 0){
         //     setErrorTipoProduct(true)
         //     return
         // }
-        if (!selectedDateStart || selectedDateStart.length === 0){
-            setErrorDateStart(true)
-            return
-        }
-        if (!selectedDateEnd || selectedDateEnd.length === 0){
-            setErrorDateEnd(true)
-            return
-        }
+        
+        // if (!selectedDateEnd || selectedDateEnd.length === 0){
+        //     setErrorDateEnd(true)
+        //     return
+        // }
 
         //setDataProduct dispatch
         //service_id
-        //console.log(event.target);
-        console.log(tipoproduct);
-        // console.log(event.target.value);
-        // console.log(props_var);
-        let lexico = "" + props.category_id + "-" + props.areas_id + "-" + tipoproduct + "";
-        //product_id
-        //console.log(props.category_id);
-        //console.log(lexico);
-        let status = true;
-        let description_product = '';
-        // let date_end = '12-04-2021';
-        //console.log(lexico);
-        //console.log(name_products);
-        
-        //console.log(format(toDate(selectedDateStart), 'yyyy/MM/dd'));
-        //console.log(format(toDate(selectedDateEnd), 'yyyy/MM/dd'));
-        
-        //dispatch(addProduct(props.servi_id, props.areas_id, props.category_id, selectedDateStart, tipoproduct, lexico, description_product, format(toDate(selectedDateStart), 'yyyy/MM/dd'), format(toDate(selectedDateEnd), 'yyyy/MM/dd'),status));  
+       
 
+        
         // services_id, product_id, lexido, name_products,date_start,date_end
         // services_id, product_id, lexido, name_products,
         setDescripProduct(-1)
@@ -233,30 +234,40 @@ const Products = (props) => {
     };
 
     const HandleChangeTypeProduct = (event) => {
-        console.log('HandleChangeTypeProduct:')
-        console.log(event.target)
         setErrorTypeProduct(true)
         setTipoProduct(event.target.value)
-    
-        //dispatch(getTypeProducts());  props.typeproduct
-    
     }
+
+    //Se Añadio typeProduct, para pasar el array de typeProduct a addProduct
+  //   useEffect(()=> {
+
+  //     if (!selectedDateStart || selectedDateStart.length === 0){
+  //       setErrorDateStart(true)
+  //       return
+  //     }
+
+  //     console.log('------useEffect typeproduct----------------')
+  //     //Guardo en DataProduct el dispatch del boton submit
+  //     //para añadir los productos
+  //     setTypeProduct(typeproduct)
+  //     console.log(typeProduct)
+      
+  // },[typeproduct])
+
+    // Asignamos los valores que trae el dispatch addProduct 
     useEffect(()=> {
 
         if (!selectedDateStart || selectedDateStart.length === 0){
           setErrorDateStart(true)
           return
         }
-
-        console.log('------useEffect typeproduct----------------')
-        
-        setDataProduct(typeproduct)
+        console.log('------useEffect addproduct----------------')
+        //Guardo en DataProduct el dispatch del boton submit
+        //para añadir los productos
+        setDataProduct(addproduct)
         console.log(dataProduct)
-        // dispatch(addProduct(props.servi_id, props.areas_id, props.category_id, selectedDateStart, tipoproduct, lexico, description_product, 
-        //     format(toDate(selectedDateStart), 'yyyy/MM/dd'), format(toDate(selectedDateEnd), 'yyyy/MM/dd'),
-        //     status));  
             
-    },[typeproduct])
+    },[addproduct])
 
     useEffect(() => {
 
@@ -346,7 +357,7 @@ const Products = (props) => {
                         </MuiPickersUtilsProvider>
                     {/* </Col>
                     <Col xs={12} md={8}> */}
-                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <KeyboardDatePicker
                             disableToolbar
                             variant="inline"
@@ -361,7 +372,7 @@ const Products = (props) => {
                             'aria-label': 'change date',
                             }}
                         />
-                        </MuiPickersUtilsProvider>
+                        </MuiPickersUtilsProvider> */}
                     </Col>
                 </Row>
                 <Row>

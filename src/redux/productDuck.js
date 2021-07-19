@@ -92,7 +92,6 @@ export const getNextProduct = (numero) => async (dispatch, getState)  => {
     }
 }
 
-
 //Get Product Id current
 export const getProductId = (id) => async (dispatch)  => {
     try{
@@ -109,20 +108,16 @@ export const getProductId = (id) => async (dispatch)  => {
         console.log(error)
     }
 }
-//Behind 20 Product
-
 //addProduct 
-// ,date_pay,quota,amount,invoice_number,
-//     method_payment,payment_reference, deadlines,status
-export const addProduct = (services_id, area_id, category_id, selectedDateStart, type_product_id, lexido, description_product, date_start, date_end, status) => async (dispatch, getState)  => {
+export const addProduct = (services_id, area_id, category_id, selected_date_start, type_product_id, lexido, description_product, date_start,  status) => async (dispatch, getState)  => {
   try {
     console.log('ProducteDuck addProduct')
     console.log(services_id)
     const response = await axios.post(
-      "http://localhost:8000/api/products",
+      "http://localhost:8000/api/products/add",
       {
-         services_id, area_id, category_id, selectedDateStart, type_product_id, lexido, description_product,date_start,
-         date_end, status
+         services_id, area_id, category_id, selected_date_start, type_product_id, lexido, description_product,date_start,
+         status
       }
     )
     dispatch({
@@ -132,8 +127,7 @@ export const addProduct = (services_id, area_id, category_id, selectedDateStart,
         }
         
     }) 
-    // ,date_pay,quota,amount,invoice_number,
-    // method_payment,payment_reference, deadlines,status	
+
   }catch (error){
     console.log(error)
   }
@@ -155,7 +149,6 @@ export const  deleteProduct = (id) => async (dispatch, getState) => {
             }
             
         }) 
-
 
     }catch (error){
       console.log(error)
