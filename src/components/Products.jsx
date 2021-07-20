@@ -198,12 +198,11 @@ const Products = (props) => {
           setErrorDateStart(true)
           return
         }
-        let lexico = "" + props.category_id + "-" + props.areas_id + "-" + tipoproduct + "";
+        
+        let lexico = "" + props.servi_id + "-" + props.category_id + "-" + props.areas_id + "";
         let status = true;
-        let description_products = '';
         //Llamada a añadir todos los products 
-        dispatch(addProduct(props.servi_id, props.areas_id, props.category_id, format(toDate(selectedDateStart), 'yyyy/MM/dd'), tipoproduct, lexico, description_products,  status));  
-    
+        dispatch(addProduct(props.servi_id, props.areas_id, props.category_id, format(toDate(selectedDateStart), 'yyyy/MM/dd'), lexico,  status));  
         //Dependiendo del area, trae todos tipos de productos
         // dispatch(getTypeProducts(props.areas_id));
         //console.log(typeproduct);
