@@ -1,7 +1,7 @@
 import React, { useState, useEffect, forwardRef } from 'react';
 import { format, toDate, formatDistance, formatRelative, subDays } from 'date-fns'
 import Modal from '@material-ui/core/Modal';
-import { updateProduct, addProduct } from '../redux/productDuck';
+import { updateProduct, addProduct, getProductId } from '../redux/productDuck';
 import { getTypeProducts } from '../redux/typeproductDuck';
 import { useDispatch, useSelector} from 'react-redux';
 import Paper from '@material-ui/core/Paper';
@@ -88,6 +88,7 @@ const Products = (props) => {
     const addproduct = useSelector(store => store.product.array);
     const typeproduct = useSelector(store => store.typeproduct.array)
    
+
     const [tipoproduct, setTipoProduct] = useState('');
     const [selectedDateStart,setSelectedDateStart] = useState(new Date());
     const [selectedDateEnd,setSelectedDateEnd] = useState(new Date());
@@ -173,13 +174,18 @@ const Products = (props) => {
       ];
 
     const handleOpen = () => {
+      
         console.log('---------------Button Product----------');
-        console.log('category_id',props.category_id);
-        console.log('areas_id',props.areas_id);
-        console.log('name_areas',props.areas_name)
-        console.log('name_categoria',props.categoria_name)
-        console.log('associate_name',props.associate_name)
-        
+        console.log('servi_id',props.servi_id);
+        // console.log('props',props);
+        // console.log('category_id',props.category_id);
+        // console.log('areas_id',props.areas_id);
+        // console.log('name_areas',props.areas_name)
+        // console.log('name_categoria',props.categoria_name)
+        // console.log('associate_name',props.associate_name)
+
+        //Dependiendo del area, trae todos tipos de productos
+        dispatch(getProductId(props.servi_id));
         setOpen(true);
 
     };
@@ -268,21 +274,24 @@ const Products = (props) => {
             
     },[addproduct])
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        console.log('useEffect in Product')
-        if  (props.props_var.typeproduct !== 'undefined' && props.props_var.typeproduct != null){
+    //     console.log('useEffect in Product')
+    //     if  (props.props_var.typeproduct !== 'undefined' && props.props_var.typeproduct != null){
             
-            console.log(props.props_var.typeproduct)
-            setNameProduct(props.props_var.typeproduct)
-        }
-        console.log('-----nameProduct')
-        console.log(nameProduct)
-        // setSearchTypeProduct(typeproduct)
-        // console.log('product type 1 useEffect');
-        // console.log(searchTypeProduct);
-        //setSearchTypeProduct(...typeproduct)
-      }, [])
+    //         console.log(props.props_var.typeproduct)
+    //         setNameProduct(props.props_var.typeproduct)
+    //     }
+    //     console.log('-----nameProduct')
+    //     console.log(nameProduct)
+
+        
+        
+    //     // setSearchTypeProduct(typeproduct)
+    //     // console.log('product type 1 useEffect');
+    //     // console.log(searchTypeProduct);
+    //     //setSearchTypeProduct(...typeproduct)
+    //   }, [])
 
     const body = (
         <div style={modalStyle} className={classes.paper}>

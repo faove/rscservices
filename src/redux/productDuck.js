@@ -21,14 +21,20 @@ export default function productReducer(state = dataInicial, action){
                 ...state, 
                 array: action.payload.array
             }
+        case GET_PRODUCT_ID:
+            console.log('POST_PRODUCT__ID+++++++++++++++++++++++++++')
+            console.log(action.payload.array)
+            return {
+                ...state, 
+                array: action.payload.array
+            }
         case GET_PRODUCT_NEXT:    
             return {
                 ...state, 
                 array: action.payload.array, offset: action.payload.offset
             }
         case POST_PRODUCT_ADD:    
-            console.log('POST_PRODUCT_ADD+++++++++++++++++++++++++++')
-            console.log(action.payload.array)
+            
             return {
                 ...state, 
                 array: [...state.array, action.payload.array]
@@ -96,6 +102,8 @@ export const getNextProduct = (numero) => async (dispatch, getState)  => {
 export const getProductId = (id) => async (dispatch)  => {
     try{
         // const {offset} = getState().product
+        console.log('ProducteDuck getProductId')
+        console.log(id)
         const response = await axios.get(`http://localhost:8000/api/products/${id}`)
         dispatch({
             type: GET_PRODUCT_ID,
@@ -111,13 +119,13 @@ export const getProductId = (id) => async (dispatch)  => {
 //addProduct 
 export const addProduct = (services_id, areas_id, category_id, selected_date_start, lexido,  status) => async (dispatch, getState)  => {
   try {
-    console.log('ProducteDuck addProduct')
-    console.log(services_id,areas_id, category_id)
-    console.log('ProducteDuck selected_date_start')
+    // console.log('ProducteDuck addProduct')
+    // console.log(services_id,areas_id, category_id)
+    // console.log('ProducteDuck selected_date_start')
 
-    console.log(selected_date_start, lexido)
-    console.log('ProducteDuck ')
-    console.log(status)
+    // console.log(selected_date_start, lexido)
+    // console.log('ProducteDuck ')
+    // console.log(status)
     const response = await axios.post(
         "http://localhost:8000/api/products",
       {
