@@ -156,20 +156,10 @@ const Products = (props) => {
         },
         {
           title: 'Date End',
-          field: 'date_end ',
+          field: 'date_end',
           type: 'date',
           width: 110,
           editable: true,
-        },
-        { 
-            title: 'updated_at',
-            field: 'updated_at', 
-            width: 5 
-        },
-        { 
-            title: 'created_at',
-            field: 'created_at', 
-            width: 5 
         }
       ];
 
@@ -270,9 +260,11 @@ const Products = (props) => {
         //Guardo en DataProduct el dispatch del boton submit
         //para añadir los productos
         setDataProduct(addproduct)
-        console.log(dataProduct)
+        console.log(addproduct)
             
     },[addproduct])
+    
+    
 
     // useEffect(() => {
 

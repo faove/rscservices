@@ -248,7 +248,7 @@ const Services = () => {
         setErrorDate(true)
         return
       }
-      const selectedDateService = format(selectedDate, 'MM/dd/yyyy HH:MM:ss')
+      const selectedDateService = format(selectedDate, 'yyyy-MM-dd HH:MM:ss')
    
 
       // setValue('type_services_id', data.type_services_id);
@@ -267,7 +267,6 @@ const Services = () => {
       setValue('phone_service', data.phone_service);
       setValue('date_service', selectedDateService);
       
-      
       if (modoEdicion){
 
         dispatch(updateService(data.id, categorias, 
@@ -276,10 +275,10 @@ const Services = () => {
         setModoEdicion(false)
 
       }else{
-        
-          dispatch(addService(categorias, 
-            areas, asociados, parseInt(data.id),
-            data.name_service, data.gross_amount, data.gross_amount, selectedDateService));
+        console.log(selectedDateService);
+        dispatch(addService(categorias, 
+          areas, asociados, parseInt(data.id),
+          data.name_service, data.gross_amount, data.gross_amount, selectedDateService));
       }
       setErrorArea(false)
       setErrorCategory(false)

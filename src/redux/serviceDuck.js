@@ -158,11 +158,11 @@ export const addService = (category_id,areas_id,associate_id,
     // console.log(name_service)
     // console.log(gross_amount)
 
-    // console.log(date_service)
+    console.log(date_service)
 
     const response = await axios.post(`http://localhost:8000/api/services`,
       {
-        category_id, areas_id, associate_id, client_id,name_service, gross_amount, date_service
+        category_id, areas_id, associate_id, client_id, name_service, gross_amount, date_service
       }
     )
     dispatch({
