@@ -132,11 +132,6 @@ const Products = (props) => {
             width: 5 
         },
         { 
-            title: 'services_id',
-            field: 'services_id', 
-            width: 5 
-        },
-        { 
             title: 'type_product_id',
             field: 'type_product_id', 
             width: 5 
@@ -149,14 +144,28 @@ const Products = (props) => {
         },
         { 
             title: 'Date Start', 
-            field: 'date_start', 
+            field: 'date_start_preview', 
             type: 'date',
             width: 150,
             editable: true,
         },
         {
           title: 'Date End',
-          field: 'date_end',
+          field: 'date_end_preview',
+          type: 'date',
+          width: 110,
+          editable: true,
+        },
+        { 
+            title: 'Date Start', 
+            field: 'date_start_real', 
+            type: 'date',
+            width: 150,
+            editable: true,
+        },
+        {
+          title: 'Date End',
+          field: 'date_end_real',
           type: 'date',
           width: 110,
           editable: true,
