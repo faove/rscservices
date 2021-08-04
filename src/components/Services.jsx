@@ -275,10 +275,11 @@ const Services = () => {
         setModoEdicion(false)
 
       }else{
+        console.log('selectedDateService>>>>>>> ');
         console.log(selectedDateService);
         dispatch(addService(categorias, 
           areas, asociados, parseInt(data.id),
-          data.name_service, data.gross_amount, data.gross_amount, selectedDateService));
+          data.name_service, data.gross_amount, selectedDateService));
       }
       setErrorArea(false)
       setErrorCategory(false)
