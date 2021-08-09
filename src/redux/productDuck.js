@@ -102,8 +102,7 @@ export const getNextProduct = (numero) => async (dispatch, getState)  => {
 export const getProductId = (id) => async (dispatch)  => {
     try{
         // const {offset} = getState().product
-        console.log('ProducteDuck getProductId')
-        console.log(id)
+        
         const response = await axios.get(`http://localhost:8000/api/products/${id}`)
         dispatch({
             type: GET_PRODUCT_ID,
@@ -171,7 +170,10 @@ export const  deleteProduct = (id) => async (dispatch, getState) => {
 export const updateProduct = (id,updatedProduct) => async (dispatch, getState) => {
 
     try {
-
+        console.log('ProducteDuck updateProduct')
+        console.log(id)
+        console.log(updatedProduct)
+        
         const response = await axios.put(
         `http://localhost:8000/api/products/${id}`, updatedProduct)
             dispatch({

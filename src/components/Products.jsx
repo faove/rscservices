@@ -85,8 +85,9 @@ const Products = (props) => {
     const [modalStyle] = useState(getModalStyle);
     const [open, setOpen] = useState(false);
     //Duck Constants
-    const addproduct = useSelector(store => store.product.array);
+    const product = useSelector(store => store.product.array);
     const typeproduct = useSelector(store => store.typeproduct.array)
+    //const updateproduct = useSelector(store => store.product.array);
    
 
     const [tipoproduct, setTipoProduct] = useState('');
@@ -139,36 +140,31 @@ const Products = (props) => {
         { 
             title: 'Description',
             field: 'description_products', 
-            width: 150,
-            editable: true,
+            width: 150
         },
         { 
             title: 'Date Start', 
             field: 'date_start_preview', 
             type: 'date',
-            width: 150,
-            editable: true,
+            width: 150
         },
         {
           title: 'Date End',
           field: 'date_end_preview',
           type: 'date',
-          width: 110,
-          editable: true,
+          width: 110
         },
         { 
             title: 'Date Start', 
             field: 'date_start_real', 
             type: 'date',
-            width: 150,
-            editable: true,
+            width: 150
         },
         {
           title: 'Date End',
           field: 'date_end_real',
           type: 'date',
-          width: 110,
-          editable: true,
+          width: 110
         }
       ];
 
@@ -196,7 +192,7 @@ const Products = (props) => {
     //Function add product
     const onSubmit = (data, e) => {
 
-        console.log('---------------handleAddProduct----------');
+        console.log('---------------handleproduct----------');
         console.log('mounted getTypeProducts')
         console.log(props.areas_id);
         if (!selectedDateStart || selectedDateStart.length === 0){
@@ -265,14 +261,32 @@ const Products = (props) => {
           setErrorDateStart(true)
           return
         }
-        console.log('------useEffect addproduct----------------')
+        //console.log('------useEffect product----------------')
         //Guardo en DataProduct el dispatch del boton submit
         //para añadir los productos
-        setDataProduct(addproduct)
-        console.log(addproduct)
+        setDataProduct(product)
+        // console.log(product)
             
-    },[addproduct])
-    
+    },[product])
+
+    // setDataProduct
+  //   useEffect(()=> {
+
+  //     if (!selectedDateStart || selectedDateStart.length === 0){
+  //       setErrorDateStart(true)
+  //       return
+  //     }
+  //     console.log('------useEffect dataProduct----------------')
+  //     console.log(dataProduct.id)
+
+  //     dispatch(updateProduct(dataProduct.id,dataProduct));  
+
+  //     //Guardo en DataProduct el dispatch del boton submit
+  //     //para añadir los productos
+  //     // setDataProduct(product)
+  //     // console.log(product)
+          
+  // },[dataProduct])
     
 
     // useEffect(() => {
@@ -431,9 +445,12 @@ const Products = (props) => {
                             setTimeout(() => {
                               const dataUpdate = [...dataProduct];
                               const index = oldData.tableData.id;
+                              console.log('onRowUpdate::::::::::');
+                              console.log(index);
                               dataUpdate[index] = newData;
+                              console.log(newData);
                               setDataProduct([...dataUpdate]);
-                
+                              //dispatch(updateProduct(dataUpdate.id,dataUpdate));
                               resolve();
                             }, 1000)
                           }),
