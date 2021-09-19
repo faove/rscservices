@@ -1,10 +1,10 @@
 import React from "react";
-import Setting from './components/Setting';
+import { Provider } from 'react-redux';
 import Client from './components/Client';
+import generateStore from './redux/store';
+import Setting from './components/Setting';
 import Services from './components/Services';
 import Dashboard from './components/Dashboard';
-import { Provider } from 'react-redux';
-import generateStore from './redux/store';
 
 import {
   BrowserRouter as Router,
