@@ -3,6 +3,7 @@
   "version": "0.1.1",
   "type": "module",
   "private": true,
+  "homepage": "http://54.144.71.253/",
   "dependencies": {
     "@date-io/date-fns": "^1.3.13",
     "@elastic/react-search-ui": "^1.5.1",
