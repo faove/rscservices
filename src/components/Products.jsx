@@ -195,6 +195,9 @@ const Products = (props) => {
         console.log('---------------handleproduct----------');
         console.log('mounted getTypeProducts')
         console.log(props.areas_id);
+        console.log(format(toDate(selectedDateStart), 'yyyy/MM/dd'));
+        
+
         if (!selectedDateStart || selectedDateStart.length === 0){
           setErrorDateStart(true)
           return
@@ -477,7 +480,7 @@ const Products = (props) => {
 
     return (
     <div>
-        <button type="button" onClick={handleOpen}>
+        <button type="button"  onClick={handleOpen}>
             Product
         </button>
         <Modal

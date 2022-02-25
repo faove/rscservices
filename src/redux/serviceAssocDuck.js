@@ -39,3 +39,18 @@ export const getServiceAssoc = (id) => async (dispatch)  => {
 
     }
 }
+//Consulta todos los servicios de todos asociados
+export const getServiceAssocAll = (id) => async (dispatch)  => {
+    try{
+        const response = await axios.get(`http://localhost:8000/api/services/associateall`)
+            dispatch({
+                type: GET_SERVICE_ASSOC,
+                payload: {
+                    array: response.data
+                }
+            })
+    }catch(error){
+        console.log(error)
+
+    }
+}
