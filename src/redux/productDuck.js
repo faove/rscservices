@@ -125,6 +125,7 @@ export const addProduct = (services_id, areas_id, category_id, selected_date_sta
     // console.log(selected_date_start, lexido)
     // console.log('ProducteDuck ')
     // console.log(status)
+    // console.log(process.env);
     const response = await axios.post(
         "http://localhost:8000/api/products",
       {

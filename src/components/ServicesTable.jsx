@@ -296,6 +296,7 @@ const ServicesTable = (props) => {
               <th>Area</th>
               <th>Date service</th>
               <th>Gross Amount</th>
+              <th>Add Product</th>
               <th>Actions</th>
           </tr>
           </thead>
@@ -320,7 +321,9 @@ const ServicesTable = (props) => {
                           client_id={servi.client_id}
                           props_var = {props}
                           />
-                          <Button variant="outlined" color="primary"
+                      </td>
+                      <td >
+                          <Button variant="outlined" color="primary" 
                               onClick={
                                   () => {props.editRow(servi)}
                               }
@@ -336,7 +339,8 @@ const ServicesTable = (props) => {
                           >
                           Delete
                           </Button>
-                      </td>
+                        </td>
+                      
                   </tr>
                   )) : (
               

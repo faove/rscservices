@@ -84,3 +84,7 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 ### npm install -g @angular/cli 
 ### npm install animate.css --save
 
+Para añadir la variable de entorno
+### npm install --save-dev webpack webpack-cli
+### Product
+
