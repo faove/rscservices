@@ -54,7 +54,7 @@ export default function associateReducer(state = dataInicial, action){
 export const getAssociate = () => async (dispatch, getState)  => {
     try{
         const {offset} = getState().associate
-        const response = await axios.get(`http://localhost:8000/api/associates?offset=${offset}&limit=20`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}associates?offset=${offset}&limit=20`)
         dispatch({
             type: GET_ASSOCIATE,
             payload: {
@@ -76,7 +76,7 @@ export const getNextAssociate = (numero) => async (dispatch, getState)  => {
         
         console.log('siguiente: ', siguiente)
 
-        const response = await axios.get(`http://localhost:8000/api/associates?offset=${siguiente}&limit=20`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}associates?offset=${siguiente}&limit=20`)
         dispatch({
             type: GET_ASSOCIATE_NEXT,
             payload: {
@@ -95,7 +95,7 @@ export const getNextAssociate = (numero) => async (dispatch, getState)  => {
 export const getAssociateId = (id) => async (dispatch)  => {
     try{
         // const {offset} = getState().Associate
-        const response = await axios.get(`http://localhost:8000/api/associates/${id}`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}associates/${id}`)
         dispatch({
             type: GET_ASSOCIATE_ID,
             payload: {
@@ -114,7 +114,7 @@ export const addAssociate = (name,last_name,dni,address,email,gender) => async (
     // console.log('AssociateDuck addAssociate')
     // console.log(name)
     const response = await axios.post(
-      "http://localhost:8000/api/associates",
+        `${process.env.REACT_APP_APP_LOCALHOST_URL}associates`,
       {
           name,last_name,dni,address,email,gender
       }
@@ -138,7 +138,7 @@ export const addAssociate = (name,last_name,dni,address,email,gender) => async (
 export const  deleteAssociate = (id) => async (dispatch, getState) => {
     try {
         const response = await axios.delete(
-            `http://localhost:8000/api/associates/${id}`          
+            `${process.env.REACT_APP_APP_LOCALHOST_URL}associates/${id}`          
         )
         dispatch({
             type: DELETE_ASSOCIATE,
@@ -160,7 +160,7 @@ export const updateAssociate = (id,name,last_name,dni,address,email,gender) => a
         console.log(email)
         console.log(gender)
         const response = await axios.put(
-        `http://localhost:8000/api/associates/${id}`, {name,last_name,dni,address,email,gender})
+        `${process.env.REACT_APP_APP_LOCALHOST_URL}associates/${id}`, {name,last_name,dni,address,email,gender})
             dispatch({
             type: UPDATE_ASSOCIATE,
             payload: {

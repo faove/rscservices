@@ -52,7 +52,7 @@ export const getCategory = () => async (dispatch, getState)  => {
     try{
         
         const {offset} = getState().category
-        const response = await axios.get(`http://localhost:8000/api/categories?offset=${offset}&limit=20`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}categories?offset=${offset}&limit=20`)
         dispatch({
             type: GET_CATEGORY,
             payload: {
@@ -73,7 +73,7 @@ export const getNextCategory = (numero) => async (dispatch, getState)  => {
         
         console.log('siguiente: ', siguiente)
 
-        const response = await axios.get(`http://localhost:8000/api/categories?offset=${siguiente}&limit=20`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}categories?offset=${siguiente}&limit=20`)
         dispatch({
             type: GET_CATEGORY_NEXT,
             payload: {
@@ -97,7 +97,7 @@ export const getNextCategory = (numero) => async (dispatch, getState)  => {
 export const getCategoryId = (id) => async (dispatch)  => {
     try{
         // const {offset} = getState().category
-        const response = await axios.get(`http://localhost:8000/api/categories/${id}`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}categories/${id}`)
         dispatch({
             type: GET_CATEGORY_ID,
             payload: {
@@ -117,7 +117,7 @@ export const addCategory = (name,last_name,dni,address,email) => async (dispatch
     // console.log('categoryDuck addCategory')
     // console.log(email)
     const response = await axios.post(
-      "http://localhost:8000/api/categories",
+      `${process.env.REACT_APP_APP_LOCALHOST_URL}categories`,
       {
           name,last_name,dni,address,email
       }
@@ -143,7 +143,7 @@ export const  deleteCategory = (id) => async (dispatch, getState) => {
 
 
         const response = await axios.delete(
-            `http://localhost:8000/api/categories/${id}`          
+            `${process.env.REACT_APP_APP_LOCALHOST_URL}categories/${id}`          
         )
         dispatch({
             type: DELETE_CATEGORY,
@@ -163,7 +163,7 @@ export const updateCategory = (id,updatedCategory) => async (dispatch, getState)
 
 try {
     const response = await axios.put(
-    `http://localhost:8000/api/categories/${id}`, updatedCategory)
+    `${process.env.REACT_APP_APP_LOCALHOST_URL}categories/${id}`, updatedCategory)
         dispatch({
         type: UPDATE_CATEGORY,
         payload: {

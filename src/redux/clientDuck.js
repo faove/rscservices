@@ -67,7 +67,7 @@ export default function clientReducer(state = dataInicial, action){
 export const getClient = () => async (dispatch, getState)  => {
     try{
         const {offset} = getState().client
-        const response = await axios.get(`http://localhost:8000/api/clients?offset=${offset}&limit=20`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}clients?offset=${offset}&limit=20`)
         dispatch({
             type: GET_CLIENT,
             payload: {
@@ -88,7 +88,7 @@ export const getNextClient = (numero) => async (dispatch, getState)  => {
         
         console.log('siguiente: ', siguiente)
 
-        const response = await axios.get(`http://localhost:8000/api/clients?offset=${siguiente}&limit=20`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}clients?offset=${siguiente}&limit=20`)
         dispatch({
             type: GET_CLIENT_NEXT,
             payload: {
@@ -112,7 +112,7 @@ export const getNextClient = (numero) => async (dispatch, getState)  => {
 export const getClientId = (id) => async (dispatch)  => {
     try{
         // const {offset} = getState().client
-        const response = await axios.get(`http://localhost:8000/api/clients/${id}`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}clients/${id}`)
         dispatch({
             type: GET_CLIENT_ID,
             payload: {
@@ -132,7 +132,7 @@ export const addClient = (name,last_name,dni,address,email) => async (dispatch, 
     // console.log('clienteDuck addClient')
     // console.log(email)
     const response = await axios.post(
-      "http://localhost:8000/api/clients",
+        `${process.env.REACT_APP_APP_LOCALHOST_URL}clients`,
       {
           name,last_name,dni,address,email
       }
@@ -161,7 +161,7 @@ export const  deleteClient = (id) => async (dispatch, getState) => {
 
 
         const response = await axios.delete(
-            `http://localhost:8000/api/clients/${id}`          
+            `${process.env.REACT_APP_APP_LOCALHOST_URL}clients/${id}`          
         )
         dispatch({
             type: DELETE_CLIENT,
@@ -191,7 +191,7 @@ try {
     // console.log(id,updatedClient)
     //setEditing(false);
     const response = await axios.put(
-    `http://localhost:8000/api/clients/${id}`, updatedClient)
+    `${process.env.REACT_APP_APP_LOCALHOST_URL}clients/${id}`, updatedClient)
         dispatch({
         type: UPDATE_CLIENT,
         payload: {

@@ -26,7 +26,7 @@ export default function typestatusReducer(state = dataInicial, action){
 export const getStatus = () => async (dispatch, getState)  => {
     try{
         const {offset} = getState().showstatus
-        const response = await axios.get(`http://localhost:8000/api/typestatus`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}typestatus`)
         dispatch({
             type: GET_STATUS,
             payload: {

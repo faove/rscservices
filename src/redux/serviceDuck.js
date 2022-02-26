@@ -73,7 +73,7 @@ export const getService = () => async (dispatch, getState)  => {
     try{
         
         const {offset} = getState().service
-        const response = await axios.get(`http://localhost:8000/api/services?offset=${offset}&limit=20`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}services?offset=${offset}&limit=20`)
         dispatch({
             type: GET_SERVICE,
             payload: {
@@ -95,7 +95,7 @@ export const getNextService = (numero) => async (dispatch, getState)  => {
         
         console.log('siguiente: ', siguiente)
 
-        const response = await axios.get(`http://localhost:8000/api/services?offset=${siguiente}&limit=20`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}services?offset=${siguiente}&limit=20`)
         dispatch({
             type: GET_SERVICE_NEXT,
             payload: {
@@ -114,7 +114,7 @@ export const getNextService = (numero) => async (dispatch, getState)  => {
 export const getServiceId = (id) => async (dispatch)  => {
     try{
         // const {offset} = getState().Service
-        const response = await axios.get(`http://localhost:8000/api/services/${id}`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}services/${id}`)
         dispatch({
             type: GET_SERVICE_ID,
             payload: {
@@ -160,7 +160,7 @@ export const addService = (category_id,areas_id,associate_id,
 
     console.log(date_service)
 
-    const response = await axios.post(`http://localhost:8000/api/services`,
+    const response = await axios.post(`${process.env.REACT_APP_APP_LOCALHOST_URL}services`,
       {
         category_id, areas_id, associate_id, client_id, name_service, gross_amount, date_service
       }
@@ -186,7 +186,7 @@ export const deleteService = (id) => async (dispatch, getState) => {
         console.log('deleteService')
         console.log(id)
         const response = await axios.delete(
-            `http://localhost:8000/api/services/${id}`          
+            `${process.env.REACT_APP_APP_LOCALHOST_URL}services/${id}`          
         )
         dispatch({
             type: DELETE_SERVICE,
@@ -204,7 +204,7 @@ export const updateService = (id,category_id, areas_id, associate_id, client_id,
 
     try {
         const response = await axios.put(
-        `http://localhost:8000/api/services/${id}`, {category_id, areas_id, associate_id, client_id, name_service, gross_amount, date_service})
+        `${process.env.REACT_APP_APP_LOCALHOST_URL}services/${id}`, {category_id, areas_id, associate_id, client_id, name_service, gross_amount, date_service})
             dispatch({
             type: UPDATE_SERVICE,
             payload: {

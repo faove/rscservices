@@ -60,7 +60,7 @@ export default function areaReducer(state = dataInicial, action){
 export const getAreas = () => async (dispatch, getState)  => {
     try{
         const {offset} = getState().area
-        const response = await axios.get(`http://localhost:8000/api/areas?offset=${offset}&limit=20`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}areas?offset=${offset}&limit=20`)
         dispatch({
             type: GET_AREA,
             payload: {
@@ -82,7 +82,7 @@ export const getNextAreas = (numero) => async (dispatch, getState)  => {
         
         console.log('siguiente: ', siguiente)
 
-        const response = await axios.get(`http://localhost:8000/api/areas?offset=${siguiente}&limit=20`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}areas?offset=${siguiente}&limit=20`)
         dispatch({
             type: GET_AREA_NEXT,
             payload: {
@@ -101,7 +101,7 @@ export const getNextAreas = (numero) => async (dispatch, getState)  => {
 export const getAreasId = (id) => async (dispatch)  => {
     try{
         // const {offset} = getState().Associate
-        const response = await axios.get(`http://localhost:8000/api/areas/${id}`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}areas/${id}`)
         dispatch({
             type: GET_AREA_ID,
             payload: {
@@ -122,7 +122,7 @@ export const addArea = (category_id,name,status) => async (dispatch, getState)  
     console.log(category_id)
     console.log(status)
     const response = await axios.post(
-      "http://localhost:8000/api/areas",
+        `${process.env.REACT_APP_APP_LOCALHOST_URL}areas`,
       {
         category_id,name,status
       }
@@ -146,7 +146,7 @@ export const addArea = (category_id,name,status) => async (dispatch, getState)  
 export const  deleteArea = (id) => async (dispatch, getState) => {
     try {
         const response = await axios.delete(
-            `http://localhost:8000/api/areas/${id}`          
+            `${process.env.REACT_APP_APP_LOCALHOST_URL}areas/${id}`          
         )
         dispatch({
             type: DELETE_AREA,
@@ -164,7 +164,7 @@ export const updateArea = (id,category_id,name,status) => async (dispatch, getSt
 
     try {
         const response = await axios.put(
-        `http://localhost:8000/api/areas/${id}`, {category_id,name,status})
+        `${process.env.REACT_APP_APP_LOCALHOST_URL}areas/${id}`, {category_id,name,status})
             dispatch({
             type: UPDATE_AREA,
             payload: {
@@ -183,7 +183,7 @@ export const updateArea = (id,category_id,name,status) => async (dispatch, getSt
 export const getCategArea = (id) => async (dispatch)  => {
     try{
         // const {offset} = getState().Service
-        const response = await axios.get(`http://localhost:8000/api/areas/categories/${id}`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}areas/categories/${id}`)
         dispatch({
             type: GET_AREA_CATEG,
             payload: {

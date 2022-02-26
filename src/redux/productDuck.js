@@ -61,7 +61,7 @@ export default function productReducer(state = dataInicial, action){
 export const getProduct = () => async (dispatch, getState)  => {
     try{
         const {offset} = getState().product
-        const response = await axios.get(`http://localhost:8000/api/products?offset=${offset}&limit=20`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}products?offset=${offset}&limit=20`)
         dispatch({
             type: GET_PRODUCT,
             payload: {
@@ -83,7 +83,7 @@ export const getNextProduct = (numero) => async (dispatch, getState)  => {
         
         console.log('siguiente: ', siguiente)
 
-        const response = await axios.get(`http://localhost:8000/api/products?offset=${siguiente}&limit=20`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}products?offset=${siguiente}&limit=20`)
         dispatch({
             type: GET_PRODUCT_NEXT,
             payload: {
@@ -103,7 +103,7 @@ export const getProductId = (id) => async (dispatch)  => {
     try{
         // const {offset} = getState().product
         
-        const response = await axios.get(`http://localhost:8000/api/products/${id}`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}products/${id}`)
         dispatch({
             type: GET_PRODUCT_ID,
             payload: {
@@ -127,7 +127,7 @@ export const addProduct = (services_id, areas_id, category_id, selected_date_sta
     // console.log(status)
     // console.log(process.env);
     const response = await axios.post(
-        "http://localhost:8000/api/products",
+        `${process.env.REACT_APP_APP_LOCALHOST_URL}products`,
       {
          services_id, areas_id, category_id, selected_date_start, lexido, status
       }
@@ -152,7 +152,7 @@ export const  deleteProduct = (id) => async (dispatch, getState) => {
     try {
 
         const response = await axios.delete(
-            `http://localhost:8000/api/products/${id}`          
+            `${process.env.REACT_APP_APP_LOCALHOST_URL}products/${id}`          
         )
         dispatch({
             type: DELETE_PRODUCT,
@@ -176,7 +176,7 @@ export const updateProduct = (id,updatedProduct) => async (dispatch, getState) =
         console.log(updatedProduct)
         
         const response = await axios.put(
-        `http://localhost:8000/api/products/${id}`, updatedProduct)
+        `${process.env.REACT_APP_APP_LOCALHOST_URL}products/${id}`, updatedProduct)
             dispatch({
             type: UPDATE_PRODUCT,
             payload: {

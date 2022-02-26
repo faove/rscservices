@@ -25,7 +25,7 @@ export default function typeproductReducer(state = dataInicial, action){
 export const getTypeProducts = (areasid) => async (dispatch)  => {
     try{
         
-        const response = await axios.get(`http://localhost:8000/api/typeproducts/areas/${areasid}`)
+        const response = await axios.get(`${process.env.REACT_APP_APP_LOCALHOST_URL}typeproducts/areas/${areasid}`)
         dispatch({
             type: GET_TYPEPRODUCTS,
             payload: {
