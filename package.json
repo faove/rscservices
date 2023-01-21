@@ -31,6 +31,8 @@
     "material-table": "^1.69.3",
     "moment": "^2.29.1",
     "notistack": "^1.0.4",
+    "primeicons": "^6.0.1",
+    "primereact": "^8.7.3",
     "react": "^17.0.1",
     "react-bootstrap": "^1.5.2",
     "react-chartjs-2": "^4.0.1",
