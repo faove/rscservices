@@ -1,15 +1,17 @@
-import React, {useState, useEffect } from 'react';
-// import { makeStyles } from '@material-ui/core/styles';
+import Swal from 'sweetalert2';
+import Products from './Products';
+import {Link} from "react-router-dom";
+import { useForm } from 'react-hook-form';
+import Edit from '@material-ui/icons/Edit';
 import Button from '@material-ui/core/Button'
 import DeleteIcon from '@material-ui/icons/Delete';
-import Swal from 'sweetalert2';
+import { Container,Row,Col } from 'react-bootstrap';
 import { deleteService } from '../redux/serviceDuck';
 import { useDispatch, useSelector} from 'react-redux';
-import { Container,Row,Col } from 'react-bootstrap';
 import { makeStyles } from '@material-ui/core/styles';
-import { useForm } from 'react-hook-form';
-import Products from './Products';
-
+// import { makeStyles } from '@material-ui/core/styles';
+import React, {useState, useEffect, Fragment } from 'react';
+import ConstructionOutlinedIcon from '@mui/icons-material/ConstructionOutlined';
 const useStyles = makeStyles((theme) => ({
   // paper: {
   //   position: 'absolute',
@@ -56,12 +58,12 @@ const ServicesTable = (props) => {
 
   // const typeproduct = useSelector(store => store.area.array)
 
-  const [modalShow, setModalShow] = useState(false);
+  const [showProduct, setShowProduct] = useState(false);
   
   const [errorDescripProduct, setErrorDescripProduct] = useState(false)
 
-  const [descripProduct, setDescripProduct] = useState('');
-  
+  const [currentProduct, setCurrentProduct] = useState({});
+  // {servi_id: '', name_associates: ''}
   const { register, setValue, reset, handleSubmit, errors, control } = useForm();
   
 
@@ -86,7 +88,7 @@ const ServicesTable = (props) => {
     buttonsStyling: false
   })
 
-  const HandleButtonDelete = (id,name,client_id) =>{
+  const HandleButtonDelete = (id,name,client_id) => {
 
     swalWithBootstrapButtons.fire({
         title: 'Are you sure?',
@@ -129,6 +131,42 @@ const ServicesTable = (props) => {
     HandleButtonDelete(id,name,client_id)
   }
 
+  const productService = (id, name_assoc, category_id, areas_id, name_categories, name_areas, client_id) => {
+    console.log('productService')
+    console.log(id)
+    console.log(name_assoc)
+
+    const actualProduct = [{
+      servi_id: id, 
+      name_associates: name_assoc,
+      category_id: category_id,
+      areas_id: areas_id,
+      name_categories: name_categories,
+      name_areas:name_areas
+    }];
+
+    console.log(actualProduct);
+    // setCurrentProduct(
+    //   { 
+    //     'servi_id': servi_id, name_associates: name_associates, category_id: category_id,
+    //     areas_id: areas_id, name_categories: name_categories,name_areas: name_areas,
+    //     client_id: client_id, name_categories: name_categories,name_areas: name_areas,
+    //   }
+    // )
+    setCurrentProduct(actualProduct);
+    setShowProduct(true);
+    // console.log(showProduct)
+    // console.log('currentProduct')
+    // console.log(currentProduct)
+    // return false;
+    
+  }
+  useEffect(()=>{
+
+    console.log(' useEffect currentProduct')
+    console.log(currentProduct)
+
+  },[setCurrentProduct]);
   // useEffect(() =>{
   //   dispatch(getTypeProducts());
 
@@ -136,221 +174,140 @@ const ServicesTable = (props) => {
   //   console.log(typeproduct)
   //   // console.log(props)
   // },[]);
-
-  // const HandleChangeTypeProduct = (event) => {
-  //   console.log('HandleChangeTypeProduct:')
-  //   console.log(event.target.value)
-  //   setErrorTypeProduct(true)
-  //   setTipoProduct(Number(event.target.value))
-
-  //   //dispatch(getTypeProducts());
-
-  // }
-
-  
-
-  
-  // const AddModalProduct2 = (props) => {
-  //   // console.log('----props-typeproduct---');
-  //   // console.log(props.typeproduct);
-  //   // const typeproduct = props.typeproduct;
-  //   setValue('service_id',props.service_id)
+  const onSubmit = (data, e) => {
+    e.preventDefault()
+    console.log('----data')
     
-  //   //Function add product
-  //   const handleAddProduct = event => {
+    //setValue('name_associates', data.name_associates);
 
-  //     console.log('---------------handleAddProduct----------');
-  //     //service_id
-  //     console.log(props);
-  //     let lexico = "" + props.category_id + "-" + props.areas_id + "-" + tipoproduct + "";
-  //     //product_id
-  //     // console.log(name_products);
-  //     console.log(lexico);
-  //     // console.log(tipoproduct)
-  //     // dispatch(addProduct(props.id, tipoproduct,lexico,name_products ));  
-  //     setDescripProduct(-1)
-  //   };
-  //   const handleChangeDescriproduct = event => {
-  //     console.log('----handleChangeDescriproduct----');
-  //     setErrorDescripProduct(false)
-  //     setDescripProduct(event.target.value)
-  //   }
+    console.log(data)
+    console.log('e')
+    console.log(e)
 
-    
-  //     return (
-      
-  //       <Modal {...props} aria-labelledby="contained-modal-title-vcenter" size="lg">
-  //         <Modal.Header closeButton>
-  //           <Modal.Title id="contained-modal-title-vcenter">
-  //             Add Product
-  //             {/* {console.log('---AddModalProducts---')}
-  //                     {console.log(props)} */}
-  //                     {console.log('---AddModalProducts---')}
-  //                     {console.log(props)}
-  //           </Modal.Title>
-  //         </Modal.Header>
-  //         <Modal.Body className="show-grid">
-  //           <Container>
-  //             <Row>
-  //               <Col xs={18} md={12}>
-                
-  //               <FormControl className={classes.formControl}>
-  //                 <InputLabel id="select-label-type-products">Responsible type products</InputLabel>
-  //                   <Select
-  //                     labelId="select_type_products_label"
-  //                     id="select_typeproduct"
-  //                     value={tipoproduct === -1 ? '' : tipoproduct}
-  //                     onChange={HandleChangeTypeProduct}
-  //                     error={tipoproduct === '' && errorTypeProduct ===true}
-  //                   >
-  //                   {
-  //                     props.typeproduct.map((tprod, index) => (
-  //                       <MenuItem key={index} value={tprod.id}>
-  //                         {tprod.name}
-  //                       </MenuItem>
-  //                     ))
-  //                   }
-  //                   </Select>
-  //               </FormControl>
-  //               </Col>
-  //             </Row>
-  //             <Row>
-  //               <Col xs={18} md={12}>
-  //               <TextField
-  //                 id="name_products"
-  //                 label="Description Product"
-  //                 value={descripProduct === -1 ? '' : descripProduct}
-  //                 onChange={handleChangeDescriproduct}
-  //                 multiline
-  //                 fullWidth
-  //                 rows={3}
-  //                 defaultValue="Default Value"
-  //                 variant="outlined"
-  //               />
-  //               </Col>
+    const actualProduct = [{
+      servi_id: data.id, 
+      name_associates: data.name_associates,
+      category_id: data.category_id,
+      areas_id: data.areas_id,
+      name_categories: data.name_categories,
+      name_areas: data.name_areas
+    }];
 
-  //             </Row>
-    
-  //             <Row>
-  //               <Col xs={6} md={4}>
-  //               <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                //   <KeyboardDatePicker
-                //     disableToolbar
-                //     variant="inline"
-                //     format="dd/MM/yyyy"
-                //     margin="normal"
-                //     id="date_start"
-                //     label="Date Start"
-                //     // value={selectedDate}
-                //     // onChange={handleDateChange}
-                //     // error={selectedDate === '' ??  false}
-                //     KeyboardButtonProps={{
-                //       'aria-label': 'change date',
-                //     }}
-                //   />
-                // </MuiPickersUtilsProvider>
-  //               </Col>
-  //               <Col xs={6} md={4}>
-  //               <MuiPickersUtilsProvider utils={DateFnsUtils}>
-  //                 <KeyboardDatePicker
-  //                   disableToolbar
-  //                   variant="inline"
-  //                   format="dd/MM/yyyy"
-  //                   margin="normal"
-  //                   id="date_end"
-  //                   label="Date End"
-  //                   // value={selectedDate}
-  //                   // onChange={handleDateChange}
-  //                   // error={selectedDate === '' ??  false}
-  //                   KeyboardButtonProps={{
-  //                     'aria-label': 'change date',
-  //                   }}
-  //                 />
-  //               </MuiPickersUtilsProvider>
-  //               </Col>
-  //               <Col xs={6} md={4}>
-  //               <input type="text" 
-  //                 name="services_id" id="services_id" htmlFor="services_id"
-  //                 className="form-control" ref ={register} 
-  //               />
-  //               </Col>
-  //             </Row>
-  //           </Container>
-  //         </Modal.Body>
-  //         <Modal.Footer>
-  //         <Button onClick={handleAddProduct}>Add</Button>
-  //           <Button onClick={props.onHide}>Close</Button>
-  //         </Modal.Footer>
-  //       </Modal>
-      
-  //     );
-    
-  // }
+    console.log(actualProduct);
+
+    setCurrentProduct(actualProduct);
+    setShowProduct(true);
+    // setValue('last_name', data.last_name);
+    // limpiar campos
+  //   e.target.reset();
+  }
     
     return (
-      <table>
-          <thead>
-          <tr>
-              <th>Associate</th>
-              <th>Category</th>
-              <th>Area</th>
-              <th>Date service</th>
-              <th>Gross Amount</th>
-              <th>Add Product</th>
-              <th>Actions</th>
-          </tr>
-          </thead>
-          <tbody>
-          {
-               props.serviceassoc.length > 0 ?
-               props.serviceassoc.map( (servi,idx)  => (
-                      <tr key={servi.id}>
+      <div  className="flex-large">  
+        <h4 className="text-center">
+        {
+          showProduct ? 'Product' : 'Service'
+        }
+        </h4>
+        {
+          showProduct ? (
+            <Fragment>
+              <Products
+                currentProduct={currentProduct}
+                props={props}
+              />
+            </Fragment>
+          ) : (
+            <table>
+              <thead>
+              <tr>
+                  <th>Associate</th>
+                  <th>Category</th>
+                  <th>Area</th>
+                  <th>Date service</th>
+                  <th>Gross Amount</th>
+                  <th>Add Product</th>
+                  <th>Actions</th>
+                  <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              {
+                  
+                  props.serviceassoc.length > 0 ?
+                  props.serviceassoc.map( (servi, idx)  => (
+                      <tr key={idx}>
                       <td>{servi.name_associates}</td>
                       <td>{servi.name_categories}</td>
                       <td>{servi.name_areas}</td>
                       <td>{servi.date_service}</td>
                       <td>{servi.gross_amount}</td>
                       <td>
-                          <Products 
-                          servi_id={servi.id}
-                          associate_name={servi.name_associates}
-                          category_id={servi.category_id}
-                          categoria_name={servi.name_categories}
-                          areas_id={servi.areas_id}
-                          areas_name={servi.name_areas}
-                          client_id={servi.client_id}
-                          props_var = {props}
-                          />
+                      {/* <form onSubmit={handleSubmit(onSubmit)}>
+                        <input type='hidden' className="form-control" ref ={register} name='id' value={servi.id}></input>
+                        <input type='hidden' className="form-control" ref ={register} name='name_associates' value={servi.name_associates}></input>
+                        <input type='hidden' className="form-control" ref ={register} name='name_categories' value={servi.name_categories}></input>
+                        <input type='hidden' className="form-control" ref ={register} name='category_id' value={servi.category_id}></input>
+                        <input type='hidden' className="form-control" ref ={register} name='date_service' value={servi.date_service}></input>
+                        <input type='hidden' className="form-control" ref ={register} name='areas_id' value={servi.areas_id}></input>
+                        <input type='hidden' className="form-control" ref ={register} name='name_areas' value={servi.name_areas}></input>
+                        <input type='hidden' className="form-control" ref ={register} name='client_id' value={servi.client_id}></input>
+                        <input type='hidden' className="form-control" ref ={register} name='gross_amount' value={servi.gross_amount}></input> */}
+                        <Link to={`/products/${servi.id}/${servi.category_id}/${servi.areas_id}/${servi.client_id}/${props}`}>
+                          <Button  variant="contained" color="primary"
+                          // onClick={() => 
+                          //     productService(servi.id, servi.name_associates, servi.category_id, servi.areas_id, servi.name_categories, servi.name_areas, servi.client_id)
+                          // }
+                              startIcon={<ConstructionOutlinedIcon/>}
+                        >
+                        Tareas
+                        </Button></Link>
+                      {/* </form> */}
+                          {/* <Products 
+                            servi_id={servi.id}
+                            associate_name={servi.name_associates}
+                            category_id={servi.category_id}
+                            categoria_name={servi.name_categories}
+                            areas_id={servi.areas_id}
+                            areas_name={servi.name_areas}
+                            client_id={servi.client_id}
+                            props_var = {props}
+                          /> */}
                       </td>
                       <td >
-                          <Button variant="outlined" color="primary" 
-                              onClick={
-                                  () => {props.editRow(servi)}
-                              }
-                          >
-                            Edit
-                          </Button>
-                          <Button variant="contained" color="secondary"
-                              onClick={() => 
-                                eliminarService(servi.id,servi.name_areas,servi.client_id)
-                              //   // HandleButtonDelete(servi.id,servi.name,servi.last_name)
-                              }
-                              startIcon={<DeleteIcon/>}
-                          >
-                          Delete
-                          </Button>
-                        </td>
-                      
-                  </tr>
-                  )) : (
-              
-                      <tr>
-                      <td colSpan={3}>No service</td>
-                      </tr>
-                  )
-          }
-          </tbody>
-      </table>
+                        <Button variant="contained"  
+                            onClick={
+                                () => {props.editRow(servi)}
+                            }
+                            startIcon={<Edit/>}
+                        >
+                        Editar
+                        </Button>
+                      </td>
+                      <td>
+                        <Button variant="contained" color="secondary"
+                            onClick={() => 
+                              eliminarService(servi.id,servi.name_areas,servi.client_id)
+                              // HandleButtonDelete(servi.id,servi.name,servi.last_name)
+                            }
+                            startIcon={<DeleteIcon/>}
+                        >
+                        Borrar
+                        </Button>
+                      </td>
+                    </tr>
+                    )) : (
+                
+                        <tr>
+                        <td colSpan={3}>No ha asignado ningun servicio</td>
+                        </tr>
+                    )
+              }
+              </tbody>
+          </table>
+          )
+      }
+      </div>
    );
 }
 export default ServicesTable;

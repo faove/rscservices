@@ -32,13 +32,13 @@ const useStyles = makeStyles((theme) => ({
 const Associate = () => {
     const classes = useStyles();
     //-------------------------------------------
-    const [asociados, setAsociados] = useState([])
-    const [modoEdicion, setModoEdicion] = useState(false)
-    const [refreshKey, setRefreshKey] = useState(0)
+    const dispatch = useDispatch()
     const [gender, setGender] = useState(0)
+    const [asociados, setAsociados] = useState([])
+    const [refreshKey, setRefreshKey] = useState(0)
+    const [modoEdicion, setModoEdicion] = useState(false)
     const asociado = useSelector(store => store.associate.array)
     const {setValue, register, reset, errors, handleSubmit} = useForm({defaultValues: asociado});
-    const dispatch = useDispatch()
     const genero = [{id: 1, name:'Masculino'},{id: 2, name:'Femenino'}];
     
     const swalWithBootstrapButtons = Swal.mixin({

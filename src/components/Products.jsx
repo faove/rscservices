@@ -1,6 +1,9 @@
+import Box from '@mui/material/Box';
+//import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
 import React, { useState, useEffect, forwardRef } from 'react';
 import { format, toDate, formatDistance, formatRelative, subDays } from 'date-fns'
-import Modal from '@material-ui/core/Modal';
 import { updateProduct, addProduct, getProductId } from '../redux/productDuck';
 import { getTypeProducts } from '../redux/typeproductDuck';
 import { useDispatch, useSelector} from 'react-redux';
@@ -35,7 +38,8 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-
+import {useParams} from 'react-router-dom';
+import { Cancel } from '@material-ui/icons';
 
 const defaultTheme = createMuiTheme();
 
@@ -56,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
     width: 1600,
     backgroundColor: theme.palette.background.paper,
     border: '2px solid #000',
-    boxShadow: theme.shadows[5],
+    boxShadow: theme.shadows[10],
     padding: theme.spacing(16, 32, 24),
   },
   formControl: {
@@ -75,14 +79,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
+
 const Products = (props) => {
 
     const classes = useStyles();
     const dispatch = useDispatch();
     const {  handleSubmit } = useForm({});
-    const [editRowsModel, setEditRowsModel] = useState({});
-    // getModalStyle is not a pure function, we roll the style only on the first render
     const [modalStyle] = useState(getModalStyle);
+    const [editRowsModel, setEditRowsModel] = useState({});
+    const {id, category_id, areas_id, client_id, props_var} = useParams();
+    // getModalStyle is not a pure function, we roll the style only on the first render
     const [open, setOpen] = useState(false);
     //Duck Constants
     const product = useSelector(store => store.product.array);
@@ -171,8 +184,9 @@ const Products = (props) => {
     const handleOpen = () => {
       
         console.log('---------------Button Product----------');
-        console.log('servi_id',props.servi_id);
+        // console.log('servi_id',props.servi_id);
         // console.log('props',props);
+        // return false;
         // console.log('category_id',props.category_id);
         // console.log('areas_id',props.areas_id);
         // console.log('name_areas',props.areas_name)
@@ -180,10 +194,18 @@ const Products = (props) => {
         // console.log('associate_name',props.associate_name)
 
         //Dependiendo del area, trae todos tipos de productos
-        dispatch(getProductId(props.servi_id));
+        // dispatch(getProductId(props.servi_id));
         setOpen(true);
 
     };
+
+    const productService = (servi_id, name_associates, category_id, areas_id, name_categories, name_areas, client_id) => {
+      console.log('productService')
+      console.log(servi_id)
+      console.log('name_associates')
+      console.log(name_associates)
+    };
+
 
     const handleClose = () => {
         setOpen(false);
@@ -194,11 +216,15 @@ const Products = (props) => {
 
         console.log('---------------handleproduct----------');
         console.log('mounted getTypeProducts')
-        console.log(props.areas_id);
+        // console.log(props);
         console.log(format(toDate(selectedDateStart), 'yyyy/MM/dd'));
-        
 
-        if (!selectedDateStart || selectedDateStart.length === 0){
+        // console.log(e)
+        return false;
+
+        if (!selectedDateStart || selectedDateStart.length === 0) {
+          console.log(selectedDateStart);
+          
           setErrorDateStart(true)
           return
         }
@@ -264,11 +290,13 @@ const Products = (props) => {
           setErrorDateStart(true)
           return
         }
-        //console.log('------useEffect product----------------')
+        console.log('------useEffect product----------------')
+        console.log(product);
+        
         //Guardo en DataProduct el dispatch del boton submit
         //para añadir los productos
         setDataProduct(product)
-        // console.log(product)
+        console.log(dataProduct)
             
     },[product])
 
@@ -290,7 +318,21 @@ const Products = (props) => {
   //     // console.log(product)
           
   // },[dataProduct])
-    
+  useEffect(() => {
+    //dispatch(getProductId(id));
+    console.log('------useEffect servi id----------------')
+    console.log(id);
+    console.log('------useEffect category_id----------------')
+    console.log(category_id);
+    console.log('------useEffect areas_id----------------')
+    console.log(areas_id);
+    console.log('------useEffect client_id----------------')
+    console.log(client_id);
+
+    console.log('------useEffect props----------------')
+    console.log(props_var);
+
+  },[]);
 
     // useEffect(() => {
 
@@ -312,7 +354,8 @@ const Products = (props) => {
     //   }, [])
 
     const body = (
-        <div style={modalStyle} className={classes.paper}>
+        <div className={classes.paper}>
+          
             <form onSubmit={handleSubmit(onSubmit)}>
                 {/* <Row>
                     <Col xs={24} md={16}>
@@ -346,21 +389,21 @@ const Products = (props) => {
                     disabled
                     id="outlined-disabled"
                     label="Associate"
-                    defaultValue={props.associate_name}
+                    defaultValue={props.name_associates} //{props.currentProduct.name_associates}
                     variant="outlined"
                     />
                     <TextField
                     disabled
                     id="outlined-disabled"
                     label="Category"
-                    defaultValue={props.categoria_name}
+                    defaultValue={props.name_categories}
                     variant="outlined"
                     />
                     <TextField
                     disabled
                     id="outlined-disabled"
                     label="Area"
-                    defaultValue={props.areas_name}
+                    defaultValue={props.name_areas}
                     variant="outlined"
                     />
                     </Col>
@@ -412,7 +455,7 @@ const Products = (props) => {
                         </Paper>
                         <button className="btn btn-warning btn-block" type="submit">Add Products</button>
                         {/* <Button onClick={handle}>Add</Button> */}
-                        <Button onClick={props.props_var.onHide}>Close</Button>
+                        <Button>Close</Button>
                     </Col>
                 </Row>
                 <div style={{ height: 400, width: '100%' }}>                
@@ -480,17 +523,208 @@ const Products = (props) => {
 
     return (
     <div>
-        <button type="button"  onClick={handleOpen}>
-            Product
-        </button>
-        <Modal
+        {
+          <div>
+            <form onSubmit={handleSubmit(onSubmit)}>
+            {/* <button type="button"
+                    onClick={() => 
+                      {productService(props.servi_id, props.associate_name, props.category_id, props.categoria_name, props.areas_id, props.areas_name, props.client_id)}
+                    }>
+                Product
+            </button> */}
+            {
+            dataProduct.length > 0 ?
+            dataProduct.map( (prod,idx)  => (
+              <table>
+              <thead>
+              <tr>
+                  <th>Associate</th>
+                  <th>Category</th>
+                  <th>Area</th>
+                  <th>Fecha</th>
+              </tr>
+              </thead>
+              <tbody>
+                <tr key={idx}>
+                <td>
+                    <TextField disabled id="outlined-disabled" label="Associate"
+                    defaultValue={prod.name_associates} variant="outlined"
+                    />
+                </td>
+                <td>
+                    <TextField
+                    disabled
+                    id="outlined-disabled"
+                    label="Category"
+                    defaultValue={prod.name_categories}
+                    variant="outlined"
+                    />
+                </td>
+                <td>
+                    <TextField
+                    disabled
+                    id="outlined-disabled"
+                    label="Area"
+                    defaultValue={prod.name_areas}
+                    variant="outlined"
+                    />
+                </td><td>
+                    <Col xs={12} md={8}>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <KeyboardDatePicker
+                            disableToolbar
+                            variant="inline"
+                            format="dd/MM/yyyy"
+                            margin="normal"
+                            id="date_start"
+                            label="Date Start"
+                            value={selectedDateStart}
+                            // onChange={handleDateChange}
+                            // error={selectedDate === '' ??  false}
+                            KeyboardButtonProps={{
+                            'aria-label': 'change date',
+                            }}
+                        />
+                        </MuiPickersUtilsProvider>
+                    {/* </Col>
+                    <Col xs={12} md={8}> */}
+                        {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <KeyboardDatePicker
+                            disableToolbar
+                            variant="inline"
+                            format="dd/MM/yyyy"
+                            margin="normal"
+                            id="date_end"
+                            label="Date End"
+                            value={selectedDateEnd}
+                            // onChange={handleDateChange}
+                            // error={selectedDate === '' ??  false}
+                            KeyboardButtonProps={{
+                            'aria-label': 'change date',
+                            }}
+                        />
+                        </MuiPickersUtilsProvider> */}
+                    </Col>
+                </td></tr>
+                
+                <tr>
+                <Paper className={classes.papergrid}>
+                    <Grid container wrap="nowrap" spacing={2}>
+                    <Grid item xs zeroMinWidth>
+                        <Typography noWrap>{tipoproduct}</Typography>
+                    </Grid>
+                    </Grid>
+                </Paper>
+                <button className="btn btn-warning btn-block" type="submit">Add Products</button>
+                {/* <Button onClick={handle}>Add</Button> */}
+                <Button>Close</Button>
+                </tr>
+                <tr>
+                  <td></td>
+                <div style={{ height: 400, width: '100%' }}>                
+                <MaterialTable 
+                    icons={tableIcons}
+                    columns={columns} 
+                    data={dataProduct}                     
+                    title="Products"
+                    // actions={[
+                    //     {
+                    //         icon: tableIcons.Edit,
+                    //         tooltip: 'Editar Product',
+                    //         onClick:  (event,rowData)=>alert('presiono',+rowData.id)
+                    //     },
+                    //     {
+                    //         icon: tableIcons.Delete,
+                    //         tooltip: 'Delete Product',
+                    //         onClick:  (event,rowData)=>alert('presiono elminar',+rowData.id)
+                    //     }
+
+                    // ]}
+                    editable={{
+                        onRowAdd: newData =>
+                          new Promise((resolve, reject) => {
+                            setTimeout(() => {
+                              setDataProduct([...dataProduct, newData]);
+                              
+                              resolve();
+                            }, 1000)
+                          }),
+                        onRowUpdate: (newData, oldData) =>
+                          new Promise((resolve, reject) => {
+                            setTimeout(() => {
+                              const dataUpdate = [...dataProduct];
+                              const index = oldData.tableData.id;
+                              console.log('onRowUpdate::::::::::');
+                              console.log(index);
+                              dataUpdate[index] = newData;
+                              console.log(newData);
+                              setDataProduct([...dataUpdate]);
+                              //dispatch(updateProduct(dataUpdate.id,dataUpdate));
+                              resolve();
+                            }, 1000)
+                          }),
+                        onRowDelete: oldData =>
+                          new Promise((resolve, reject) => {
+                            setTimeout(() => {
+                              const dataDelete = [...dataProduct];
+                              const index = oldData.tableData.id;
+                              dataDelete.splice(index, 1);
+                              setDataProduct([...dataDelete]);
+                              
+                              resolve()
+                            }, 1000)
+                          }),
+                    }}
+                    options={{
+                        actionsColumnIndex: -1
+                    }}
+                />
+                </div>
+                </tr>
+              </tbody>
+              </table>
+            )) : (
+              <div>
+                <tr>
+                <td colSpan={3}>No product</td>
+                <Box sx={{ width: '100%' }}>
+                <Stack spacing={2}>
+                  <Item>Item 1</Item>
+                  <Item>Item 2</Item>
+                  <Item>Item 3</Item>
+                </Stack>
+              </Box>
+                
+                </tr>
+                <tr>
+                  <td colSpan={3}>
+                  
+                    
+                  <Button variant="contained" color="blue" startIcon={<Check />}>
+                    Añadir Productos
+                  </Button>
+                  <Button variant="contained" color="secondary">
+                    Cancelar
+                  </Button>                
+                </td>
+                </tr>
+              </div>
+            )
+            
+              
+            }
+            </form>
+          </div>
+        /*{/* <Modal
             open={open}
             onClose={handleClose}
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
         >
         {body}
-        </Modal>
+        </Modal> */
+        
+        }
     </div>
     );
 }

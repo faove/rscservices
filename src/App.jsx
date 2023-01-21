@@ -4,6 +4,7 @@ import Client from './components/Client';
 import generateStore from './redux/store';
 import Setting from './components/Setting';
 import Services from './components/Services';
+import Products from './components/Products';
 import Dashboard from './components/Dashboard';
 
 import {
@@ -61,6 +62,9 @@ export default function App() {
         </Route>
         <Route path="/services" exact>
           <Services />
+        </Route>
+        <Route path="/products/:id/:category_id/:areas_id/:client_id/:props_var" exact>
+          <Products />
         </Route>
         <Route path="/" exact>
           <Dashboard />
